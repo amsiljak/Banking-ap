@@ -25,6 +25,12 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
         super(context, _resource,items);
         resource = _resource;
     }
+
+    @Override
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        return super.getDropDownView(position, convertView, parent);
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

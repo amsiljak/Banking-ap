@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -58,16 +59,24 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         setContentView(R.layout.activity_main);
 
         transactionListAdapter = new TransactionListAdapter(getApplicationContext(), R.layout.list_element, new ArrayList<Transaction>());
-        globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
-        limit2 = findViewById(R.id.limit2);
         transactionListView = (ListView)findViewById(R.id.transactionList);
         transactionListView.setAdapter(transactionListAdapter);
+
+        globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
+        limit2 = findViewById(R.id.limit2);
 
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
         ArrayList<Type> list = new ArrayList<>();
         list.addAll(Arrays.asList(Type.values()));
         filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, list);
+        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
+        filterSpinner.getOnItemSelectedListener();
+//        filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            }
+//        });
 
         dateView = (TextView)findViewById(R.id.date);
 

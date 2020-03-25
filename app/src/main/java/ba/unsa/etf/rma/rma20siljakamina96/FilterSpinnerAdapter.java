@@ -18,6 +18,9 @@ public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
     private int resource;
     public ImageView imageView;
     public TextView textView;
+    public ImageView imageView2;
+    public TextView textView2;
+
 
     public FilterSpinnerAdapter(@NonNull Context context, int _resource, ArrayList<Type> items) {
         super(context, _resource,items);
@@ -60,4 +63,40 @@ public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
 
         return newView;
     }
+
+    @Override
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LinearLayout newView;
+        if (convertView == null) {
+            newView = new LinearLayout(getContext());
+            String inflater = Context.LAYOUT_INFLATER_SERVICE;
+            LayoutInflater li;
+            li = (LayoutInflater)getContext().
+                    getSystemService(inflater);
+            li.inflate(R.layout.filter_spinner_dropdown_item, newView, true);
+        } else {
+            newView = (LinearLayout)convertView;
+        }
+
+        Type type = getItem(position);
+
+        textView2 = newView.findViewById(R.id.spinner_item_naziv2);
+        imageView2 = newView.findViewById(R.id.spinner_item_icon2);
+
+        textView2.setText(type.toString());
+
+        String tip = type.toString();
+        try {
+            if(tip.equals("INDIVIDUALPAYMENT")) imageView2.setImageResource(R.drawable.a);
+            if(tip.equals("REGULARPAYMENT")) imageView2.setImageResource(R.drawable.b);
+            if(tip.equals("PURCHASE")) imageView2.setImageResource(R.drawable.c);
+            if(tip.equals("INDIVIDUALINCOME")) imageView2.setImageResource(R.drawable.d);
+            if(tip.equals("REGULARINCOME")) imageView2.setImageResource(R.drawable.e);
+
+        }
+        catch (Exception e) {
+            imageView2.setImageResource(R.drawable.a);
+        }
+
+        return newView;    }
 }
