@@ -73,15 +73,18 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             @Override
             public void onClick(View v) {
                 cal.add(Calendar.MONTH,-1);
-//                financePresenter.refresh();
+                financePresenter.refresh();
                 setDate(cal);
+                //fazon je da svaki put kad se klike dugme postavljaju se drugacije transakcije,
+                //kao i mjesec u textviewu
+                //trebam negdje sacuvati
             }
         });
         rightImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cal.add(Calendar.MONTH,1);
-//                financePresenter.refresh();
+                financePresenter.refresh();
                 setDate(cal);
             }
         });
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
+        transactionListAdapter.clear();
         transactionListAdapter.setTransactions(transactions);
     }
 
@@ -111,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             month = months[mjesec];
         }
         String year = "";
-
 
         year = String.valueOf(cal.get(Calendar.YEAR));
         dateView.setText(month + ", " + year);
