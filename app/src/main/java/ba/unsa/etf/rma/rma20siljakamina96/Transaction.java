@@ -11,7 +11,7 @@ public class Transaction {
     private int transactionInterval;
     private Date endDate;
 
-    public Transaction(Date date, double amount, String title, Type type, String itemDescription, Date endDate) {
+    public Transaction(Date date, double amount, String title, Type type, String itemDescription) {
         this.date = date;
         this.amount = amount;
         this.title = title;
@@ -29,6 +29,7 @@ public class Transaction {
         this.transactionInterval = transactionInterval;
         this.endDate = endDate;
     }
+
 
     public Date getDate() {
         return date;
