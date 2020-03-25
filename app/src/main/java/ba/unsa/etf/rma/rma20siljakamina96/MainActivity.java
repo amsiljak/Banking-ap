@@ -1,25 +1,19 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements IFinanceView{
     private TextView globalAmount2;
@@ -111,16 +105,28 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
-
-
         transactionListAdapter.clear();
+
         ArrayList<Transaction> lista = new ArrayList<>();
         for(Transaction t: transactions) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(t.getDatum());
+            if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
 
-            if(calendar.get(Calendar.MONTH) ==  cal.get(Calendar.MONTH)
-                    && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) lista.add(t);
+                Calendar startingPoint = Calendar.getInstance();
+                startingPoint.setTime(t.getDate());
+
+                Calendar endPoint = Calendar.getInstance();
+                endPoint.setTime(t.getEndDate());
+
+                if (cal.compareTo(startingPoint) > 0 && cal.compareTo(startingPoint) < 0) {
+                    lista.add(t);
+                }
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(t.getDate());
+
+                if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
+                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) lista.add(t);
+            }
         }
         transactionListAdapter.setTransactions(lista);
     }

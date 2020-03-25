@@ -3,7 +3,7 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 import java.util.Date;
 
 public class Transaction {
-    private Date datum;
+    private Date date;
     private double amount;
     private String title;
     private Type type;
@@ -11,8 +11,8 @@ public class Transaction {
     private int transactionInterval;
     private Date endDate;
 
-    public Transaction(Date datum, double amount, String title, Type type, String itemDescription, Date endDate) {
-        this.datum = datum;
+    public Transaction(Date date, double amount, String title, Type type, String itemDescription, Date endDate) {
+        this.date = date;
         this.amount = amount;
         this.title = title;
         this.type = type;
@@ -20,8 +20,8 @@ public class Transaction {
         this.endDate = endDate;
     }
 
-    public Transaction(Date datum, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
-        this.datum = datum;
+    public Transaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
+        this.date = date;
         this.amount = amount;
         this.title = title;
         this.type = type;
@@ -30,12 +30,12 @@ public class Transaction {
         this.endDate = endDate;
     }
 
-    public Date getDatum() {
-        return datum;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDatum(Date datum) {
-        this.datum = datum;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public double getAmount() {
