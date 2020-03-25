@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private TextView dateView;
     private ImageButton leftImageButton;
     private ImageButton rightImageButton;
+    private Calendar cal = Calendar.getInstance();
 
     private ArrayAdapter<Type> filterSpinnerAdapter;
 
@@ -41,6 +42,17 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         }
         return financePresenter;
     }
+    private String getMonth() {
+        int mjesec = cal.get(Calendar.MONTH);
+        String month = "wrong";
+
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (mjesec >= 0 && mjesec <= 11 ) {
+            month = months[mjesec];
+        }
+        return month;
+    }
     @Override
     public void notifyTransactionDataSetChanged() {
         transactionListAdapter.notifyDataSetChanged();
@@ -48,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Calendar cal = Calendar.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -74,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             public void onClick(View v) {
                 cal.add(Calendar.MONTH,-1);
                 financePresenter.refresh();
-                setDate(cal);
+                setDate();
                 //fazon je da svaki put kad se klike dugme postavljaju se drugacije transakcije,
                 //kao i mjesec u textviewu
                 //trebam negdje sacuvati
@@ -85,11 +96,12 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             public void onClick(View v) {
                 cal.add(Calendar.MONTH,1);
                 financePresenter.refresh();
-                setDate(cal);
+                setDate();
             }
         });
         getPresenter().refresh();
     }
+
 
     @Override
     public void setAccountData(String globalAmount, String limit) {
@@ -99,21 +111,25 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
+
+
         transactionListAdapter.clear();
-        transactionListAdapter.setTransactions(transactions);
+        ArrayList<Transaction> lista = new ArrayList<>();
+        for(Transaction t: transactions) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(t.getDatum());
+
+            if(calendar.get(Calendar.MONTH) ==  cal.get(Calendar.MONTH)
+                    && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) lista.add(t);
+        }
+        transactionListAdapter.setTransactions(lista);
     }
 
     @Override
-    public void setDate(Calendar cal) {
+    public void setDate() {
 
         int mjesec = cal.get(Calendar.MONTH);
-        String month = "wrong";
-
-        DateFormatSymbols dfs = new DateFormatSymbols();
-        String[] months = dfs.getMonths();
-        if (mjesec >= 0 && mjesec <= 11 ) {
-            month = months[mjesec];
-        }
+        String month = getMonth();
         String year = "";
 
         year = String.valueOf(cal.get(Calendar.YEAR));

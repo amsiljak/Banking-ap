@@ -13,29 +13,29 @@ public class FinanceModel {
     public static ArrayList<Transaction> transactions = new ArrayList<Transaction>() {
         {
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14"),2000,"naziv",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-02-14"),2000,"naziv",
                         Type.INDIVIDUALPAYMENT, "opis", new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14"),2000,"naziv",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),2000,"naziv",
                         Type.INDIVIDUALPAYMENT, "opis", new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14"),2000,"naziv",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-14"),2000,"naziv",
                         Type.INDIVIDUALPAYMENT, "opis", new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }try {
-            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14"),2000,"naziv",
+            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-14"),2000,"naziv",
                     Type.INDIVIDUALPAYMENT, "opis", new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
         } catch (ParseException e) {
             e.printStackTrace();
         }try {
-            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14"),2000,"naziv",
+            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-06-14"),2000,"naziv",
                     Type.INDIVIDUALPAYMENT, "opis", new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
         } catch (ParseException e) {
             e.printStackTrace();
