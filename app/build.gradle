@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "ba.unsa.etf.rma.rma20siljakamina96"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 

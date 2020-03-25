@@ -1,6 +1,7 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class FinanceInteractor implements IFinanceInteractor {
     @Override
@@ -10,5 +11,10 @@ public class FinanceInteractor implements IFinanceInteractor {
     @Override
     public ArrayList<Transaction> getTransactions() {
         return FinanceModel.transactions;
+    }
+
+    @Override
+    public Calendar getCalendar() {
+        return FinanceModel.cal;
     }
 }

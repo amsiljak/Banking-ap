@@ -47,6 +47,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
         imageView = newView.findViewById(R.id.ikonica);
 
         titleView.setText(transaction.getTitle());
+        amountView.setText(String.valueOf(transaction.getAmount()));
 
         String type = transaction.getType().toString();
         try {

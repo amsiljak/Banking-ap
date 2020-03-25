@@ -71,7 +71,7 @@
     </Spinner>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/date"
         android:layout_width="167dp"
         android:layout_height="34dp"
         android:layout_marginTop="24dp"
@@ -83,20 +83,20 @@
 
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/leftButton"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginTop="24dp"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        app:layout_constraintEnd_toStartOf="@+id/textView5"
+        app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filterSpinner"
         app:srcCompat="@drawable/leftarrow" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/rightButton"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginTop="24dp"
@@ -104,7 +104,7 @@
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toEndOf="@+id/date"
         app:layout_constraintTop_toBottomOf="@+id/filterSpinner"
         app:srcCompat="@drawable/rightarrow" />
 
@@ -115,15 +115,19 @@
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5">
+        app:layout_constraintTop_toBottomOf="@+id/date">
 
     </Spinner>
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="321dp"
-        android:layout_height="383dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sortSpinner">
@@ -137,7 +141,7 @@
     <Button
         android:id="@+id/button3"
         android:layout_width="321dp"
-        android:layout_height="47dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="Add transaction"
