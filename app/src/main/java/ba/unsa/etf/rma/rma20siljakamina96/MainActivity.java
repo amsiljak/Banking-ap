@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements IFinanceView{
@@ -21,14 +20,17 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private TextView limit2;
     private ListView transactionListView;
     private Spinner filterSpinner;
+    private Spinner sortSpinner;
     private TextView dateView;
     private ImageButton leftImageButton;
     private ImageButton rightImageButton;
     private Calendar cal;
     private String type;
-    private ArrayList<String> list;
+    private ArrayList<String> filterList;
+    private ArrayList<String> sortList;
 
-    private ArrayAdapter<String> filterSpinnerAdapter;
+    private FilterSpinnerAdapter filterSpinnerAdapter;
+    private ArrayAdapter<String> sortSpinnerAdapter;
 
     private IFinancePresenter financePresenter;
     private TransactionListAdapter transactionListAdapter;
@@ -69,11 +71,11 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
         type = "All";
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
-        list = new ArrayList<>();
-        for(Type t: Type.values()) list.add(t.toString());
-        list.add("All");
-        list.add("Filter by");
-        filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, list);
+        filterList = new ArrayList<>();
+        for(Type t: Type.values()) filterList.add(t.toString());
+        filterList.add("All");
+        filterList.add("Filter by");
+        filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, filterList);
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
         filterSpinner.setSelection(filterSpinnerAdapter.getCount());
@@ -86,6 +88,31 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
+        sortList = new ArrayList<>();
+        sortList.add("Price - Ascending");
+        sortList.add("Price - Descending");
+        sortList.add("Title - Ascending");
+        sortList.add("Title - Descending");
+        sortList.add("Date - Ascending");
+        sortList.add("Date - Descending");
+        sortList.add("Sort by");
+        sortSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortList);
+        filterSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(sortSpinnerAdapter);
+
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
