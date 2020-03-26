@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
+import java.util.Comparator;
 import java.util.Date;
 
 public class Transaction {
@@ -86,4 +87,18 @@ public class Transaction {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
+    public static Comparator<Transaction> TranPriceComparatorAsc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            double amount1 = t1.getAmount();
+            double amount2 = t2.getAmount();
+
+            //ascending order
+            return (int) (amount1 - amount2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
 }

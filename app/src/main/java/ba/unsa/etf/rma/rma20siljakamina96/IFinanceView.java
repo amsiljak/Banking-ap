@@ -1,9 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public interface IFinanceView {
 
@@ -12,4 +9,6 @@ public interface IFinanceView {
     void setAccountData(String globalAmount, String limit);
     void setTransactions(ArrayList<Transaction> transactions);
     void setDate();
+
+    void sortTransactions(ArrayList<Transaction> transactions, String tip);
 }

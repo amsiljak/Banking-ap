@@ -25,4 +25,9 @@ public class FinancePresenter implements IFinancePresenter {
         view.notifyTransactionDataSetChanged();
         view.setDate();
     }
+
+    @Override
+    public void sortTransactions(String tip) {
+        view.sortTransactions(financeInteractor.getTransactions(), tip);
+    }
 }
