@@ -69,12 +69,11 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         type = "All";
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
         ArrayList<String> list = new ArrayList<>();
-        list.addAll(Arrays.asList(Arrays.toString(Type.values())));
+        for(Type t: Type.values()) list.add(t.toString());
         list.add("All");
         filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, list);
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
-        filterSpinner.getOnItemSelectedListener();
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -145,8 +144,10 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
                 if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
                         && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
             }
-            if(type.equals("All") && correctDate) lista.add(t);
-            else if(correctDate && t.getType().toString().equals(type)) lista.add(t);
+            if(correctDate) {
+                if(type.equals("All")) lista.add(t);
+                else if(t.getType().toString().equals(type)) lista.add(t);
+            }
         }
         transactionListAdapter.setTransactions(lista);
     }

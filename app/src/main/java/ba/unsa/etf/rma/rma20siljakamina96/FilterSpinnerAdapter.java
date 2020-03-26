@@ -49,26 +49,11 @@ public class FilterSpinnerAdapter extends ArrayAdapter<String> {
         textView.setText(tip);
 
         try {
-            switch (tip) {
-                case "INDIVIDUALPAYMENT":
-                    imageView.setImageResource(R.drawable.a);
-                    break;
-                case "REGULARPAYMENT":
-                    imageView.setImageResource(R.drawable.b);
-                    break;
-                case "PURCHASE":
-                    imageView.setImageResource(R.drawable.c);
-                    break;
-                case "INDIVIDUALINCOME":
-                    imageView.setImageResource(R.drawable.d);
-                    break;
-                case "REGULARINCOME":
-                    imageView.setImageResource(R.drawable.e);
-                    break;
-                default:
-                    imageView.setImageResource(R.drawable.a);
-                    break;
-            }
+            if(tip.equals("INDIVIDUALPAYMENT")) imageView.setImageResource(R.drawable.a);
+            if(tip.equals("REGULARPAYMENT")) imageView.setImageResource(R.drawable.b);
+            if(tip.equals("PURCHASE")) imageView.setImageResource(R.drawable.c);
+            if(tip.equals("INDIVIDUALINCOME")) imageView.setImageResource(R.drawable.d);
+            if(tip.equals("REGULARINCOME")) imageView.setImageResource(R.drawable.e);
         }
         catch (Exception e) {
             imageView.setImageResource(R.drawable.a);
@@ -99,31 +84,16 @@ public class FilterSpinnerAdapter extends ArrayAdapter<String> {
         textView2.setText(tip);
 
         try {
-            switch (tip) {
-                case "INDIVIDUALPAYMENT":
-                    imageView.setImageResource(R.drawable.a);
-                    break;
-                case "REGULARPAYMENT":
-                    imageView.setImageResource(R.drawable.b);
-                    break;
-                case "PURCHASE":
-                    imageView.setImageResource(R.drawable.c);
-                    break;
-                case "INDIVIDUALINCOME":
-                    imageView.setImageResource(R.drawable.d);
-                    break;
-                case "REGULARINCOME":
-                    imageView.setImageResource(R.drawable.e);
-                    break;
-                default:
-                    imageView.setImageResource(R.drawable.a);
-                    break;
-            }
+            if(tip.equals("INDIVIDUALPAYMENT")) imageView2.setImageResource(R.drawable.a);
+            if(tip.equals("REGULARPAYMENT")) imageView2.setImageResource(R.drawable.b);
+            if(tip.equals("PURCHASE")) imageView2.setImageResource(R.drawable.c);
+            if(tip.equals("INDIVIDUALINCOME")) imageView2.setImageResource(R.drawable.d);
+            if(tip.equals("REGULARINCOME")) imageView2.setImageResource(R.drawable.e);
+
         }
         catch (Exception e) {
-            imageView.setImageResource(R.drawable.a);
+            imageView2.setImageResource(R.drawable.a);
         }
-
 
         return newView;    }
 }
