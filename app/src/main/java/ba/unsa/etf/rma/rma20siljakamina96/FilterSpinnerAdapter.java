@@ -26,6 +26,13 @@ public class FilterSpinnerAdapter extends ArrayAdapter<String> {
         super(context, _resource,items);
         resource = _resource;
     }
+    @Override
+    public int getCount() {
+        // don't display last item. It is used as hint.
+        int count = super.getCount();
+        return count > 0 ? count - 1 : count;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -95,5 +102,6 @@ public class FilterSpinnerAdapter extends ArrayAdapter<String> {
             imageView2.setImageResource(R.drawable.a);
         }
 
-        return newView;    }
+        return newView;
+    }
 }

@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private ImageButton rightImageButton;
     private Calendar cal;
     private String type;
+    private ArrayList<String> list;
 
     private ArrayAdapter<String> filterSpinnerAdapter;
 
@@ -68,12 +69,14 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
         type = "All";
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
-        ArrayList<String> list = new ArrayList<>();
+        list = new ArrayList<>();
         for(Type t: Type.values()) list.add(t.toString());
         list.add("All");
+        list.add("Filter by");
         filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, list);
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
+        filterSpinner.setSelection(filterSpinnerAdapter.getCount());
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
