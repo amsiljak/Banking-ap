@@ -8,17 +8,18 @@
 
     <ImageView
         android:id="@+id/spinner_item_icon2"
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.022"
+        app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:singleLine="true" />
+        app:layout_constraintVertical_bias="0.499" />
+
 
     <TextView
         android:id="@+id/spinner_item_naziv2"
@@ -28,7 +29,6 @@
         android:layout_marginTop="8dp"
         android:singleLine="true"
         android:textColor="@android:color/black"
-        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_item_icon2"
         app:layout_constraintTop_toTopOf="parent" />
