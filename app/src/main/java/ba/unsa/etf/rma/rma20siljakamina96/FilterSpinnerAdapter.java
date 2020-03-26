@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
+public class FilterSpinnerAdapter extends ArrayAdapter<String> {
     private int resource;
     public ImageView imageView;
     public TextView textView;
@@ -22,7 +22,7 @@ public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
     public TextView textView2;
 
 
-    public FilterSpinnerAdapter(@NonNull Context context, int _resource, ArrayList<Type> items) {
+    public FilterSpinnerAdapter(@NonNull Context context, int _resource, ArrayList<String> items) {
         super(context, _resource,items);
         resource = _resource;
     }
@@ -41,21 +41,34 @@ public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
             newView = (LinearLayout)convertView;
         }
 
-        Type type = getItem(position);
+        String tip = getItem(position);
 
         textView = newView.findViewById(R.id.spinner_item_naziv);
         imageView = newView.findViewById(R.id.spinner_item_icon);
 
-        textView.setText(type.toString());
+        textView.setText(tip);
 
-        String tip = type.toString();
         try {
-            if(tip.equals("INDIVIDUALPAYMENT")) imageView.setImageResource(R.drawable.a);
-            if(tip.equals("REGULARPAYMENT")) imageView.setImageResource(R.drawable.b);
-            if(tip.equals("PURCHASE")) imageView.setImageResource(R.drawable.c);
-            if(tip.equals("INDIVIDUALINCOME")) imageView.setImageResource(R.drawable.d);
-            if(tip.equals("REGULARINCOME")) imageView.setImageResource(R.drawable.e);
-
+            switch (tip) {
+                case "INDIVIDUALPAYMENT":
+                    imageView.setImageResource(R.drawable.a);
+                    break;
+                case "REGULARPAYMENT":
+                    imageView.setImageResource(R.drawable.b);
+                    break;
+                case "PURCHASE":
+                    imageView.setImageResource(R.drawable.c);
+                    break;
+                case "INDIVIDUALINCOME":
+                    imageView.setImageResource(R.drawable.d);
+                    break;
+                case "REGULARINCOME":
+                    imageView.setImageResource(R.drawable.e);
+                    break;
+                default:
+                    imageView.setImageResource(R.drawable.a);
+                    break;
+            }
         }
         catch (Exception e) {
             imageView.setImageResource(R.drawable.a);
@@ -78,25 +91,39 @@ public class FilterSpinnerAdapter extends ArrayAdapter<Type> {
             newView = (LinearLayout)convertView;
         }
 
-        Type type = getItem(position);
+        String tip = getItem(position);
 
         textView2 = newView.findViewById(R.id.spinner_item_naziv2);
         imageView2 = newView.findViewById(R.id.spinner_item_icon2);
 
-        textView2.setText(type.toString());
+        textView2.setText(tip);
 
-        String tip = type.toString();
         try {
-            if(tip.equals("INDIVIDUALPAYMENT")) imageView2.setImageResource(R.drawable.a);
-            if(tip.equals("REGULARPAYMENT")) imageView2.setImageResource(R.drawable.b);
-            if(tip.equals("PURCHASE")) imageView2.setImageResource(R.drawable.c);
-            if(tip.equals("INDIVIDUALINCOME")) imageView2.setImageResource(R.drawable.d);
-            if(tip.equals("REGULARINCOME")) imageView2.setImageResource(R.drawable.e);
-
+            switch (tip) {
+                case "INDIVIDUALPAYMENT":
+                    imageView.setImageResource(R.drawable.a);
+                    break;
+                case "REGULARPAYMENT":
+                    imageView.setImageResource(R.drawable.b);
+                    break;
+                case "PURCHASE":
+                    imageView.setImageResource(R.drawable.c);
+                    break;
+                case "INDIVIDUALINCOME":
+                    imageView.setImageResource(R.drawable.d);
+                    break;
+                case "REGULARINCOME":
+                    imageView.setImageResource(R.drawable.e);
+                    break;
+                default:
+                    imageView.setImageResource(R.drawable.a);
+                    break;
+            }
         }
         catch (Exception e) {
-            imageView2.setImageResource(R.drawable.a);
+            imageView.setImageResource(R.drawable.a);
         }
+
 
         return newView;    }
 }

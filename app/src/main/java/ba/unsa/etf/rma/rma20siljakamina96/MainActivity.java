@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private ImageButton leftImageButton;
     private ImageButton rightImageButton;
     private Calendar cal;
-    private Type type;
+    private String type;
 
-    private ArrayAdapter<Type> filterSpinnerAdapter;
+    private ArrayAdapter<String> filterSpinnerAdapter;
 
     private IFinancePresenter financePresenter;
     private TransactionListAdapter transactionListAdapter;
@@ -66,18 +66,25 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
         limit2 = findViewById(R.id.limit2);
 
+        type = "All";
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
-        ArrayList<Type> list = new ArrayList<>();
-        list.addAll(Arrays.asList(Type.values()));
+        ArrayList<String> list = new ArrayList<>();
+        list.addAll(Arrays.asList(Arrays.toString(Type.values())));
+        list.add("All");
         filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, list);
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
         filterSpinner.getOnItemSelectedListener();
-        filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                type = Type.valueOf(parent.getItemAtPosition(position).toString());
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                type = parent.getItemAtPosition(position).toString();
                 financePresenter.refresh();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -138,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
                 if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
                         && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
             }
-            if(correctDate && t.getType().equals(type)) lista.add(t);
+            if(type.equals("All") && correctDate) lista.add(t);
+            else if(correctDate && t.getType().toString().equals(type)) lista.add(t);
         }
         transactionListAdapter.setTransactions(lista);
     }
