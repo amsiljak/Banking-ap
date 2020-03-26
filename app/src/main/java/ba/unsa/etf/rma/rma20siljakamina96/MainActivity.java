@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private TextView dateView;
     private ImageButton leftImageButton;
     private ImageButton rightImageButton;
-    private Calendar cal = Calendar.getInstance();
+    private Calendar cal;
+    private Type type;
 
     private ArrayAdapter<Type> filterSpinnerAdapter;
 
@@ -72,12 +73,15 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterSpinnerAdapter);
         filterSpinner.getOnItemSelectedListener();
-//        filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            }
-//        });
+        filterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                type = Type.valueOf(parent.getItemAtPosition(position).toString());
+                financePresenter.refresh();
+            }
+        });
 
+        cal = Calendar.getInstance();
         dateView = (TextView)findViewById(R.id.date);
 
         leftImageButton = (ImageButton)findViewById(R.id.leftButton);
@@ -89,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
                 cal.add(Calendar.MONTH,-1);
                 financePresenter.refresh();
                 setDate();
-                //fazon je da svaki put kad se klike dugme postavljaju se drugacije transakcije,
-                //kao i mjesec u textviewu
-                //trebam negdje sacuvati
             }
         });
         rightImageButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
+        boolean correctDate = false;
         transactionListAdapter.clear();
 
         ArrayList<Transaction> lista = new ArrayList<>();
@@ -127,15 +129,16 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
                 endPoint.setTime(t.getEndDate());
 
                 if (cal.compareTo(startingPoint) > 0 && cal.compareTo(startingPoint) < 0) {
-                    lista.add(t);
+                    correctDate = true;
                 }
             } else {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(t.getDate());
 
                 if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
-                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) lista.add(t);
+                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
             }
+            if(correctDate && t.getType().equals(type)) lista.add(t);
         }
         transactionListAdapter.setTransactions(lista);
     }
