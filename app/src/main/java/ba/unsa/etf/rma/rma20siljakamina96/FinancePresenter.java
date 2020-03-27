@@ -19,6 +19,11 @@ public class FinancePresenter implements IFinancePresenter {
     }
 
     @Override
+    public void setTransactions() {
+        view.setTransactions(financeInteractor.getTransactions());
+    }
+
+    @Override
     public void refresh() {
         view.setAccountData(String.valueOf(financeInteractor.getAccount().getBudget()),String.valueOf(financeInteractor.getAccount().getTotalLimit()));
         view.setTransactions(financeInteractor.getTransactions());

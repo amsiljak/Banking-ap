@@ -125,36 +125,11 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
-//        boolean correctDate = false;
         transactionListAdapter.clear();
 
         transactions = financePresenter.filterTransactionsByDate(transactions, cal);
         transactions = financePresenter.filterTransactionsByType(transactions, type);
-//                new ArrayList<>();
-//        for(Transaction t: transactions) {
-//            if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
-//
-//                Calendar startingPoint = Calendar.getInstance();
-//                startingPoint.setTime(t.getDate());
-//
-//                Calendar endPoint = Calendar.getInstance();
-//                endPoint.setTime(t.getEndDate());
-//
-//                if (cal.compareTo(startingPoint) > 0 && cal.compareTo(startingPoint) < 0) {
-//                    correctDate = true;
-//                }
-//            } else {
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTime(t.getDate());
-//
-//                if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
-//                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
-//            }
-//            if(correctDate) {
-//                if(type.equals("All")) lista.add(t);
-//                else if(t.getType().toString().equals(type)) lista.add(t);
-//            }
-//        }
+
         transactionListAdapter.setTransactions(transactions);
         transactionListAdapter.notifyDataSetChanged();
     }
@@ -171,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
-            financePresenter.refresh();
+            financePresenter.setTransactions();
         }
 
         @Override
@@ -182,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private AdapterView.OnItemSelectedListener sortSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(parent.getItemAtPosition(position)!= null){ financePresenter.sortTransactions(parent.getItemAtPosition(position).toString());}
+            if (parent.getItemAtPosition(position) != null) {
+                financePresenter.sortTransactions(parent.getItemAtPosition(position).toString());
+            }
         }
 
         @Override
@@ -194,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         @Override
         public void onClick(View v) {
             cal.add(Calendar.MONTH,-1);
-            financePresenter.refresh();
+            financePresenter.setTransactions();
             setDate();
         }
     };
@@ -202,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         @Override
         public void onClick(View v) {
             cal.add(Calendar.MONTH,1);
-            financePresenter.refresh();
+            financePresenter.setTransactions();
             setDate();
         }
     };
