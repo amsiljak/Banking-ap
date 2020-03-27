@@ -87,10 +87,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         filterList.add("Filter by");
         filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, filterList);
         filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
-        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(
-                filterSpinnerAdapter,
-                R.layout.filter_spinner_row_nothing_selected,
-                this));
+        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, this));
         filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
 
         sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
@@ -103,11 +100,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         sortList.add("Date - Descending");
         sortSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortList);
         sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(
-                sortSpinnerAdapter,
-                R.layout.sort_spinner_row_nothing_selected,
-                this));
-
+        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, this));
         sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
 
         cal = Calendar.getInstance();
@@ -116,22 +109,8 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         leftImageButton = (ImageButton)findViewById(R.id.leftButton);
         rightImageButton = (ImageButton)findViewById(R.id.rightButton);
 
-        leftImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cal.add(Calendar.MONTH,-1);
-                financePresenter.refresh();
-                setDate();
-            }
-        });
-        rightImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cal.add(Calendar.MONTH,1);
-                financePresenter.refresh();
-                setDate();
-            }
-        });
+        leftImageButton.setOnClickListener(leftButtonClickListener);
+        rightImageButton.setOnClickListener(rightButtonClickListener);
         getPresenter().refresh();
     }
 
@@ -178,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setDate() {
-
-        int mjesec = cal.get(Calendar.MONTH);
         String month = getMonth();
         String year = "";
 
@@ -207,6 +184,22 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
 
+        }
+    };
+    private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            cal.add(Calendar.MONTH,-1);
+            financePresenter.refresh();
+            setDate();
+        }
+    };
+    private AdapterView.OnClickListener rightButtonClickListener = new AdapterView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            cal.add(Calendar.MONTH,1);
+            financePresenter.refresh();
+            setDate();
         }
     };
 }
