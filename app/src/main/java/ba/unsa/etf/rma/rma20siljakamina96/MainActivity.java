@@ -209,7 +209,15 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
             Transaction transaction = transactionListAdapter.getTransaction(position);
-//            transactionDetailIntent.putExtra("title", transaction.getTitle());
+
+            transactionDetailIntent.putExtra("title", transaction.getTitle());
+            transactionDetailIntent.putExtra("amount", transaction.getAmount());
+            transactionDetailIntent.putExtra("description", transaction.getItemDescription());
+            transactionDetailIntent.putExtra("type", transaction.getType());
+            transactionDetailIntent.putExtra("interval", transaction.getTransactionInterval());
+            transactionDetailIntent.putExtra("date", transaction.getDate());
+            transactionDetailIntent.putExtra("enddate", transaction.getEndDate());
+
             MainActivity.this.startActivity(transactionDetailIntent);
         }
     };
