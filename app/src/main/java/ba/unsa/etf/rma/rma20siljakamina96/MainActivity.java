@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private IFinancePresenter financePresenter;
     private TransactionListAdapter transactionListAdapter;
 
+
     public IFinancePresenter getPresenter() {
         if (financePresenter == null) {
             financePresenter = new FinancePresenter(this, this);
@@ -90,17 +91,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
                 filterSpinnerAdapter,
                 R.layout.filter_spinner_row_nothing_selected,
                 this));
-        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
-                financePresenter.refresh();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
 
         sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
         sortList = new ArrayList<>();
@@ -111,24 +102,13 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         sortList.add("Date - Ascending");
         sortList.add("Date - Descending");
         sortSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortList);
-        filterSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(
                 sortSpinnerAdapter,
                 R.layout.sort_spinner_row_nothing_selected,
                 this));
 
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position)!= null){ financePresenter.sortTransactions(parent.getItemAtPosition(position).toString());}
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
 
         cal = Calendar.getInstance();
         dateView = (TextView)findViewById(R.id.date);
@@ -206,5 +186,27 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         year = String.valueOf(cal.get(Calendar.YEAR));
         dateView.setText(month + ", " + year);
     }
+    private AdapterView.OnItemSelectedListener filterSpinnerItemSelectListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
+            financePresenter.refresh();
+        }
 
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+    private AdapterView.OnItemSelectedListener sortSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(parent.getItemAtPosition(position)!= null){ financePresenter.sortTransactions(parent.getItemAtPosition(position).toString());}
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 }
