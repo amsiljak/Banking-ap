@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         transactionListAdapter = new TransactionListAdapter(getApplicationContext(), R.layout.list_element, new ArrayList<Transaction>());
         transactionListView = (ListView)findViewById(R.id.transactionList);
         transactionListView.setAdapter(transactionListAdapter);
+        transactionListView.setOnItemClickListener(transactionListItemClickListener);
 
         globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
         limit2 = findViewById(R.id.limit2);
@@ -200,6 +202,15 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             cal.add(Calendar.MONTH,1);
             financePresenter.refresh();
             setDate();
+        }
+    };
+    private AdapterView.OnItemClickListener transactionListItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
+            Transaction transaction = transactionListAdapter.getTransaction(position);
+//            transactionDetailIntent.putExtra("title", transaction.getTitle());
+            MainActivity.this.startActivity(transactionDetailIntent);
         }
     };
 }
