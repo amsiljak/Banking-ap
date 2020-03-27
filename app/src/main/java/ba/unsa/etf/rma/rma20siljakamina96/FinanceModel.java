@@ -19,13 +19,13 @@ public class FinanceModel {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),1000,"naziv",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),1000,"a",
                         Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-22"),500,"naziv",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-22"),500,"b",
                         Type.PURCHASE, "opis"));
             } catch (ParseException e) {
                 e.printStackTrace();

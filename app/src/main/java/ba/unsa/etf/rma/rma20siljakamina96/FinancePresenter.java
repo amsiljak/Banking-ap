@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class FinancePresenter implements IFinancePresenter {
@@ -33,7 +34,16 @@ public class FinancePresenter implements IFinancePresenter {
 
     @Override
     public void sortTransactions(String tip) {
-        view.sortTransactions(financeInteractor.getTransactions(), tip);
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        transactions.addAll(financeInteractor.getTransactions());
+        if(tip.equals("Price - Ascending")) Collections.sort(transactions, Transaction.TranPriceComparatorAsc);
+        if(tip.equals("Price - Descending")) Collections.sort(transactions, Transaction.TranPriceComparatorDesc);
+        if(tip.equals("Title - Ascending")) Collections.sort(transactions, Transaction.TranTitleComparatorAsc);
+        if(tip.equals("Title - Descending")) Collections.sort(transactions, Transaction.TranTitleComparatorDesc);
+        if(tip.equals("Date - Ascending")) Collections.sort(transactions, Transaction.TranDateComparatorAsc);
+        if(tip.equals("Date - Descending")) Collections.sort(transactions, Transaction.TranDateComparatorDesc);
+
+        view.setTransactions(transactions);
     }
 
     @Override
@@ -71,4 +81,5 @@ public class FinancePresenter implements IFinancePresenter {
         }
         return lista;
     }
+
 }

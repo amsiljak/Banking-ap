@@ -101,4 +101,53 @@ public class Transaction {
             //return StudentName2.compareTo(StudentName1);
         }
     };
+    public static Comparator<Transaction> TranPriceComparatorDesc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            double amount1 = t1.getAmount();
+            double amount2 = t2.getAmount();
+
+//            //ascending order
+//            return (int) (amount1 - amount2);
+
+            //descending order
+            return (int) (amount2-amount1);
+        }
+    };
+    public static Comparator<Transaction> TranTitleComparatorAsc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            String title1 = t1.getTitle();
+            String title2 = t2.getTitle();
+
+            return title1.compareTo(title2);
+        }
+    };
+    public static Comparator<Transaction> TranTitleComparatorDesc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            String title1 = t1.getTitle();
+            String title2 = t2.getTitle();
+
+            return title2.compareTo(title1);
+        }
+    };
+    public static Comparator<Transaction> TranDateComparatorAsc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            Date date1 = t1.getDate();
+            Date date2 = t2.getDate();
+
+            return date1.compareTo(date2);
+        }
+    };
+    public static Comparator<Transaction> TranDateComparatorDesc = new Comparator<Transaction>() {
+
+        public int compare(Transaction t1, Transaction t2) {
+            Date date1 = t1.getDate();
+            Date date2 = t2.getDate();
+
+            return date2.compareTo(date1);
+        }
+    };
 }

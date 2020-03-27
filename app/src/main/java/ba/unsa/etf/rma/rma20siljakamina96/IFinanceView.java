@@ -9,6 +9,4 @@ public interface IFinanceView {
     void setAccountData(String globalAmount, String limit);
     void setTransactions(ArrayList<Transaction> transactions);
     void setDate();
-
-    void sortTransactions(ArrayList<Transaction> transactions, String tip);
 }

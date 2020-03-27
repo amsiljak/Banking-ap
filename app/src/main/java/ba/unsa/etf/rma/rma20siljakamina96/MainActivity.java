@@ -57,12 +57,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     }
 
     @Override
-    public void sortTransactions(ArrayList<Transaction> transactions, String tip) {
-        if(tip.equals("Price - Ascending")) Collections.sort(transactions, Transaction.TranPriceComparatorAsc);
-        setTransactions(transactions);
-    }
-
-    @Override
     public void notifyTransactionDataSetChanged() {
         transactionListAdapter.notifyDataSetChanged();
     }
@@ -148,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
             financePresenter.setTransactions();
         }
-
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
 
