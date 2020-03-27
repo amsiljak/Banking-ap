@@ -20,7 +20,7 @@ public class FinanceModel {
             }
             try {
                 add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),1000,"naziv",
-                        Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
+                        Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -31,13 +31,13 @@ public class FinanceModel {
                 e.printStackTrace();
             }try {
                 //cudno se ponasa u prikazu
-            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-16"),-100,"naziv",
+            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-16"),-100,"naziv",
                     Type.INDIVIDUALINCOME, null));
         } catch (ParseException e) {
             e.printStackTrace();
         }try {
             add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-06-8"),-20,"naziv",
-                    Type.REGULARINCOME, null, 3, new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14")));
+                    Type.REGULARINCOME, null, 3, new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-14")));
         } catch (ParseException e) {
             e.printStackTrace();
         }

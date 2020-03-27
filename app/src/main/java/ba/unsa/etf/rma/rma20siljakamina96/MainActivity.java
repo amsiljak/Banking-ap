@@ -125,35 +125,37 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
-        boolean correctDate = false;
+//        boolean correctDate = false;
         transactionListAdapter.clear();
 
-        ArrayList<Transaction> lista = new ArrayList<>();
-        for(Transaction t: transactions) {
-            if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
-
-                Calendar startingPoint = Calendar.getInstance();
-                startingPoint.setTime(t.getDate());
-
-                Calendar endPoint = Calendar.getInstance();
-                endPoint.setTime(t.getEndDate());
-
-                if (cal.compareTo(startingPoint) > 0 && cal.compareTo(startingPoint) < 0) {
-                    correctDate = true;
-                }
-            } else {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(t.getDate());
-
-                if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
-                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
-            }
-            if(correctDate) {
-                if(type.equals("All")) lista.add(t);
-                else if(t.getType().toString().equals(type)) lista.add(t);
-            }
-        }
-        transactionListAdapter.setTransactions(lista);
+        transactions = financePresenter.filterTransactionsByDate(transactions, cal);
+        transactions = financePresenter.filterTransactionsByType(transactions, type);
+//                new ArrayList<>();
+//        for(Transaction t: transactions) {
+//            if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
+//
+//                Calendar startingPoint = Calendar.getInstance();
+//                startingPoint.setTime(t.getDate());
+//
+//                Calendar endPoint = Calendar.getInstance();
+//                endPoint.setTime(t.getEndDate());
+//
+//                if (cal.compareTo(startingPoint) > 0 && cal.compareTo(startingPoint) < 0) {
+//                    correctDate = true;
+//                }
+//            } else {
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(t.getDate());
+//
+//                if (calendar.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
+//                        && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) correctDate = true;
+//            }
+//            if(correctDate) {
+//                if(type.equals("All")) lista.add(t);
+//                else if(t.getType().toString().equals(type)) lista.add(t);
+//            }
+//        }
+        transactionListAdapter.setTransactions(transactions);
         transactionListAdapter.notifyDataSetChanged();
     }
 
