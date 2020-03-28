@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,12 +54,6 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         dateEditText = (EditText) findViewById(R.id.transactionDate);
         endDateEditText = (EditText) findViewById(R.id.transactionEndDate);
 
-        titleEditText.addTextChangedListener(titleTextWatcher);
-        typeEditText.addTextChangedListener(typeTextWatcher);
-        amountEditText.addTextChangedListener(amountTextWatcher);
-        descriptionEditText.addTextChangedListener(descriptionTextWatcher);
-        intervalEditText.addTextChangedListener(intervalTextWatcher);
-
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
 
@@ -91,6 +87,14 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
             dateEditText.setText(DATE_FORMAT.format(transaction.getDate()));
         }
+
+        titleEditText.addTextChangedListener(titleTextWatcher);
+        typeEditText.addTextChangedListener(typeTextWatcher);
+        amountEditText.addTextChangedListener(amountTextWatcher);
+        descriptionEditText.addTextChangedListener(descriptionTextWatcher);
+        intervalEditText.addTextChangedListener(intervalTextWatcher);
+        dateEditText.addTextChangedListener(dateTextWatcher);
+        endDateEditText.addTextChangedListener(endDateTextWatcher);
     }
 
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
@@ -177,6 +181,20 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                     (descriptionEditText.getText().toString().equals("REGULARINCOME") || typeEditText.getText().toString().equals("REGULARPAYMENT")))
                 intervalEditText.setBackgroundColor(Color.GREEN);
             else intervalEditText.setBackgroundColor(Color.RED);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
+    private TextWatcher dateTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            dateEditText.setBackgroundColor(Color.GREEN);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
+    private TextWatcher endDateTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            endDateEditText.setBackgroundColor(Color.GREEN);
         }
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
