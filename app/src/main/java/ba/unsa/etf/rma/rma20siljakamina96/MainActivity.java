@@ -190,7 +190,8 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             transactionDetailIntent.putExtra("date", transaction.getDate());
             transactionDetailIntent.putExtra("enddate", transaction.getEndDate());
 
-            MainActivity.this.startActivity(transactionDetailIntent);
+            MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
         }
     };
+
 }

@@ -13,8 +13,4 @@ public class FinanceInteractor implements IFinanceInteractor {
         return FinanceModel.transactions;
     }
 
-    @Override
-    public Calendar getCalendar() {
-        return FinanceModel.cal;
-    }
 }

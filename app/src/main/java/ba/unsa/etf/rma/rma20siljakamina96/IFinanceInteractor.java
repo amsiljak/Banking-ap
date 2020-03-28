@@ -6,5 +6,4 @@ import java.util.Calendar;
 public interface IFinanceInteractor {
     Account getAccount();
     ArrayList<Transaction> getTransactions();
-    Calendar getCalendar();
 }

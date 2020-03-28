@@ -7,9 +7,10 @@ import java.util.Date;
 public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     private Transaction transaction;
     private Context context;
-
+    private IFinanceInteractor interactor;
     public TransactionDetailPresenter(Context context) {
         this.context = context;
+        this.interactor = new FinanceInteractor();
     }
 
     @Override
@@ -21,4 +22,5 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public Transaction getTransaction() {
         return transaction;
     }
+
 }
