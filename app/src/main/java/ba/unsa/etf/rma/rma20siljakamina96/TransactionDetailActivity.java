@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TransactionDetailActivity extends AppCompatActivity implements ITransactionDetailActivity {
@@ -29,6 +30,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
     private Button saveButton;
     private Button deleteButton;
 
+    private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
@@ -53,6 +55,8 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         titleEditText.addTextChangedListener(titleTextWatcher);
         typeEditText.addTextChangedListener(typeTextWatcher);
         amountEditText.addTextChangedListener(amountTextWatcher);
+        descriptionEditText.addTextChangedListener(descriptionTextWatcher);
+        intervalEditText.addTextChangedListener(intervalTextWatcher);
 
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -78,14 +82,14 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
             if(!(transaction.getType().toString().equals("INDIVIDUALINCOME") || transaction.getType().toString().equals("REGULARINCOME")))
                 descriptionEditText.setText(transaction.getItemDescription());
             else descriptionEditText.setText("");
-            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARIPAYMENT"))
+            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARPAYMENT"))
                 intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
             else intervalEditText.setText("");
-            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARIPAYMENT"))
-                endDateEditText.setText(String.valueOf(transaction.getEndDate()));
+            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARPAYMENT"))
+                endDateEditText.setText(DATE_FORMAT.format(transaction.getEndDate()));
             else endDateEditText.setText("");
 
-            dateEditText.setText(transaction.getDate().toString());
+            dateEditText.setText(DATE_FORMAT.format(transaction.getDate()));
         }
     }
 
@@ -139,6 +143,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
     };
+
     private TextWatcher amountTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
             boolean valid;
@@ -151,6 +156,27 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
             if(valid && !amountEditText.equals("")) amountEditText.setBackgroundColor(Color.GREEN);
             else amountEditText.setBackgroundColor(Color.RED);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
+    private TextWatcher descriptionTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(!descriptionEditText.equals("") ||
+                    ((descriptionEditText.getText().toString().equals("REGULARINCOME") || typeEditText.getText().toString().equals("INDIVIDUALINCOME")) &&
+                            descriptionEditText.equals("")))
+                descriptionEditText.setBackgroundColor(Color.GREEN);
+            else descriptionEditText.setBackgroundColor(Color.RED);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
+    private TextWatcher intervalTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(intervalEditText.getText().toString().matches("[0-9]+") &&
+                    (descriptionEditText.getText().toString().equals("REGULARINCOME") || typeEditText.getText().toString().equals("REGULARPAYMENT")))
+                intervalEditText.setBackgroundColor(Color.GREEN);
+            else intervalEditText.setBackgroundColor(Color.RED);
         }
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
