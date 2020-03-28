@@ -102,14 +102,15 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         public void onClick(View v) {
             //treba vratit boju polja na pocetnu onih polja koja su se promijenila
 
-            ColorDrawable drawable = (ColorDrawable)titleEditText.getBackground();
-            if(drawable.getColor()==(int)Color.GREEN) titleEditText.setBackgroundColor(0x00000000);
-//            amountEditText.setBackgroundColor(0x00000000);
-//            descriptionEditText.setBackgroundColor(0x00000000);
-//            dateEditText.setBackgroundColor(0x00000000);
-//            endDateEditText.setBackgroundColor(0x00000000);
-//            typeEditText.setBackgroundColor(0x00000000);
-//            intervalEditText.setBackgroundColor(0x00000000);
+//            ColorDrawable drawable = (ColorDrawable)titleEditText.getBackground();
+//            if(drawable.getColor()==(int)Color.GREEN)
+                titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
         }
     };
