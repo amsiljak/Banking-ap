@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class TransactionDetailActivity extends AppCompatActivity implements ITransactionDetailActivity {
@@ -45,7 +41,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         Transaction transaction = getPresenter().getTransaction();
         titleEditText.setText(transaction.getTitle());
 
-        titleEditText.setOnFocusChangeListener(titleEditActionListener);
+        titleEditText.setOnFocusChangeListener(titleFocusChangeListener);
 
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -57,7 +53,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-//                presenter.saveTransaction(titleEditText.getText().toString());
+            titleEditText.setBackgroundColor(0x00000000);
         }
     };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
@@ -69,7 +65,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
             finish();
         }
     };
-    private EditText.OnFocusChangeListener titleEditActionListener = new EditText.OnFocusChangeListener() {
+    private EditText.OnFocusChangeListener titleFocusChangeListener = new EditText.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (!hasFocus) {
