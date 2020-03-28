@@ -15,7 +15,6 @@ import android.widget.TextView;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements IFinanceView{
     private TextView globalAmount2;
@@ -193,5 +192,16 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
         }
     };
+    @Override
+    public void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+
+        super.onPause();
+    }
 
 }
