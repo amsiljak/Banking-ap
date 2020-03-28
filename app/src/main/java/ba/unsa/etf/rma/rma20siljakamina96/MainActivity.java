@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private ArrayList<String> filterList;
     private ArrayList<String> sortList;
     private Button addTransactionButton;
+    private String sort = "Price - Ascending";
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     public void setTransactions(ArrayList<Transaction> transactions) {
         transactionListAdapter.clear();
 
+        transactions = financePresenter.sortTransactions(sort);
         transactions = financePresenter.filterTransactionsByDate(transactions, cal);
         transactions = financePresenter.filterTransactionsByType(transactions, type);
 
@@ -155,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (parent.getItemAtPosition(position) != null) {
-                financePresenter.sortTransactions(parent.getItemAtPosition(position).toString());
+                sort = parent.getItemAtPosition(position).toString();
+                financePresenter.setTransactions();
             }
         }
 

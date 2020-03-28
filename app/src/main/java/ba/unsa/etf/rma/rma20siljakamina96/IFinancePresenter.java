@@ -6,7 +6,7 @@ import java.util.Calendar;
 public interface IFinancePresenter {
     void refresh();
 
-    void sortTransactions(String tip);
+    ArrayList<Transaction> sortTransactions(String tip);
     ArrayList<Transaction> filterTransactionsByType(ArrayList<Transaction> transactions, String type);
     ArrayList<Transaction> filterTransactionsByDate(ArrayList<Transaction> transactions, Calendar cal);
 

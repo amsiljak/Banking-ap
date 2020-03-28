@@ -35,17 +35,17 @@ public class FinancePresenter implements IFinancePresenter {
     }
 
     @Override
-    public void sortTransactions(String tip) {
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactions.addAll(transactions);
-        if(tip.equals("Price - Ascending")) Collections.sort(transactions, Transaction.TranPriceComparatorAsc);
-        if(tip.equals("Price - Descending")) Collections.sort(transactions, Transaction.TranPriceComparatorDesc);
-        if(tip.equals("Title - Ascending")) Collections.sort(transactions, Transaction.TranTitleComparatorAsc);
-        if(tip.equals("Title - Descending")) Collections.sort(transactions, Transaction.TranTitleComparatorDesc);
-        if(tip.equals("Date - Ascending")) Collections.sort(transactions, Transaction.TranDateComparatorAsc);
-        if(tip.equals("Date - Descending")) Collections.sort(transactions, Transaction.TranDateComparatorDesc);
+    public ArrayList<Transaction> sortTransactions(String tip) {
+        ArrayList<Transaction> transakcije = new ArrayList<>();
+        transakcije.addAll(transactions);
+        if(tip.equals("Price - Ascending")) Collections.sort(transakcije, Transaction.TranPriceComparatorAsc);
+        if(tip.equals("Price - Descending")) Collections.sort(transakcije, Transaction.TranPriceComparatorDesc);
+        if(tip.equals("Title - Ascending")) Collections.sort(transakcije, Transaction.TranTitleComparatorAsc);
+        if(tip.equals("Title - Descending")) Collections.sort(transakcije, Transaction.TranTitleComparatorDesc);
+        if(tip.equals("Date - Ascending")) Collections.sort(transakcije, Transaction.TranDateComparatorAsc);
+        if(tip.equals("Date - Descending")) Collections.sort(transakcije, Transaction.TranDateComparatorDesc);
 
-        view.setTransactions(transactions);
+        return transakcije;
     }
 
     @Override
