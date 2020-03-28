@@ -57,6 +57,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         endDateEditText = (EditText) findViewById(R.id.transactionEndDate);
 
         titleEditText.addTextChangedListener(titleTextWatcher);
+        typeEditText.addTextChangedListener(typeTextWatcher);
 
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -133,17 +134,28 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         }
     };
     private TextWatcher titleTextWatcher = new TextWatcher() {
-
         public void afterTextChanged(Editable s) {
-            titleEditText.setBackgroundColor(Color.GREEN);
+            if (titleEditText.getText().toString().length() <= 3 || titleEditText.getText().toString().length() >= 15) {
+                titleEditText.setBackgroundColor(Color.RED);
+            }
+            else titleEditText.setBackgroundColor(Color.GREEN);
         }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
 
         }
+    };
+    private TextWatcher typeTextWatcher = new TextWatcher() {
+        boolean valid = false;
+        public void afterTextChanged(Editable s) {
+            for(Type t: Type.values()) {
+                if(t.toString().equals(typeEditText.getText().toString().toUpperCase())) valid = true;
+            }
+            if(valid) typeEditText.setBackgroundColor(Color.GREEN);
+            else typeEditText.setBackgroundColor(Color.RED);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
     };
 }

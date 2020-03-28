@@ -12,22 +12,24 @@ public class FinancePresenter implements IFinancePresenter {
     private Context context;
     private IFinanceInteractor financeInteractor;
     private IFinanceView view;
+    private ArrayList<Transaction> transactions;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
         this.financeInteractor = new FinanceInteractor();
         this.view = view;
+        transactions = financeInteractor.getTransactions();
     }
 
     @Override
     public void setTransactions() {
-        view.setTransactions(financeInteractor.getTransactions());
+        view.setTransactions(transactions);
     }
 
     @Override
     public void refresh() {
         view.setAccountData(String.valueOf(financeInteractor.getAccount().getBudget()),String.valueOf(financeInteractor.getAccount().getTotalLimit()));
-        view.setTransactions(financeInteractor.getTransactions());
+        view.setTransactions(transactions);
         view.notifyTransactionDataSetChanged();
         view.setDate();
     }
@@ -35,7 +37,7 @@ public class FinancePresenter implements IFinancePresenter {
     @Override
     public void sortTransactions(String tip) {
         ArrayList<Transaction> transactions = new ArrayList<>();
-        transactions.addAll(financeInteractor.getTransactions());
+        transactions.addAll(transactions);
         if(tip.equals("Price - Ascending")) Collections.sort(transactions, Transaction.TranPriceComparatorAsc);
         if(tip.equals("Price - Descending")) Collections.sort(transactions, Transaction.TranPriceComparatorDesc);
         if(tip.equals("Title - Ascending")) Collections.sort(transactions, Transaction.TranTitleComparatorAsc);
