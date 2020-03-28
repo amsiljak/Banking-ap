@@ -1,11 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -41,47 +42,61 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
 
-        getPresenter().create(getIntent().getStringExtra("title"), getIntent().getDoubleExtra("amount", 0),
-                (Type) getIntent().getSerializableExtra("type"), getIntent().getStringExtra("description"),
-                getIntent().getIntExtra("interval", 0), (Date) getIntent().getSerializableExtra("date"),
-                (Date) getIntent().getSerializableExtra("enddate"));
-
-        Transaction transaction = getPresenter().getTransaction();
-
         titleEditText = (EditText) findViewById(R.id.transactionTitle);
-        titleEditText.setText(transaction.getTitle());
 
         amountEditText = (EditText) findViewById(R.id.transactionAmount);
-        amountEditText.setText(String.valueOf(transaction.getAmount()));
 
         typeEditText = (EditText) findViewById(R.id.transactionType);
-        typeEditText.setText(transaction.getType().toString());
 
         descriptionEditText = (EditText) findViewById(R.id.transactionDescription);
-        descriptionEditText.setText(transaction.getItemDescription());
 
         intervalEditText = (EditText) findViewById(R.id.transactionInterval);
-        intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
 
         dateEditText = (EditText) findViewById(R.id.transactionDate);
-        dateEditText.setText(transaction.getDate().toString());
 
         endDateEditText = (EditText) findViewById(R.id.transactionEndDate);
-        endDateEditText.setText(transaction.getEndDate().toString());
 
-        titleEditText.setOnFocusChangeListener(titleFocusChangeListener);
+        titleEditText.addTextChangedListener(titleTextWatcher);
 
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
 
         deleteButton = (Button) findViewById(R.id.deleteButton);
-        deleteButton.setOnClickListener(deleteClickListener);
+
+
+        if(getIntent().getIntExtra("calling-activity", 0) == 1) {
+            getPresenter().create(getIntent().getStringExtra("title"), getIntent().getDoubleExtra("amount", 0),
+                    (Type) getIntent().getSerializableExtra("type"), getIntent().getStringExtra("description"),
+                    getIntent().getIntExtra("interval", 0), (Date) getIntent().getSerializableExtra("date"),
+                    (Date) getIntent().getSerializableExtra("enddate"));
+
+            Transaction transaction = getPresenter().getTransaction();
+
+            if(getIntent().getIntExtra("calling-activity", 0) == 1) deleteButton.setOnClickListener(deleteClickListener);
+            titleEditText.setText(transaction.getTitle());
+            amountEditText.setText(String.valueOf(transaction.getAmount()));
+            typeEditText.setText(transaction.getType().toString());
+            descriptionEditText.setText(transaction.getItemDescription());
+            intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
+            dateEditText.setText(transaction.getDate().toString());
+            endDateEditText.setText(transaction.getEndDate().toString());
+        }
     }
 
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            titleEditText.setBackgroundColor(0x00000000);
+            //treba vratit boju polja na pocetnu onih polja koja su se promijenila
+
+            ColorDrawable drawable = (ColorDrawable)titleEditText.getBackground();
+            if(drawable.getColor()==(int)Color.GREEN) titleEditText.setBackgroundColor(0x00000000);
+//            amountEditText.setBackgroundColor(0x00000000);
+//            descriptionEditText.setBackgroundColor(0x00000000);
+//            dateEditText.setBackgroundColor(0x00000000);
+//            endDateEditText.setBackgroundColor(0x00000000);
+//            typeEditText.setBackgroundColor(0x00000000);
+//            intervalEditText.setBackgroundColor(0x00000000);
+
         }
     };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
@@ -111,20 +126,24 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 //            AlertDialog alert11 = builder1.create();
 //            alert11.show();
 
-//            Intent resultIntent = new Intent();
-//            resultIntent.putExtra("some_key", "String data");
-//            setResult(Activity.RESULT_OK, resultIntent);
-//            finish();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("some_key", "String data");
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
         }
     };
-    private EditText.OnFocusChangeListener titleFocusChangeListener = new EditText.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                {
-                    titleEditText.setBackgroundColor(Color.GREEN);
-                }
-            }
+    private TextWatcher titleTextWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
+            titleEditText.setBackgroundColor(Color.GREEN);
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+
         }
     };
 }

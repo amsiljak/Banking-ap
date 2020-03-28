@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private String type;
     private ArrayList<String> filterList;
     private ArrayList<String> sortList;
+    private Button addTransactionButton;
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;
@@ -106,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
 
         leftImageButton.setOnClickListener(leftButtonClickListener);
         rightImageButton.setOnClickListener(rightButtonClickListener);
+
+        addTransactionButton = (Button)findViewById(R.id.addTransaction);
+        addTransactionButton.setOnClickListener(addTransactionClickListenr);
         getPresenter().refresh();
     }
 
@@ -175,6 +180,14 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             setDate();
         }
     };
+    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
+            transactionDetailIntent.putExtra("calling-activity", 2);
+            MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
+        }
+    };
     private AdapterView.OnItemClickListener transactionListItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -188,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             transactionDetailIntent.putExtra("interval", transaction.getTransactionInterval());
             transactionDetailIntent.putExtra("date", transaction.getDate());
             transactionDetailIntent.putExtra("enddate", transaction.getEndDate());
+            transactionDetailIntent.putExtra("calling-activity", 1);
 
             MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
         }
