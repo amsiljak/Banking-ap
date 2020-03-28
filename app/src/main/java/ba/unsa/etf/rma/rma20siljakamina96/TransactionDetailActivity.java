@@ -1,6 +1,8 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -117,10 +119,25 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("some_key", "String data");
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
+            new AlertDialog.Builder(TransactionDetailActivity.this)
+                    .setTitle("Delete transaction")
+                    .setMessage("Are you sure you want to delete this transaction?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("some_key", "String data");
+                            setResult(Activity.RESULT_OK, resultIntent);
+                            finish();
+                        }
+                    })
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     };
     private TextWatcher titleTextWatcher = new TextWatcher() {
