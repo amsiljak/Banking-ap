@@ -43,21 +43,16 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         setContentView(R.layout.activity_transaction_detail);
 
         titleEditText = (EditText) findViewById(R.id.transactionTitle);
-
         amountEditText = (EditText) findViewById(R.id.transactionAmount);
-
         typeEditText = (EditText) findViewById(R.id.transactionType);
-
         descriptionEditText = (EditText) findViewById(R.id.transactionDescription);
-
         intervalEditText = (EditText) findViewById(R.id.transactionInterval);
-
         dateEditText = (EditText) findViewById(R.id.transactionDate);
-
         endDateEditText = (EditText) findViewById(R.id.transactionEndDate);
 
         titleEditText.addTextChangedListener(titleTextWatcher);
         typeEditText.addTextChangedListener(typeTextWatcher);
+        amountEditText.addTextChangedListener(amountTextWatcher);
 
         saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -66,6 +61,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
 
         if(getIntent().getIntExtra("calling-activity", 0) == 1) {
+
             getPresenter().create(getIntent().getStringExtra("title"), getIntent().getDoubleExtra("amount", 0),
                     (Type) getIntent().getSerializableExtra("type"), getIntent().getStringExtra("description"),
                     getIntent().getIntExtra("interval", 0), (Date) getIntent().getSerializableExtra("date"),
@@ -74,13 +70,22 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
             Transaction transaction = getPresenter().getTransaction();
 
             if(getIntent().getIntExtra("calling-activity", 0) == 1) deleteButton.setOnClickListener(deleteClickListener);
+
             titleEditText.setText(transaction.getTitle());
             amountEditText.setText(String.valueOf(transaction.getAmount()));
             typeEditText.setText(transaction.getType().toString());
-            descriptionEditText.setText(transaction.getItemDescription());
-            intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
+
+            if(!(transaction.getType().toString().equals("INDIVIDUALINCOME") || transaction.getType().toString().equals("REGULARINCOME")))
+                descriptionEditText.setText(transaction.getItemDescription());
+            else descriptionEditText.setText("");
+            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARIPAYMENT"))
+                intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
+            else intervalEditText.setText("");
+            if(transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARIPAYMENT"))
+                endDateEditText.setText(String.valueOf(transaction.getEndDate()));
+            else endDateEditText.setText("");
+
             dateEditText.setText(transaction.getDate().toString());
-            endDateEditText.setText(transaction.getEndDate().toString());
         }
     }
 
@@ -103,30 +108,6 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-//            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-//            builder1.setMessage("Write your message here.");
-//            builder1.setCancelable(true);
-//
-//            builder1.setPositiveButton(
-//                    "Yes",
-//                    new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//            builder1.setNegativeButton(
-//                    "No",
-//                    new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//            AlertDialog alert11 = builder1.create();
-//            alert11.show();
-
             Intent resultIntent = new Intent();
             resultIntent.putExtra("some_key", "String data");
             setResult(Activity.RESULT_OK, resultIntent);
@@ -147,13 +128,29 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         }
     };
     private TextWatcher typeTextWatcher = new TextWatcher() {
-        boolean valid = false;
         public void afterTextChanged(Editable s) {
+            boolean valid = false;
             for(Type t: Type.values()) {
                 if(t.toString().equals(typeEditText.getText().toString().toUpperCase())) valid = true;
             }
             if(valid) typeEditText.setBackgroundColor(Color.GREEN);
             else typeEditText.setBackgroundColor(Color.RED);
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
+    private TextWatcher amountTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            boolean valid;
+            try {
+                Double num = Double.parseDouble(amountEditText.getText().toString());
+                valid = true;
+            } catch (NumberFormatException e) {
+                valid = false;
+            }
+
+            if(valid && !amountEditText.equals("")) amountEditText.setBackgroundColor(Color.GREEN);
+            else amountEditText.setBackgroundColor(Color.RED);
         }
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         public void onTextChanged(CharSequence s, int start, int before, int count) {}

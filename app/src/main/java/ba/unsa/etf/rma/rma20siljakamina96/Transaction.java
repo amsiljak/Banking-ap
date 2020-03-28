@@ -18,9 +18,9 @@ public class Transaction {
         this.title = title;
         this.type = type;
         this.itemDescription = itemDescription;
-        this.endDate = endDate;
     }
 
+    //sammo za regular transakcije
     public Transaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
         this.date = date;
         this.amount = amount;
