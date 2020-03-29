@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
@@ -84,4 +85,16 @@ public class FinancePresenter implements IFinancePresenter {
         return lista;
     }
 
+    @Override
+    public void deleteTransaction(Transaction t) {
+        Iterator itr = transactions.iterator();
+        while (itr.hasNext())
+        {
+            Transaction transaction = (Transaction)itr.next();
+            if (t.equals(transaction))
+                itr.remove();
+        }
+        view.setTransactions(transactions);
+    }
 }
+

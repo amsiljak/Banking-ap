@@ -108,7 +108,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                 if (presenter.checkBudget(Double.parseDouble(amountEditText.getText().toString()))) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(TransactionDetailActivity.this);
                     builder1.setTitle("Save transaction");
-                    builder1.setMessage("Iznos izmijenjene transakcije prelazi budžet. Da li ste sigurni da je želite izmijeniti?");
+                    builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");
                     builder1.setCancelable(true);
 
                     builder1.setPositiveButton(
@@ -165,8 +165,8 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with delete operation
                                 Intent resultIntent = new Intent();
-                                resultIntent.putExtra("some_key", "String data");
-                                setResult(Activity.RESULT_OK, resultIntent);
+                                resultIntent.putExtra("action", "delete");
+                                setResult(RESULT_OK, resultIntent);
                                 finish();
                             }
                         })
@@ -174,6 +174,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                         .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
+
             }
         };
         private TextWatcher titleTextWatcher = new TextWatcher() {

@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
     private ArrayList<String> sortList;
     private Button addTransactionButton;
     private String sort = "Price - Ascending";
+    private int pozicija;
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         public void onClick(View v) {
             Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
             transactionDetailIntent.putExtra("calling-activity", 2);
-            MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
+            MainActivity.this.startActivityForResult(transactionDetailIntent, 2);
         }
     };
     private AdapterView.OnItemClickListener transactionListItemClickListener = new AdapterView.OnItemClickListener() {
@@ -205,13 +207,13 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
             transactionDetailIntent.putExtra("date", transaction.getDate());
             transactionDetailIntent.putExtra("enddate", transaction.getEndDate());
             transactionDetailIntent.putExtra("calling-activity", 1);
+            pozicija = position;
 
-            MainActivity.this.startActivityForResult(transactionDetailIntent, 100);
+            MainActivity.this.startActivityForResult(transactionDetailIntent, 1);
         }
     };
     @Override
     public void onResume() {
-
         super.onResume();
     }
 
@@ -221,4 +223,18 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         super.onPause();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Transaction t = (Transaction) transactionListView.getItemAtPosition(pozicija); //ovo je transakcija u cije smo detalje usli
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                if(data.getStringExtra("action").equals("delete")) financePresenter.deleteTransaction(t);
+            }
+
+//            t.setTitle("ksvnksd");
+//            transactionListAdapter.notifyDataSetChanged();
+
+        }
+    }
 }
