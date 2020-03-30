@@ -92,7 +92,7 @@
 
     <ImageButton
         android:id="@+id/leftButton"
-        android:layout_width="0dp"
+        android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="24dp"
