@@ -66,15 +66,14 @@ public class FinancePresenter implements IFinancePresenter {
             if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
 
                 Calendar startingPoint = Calendar.getInstance();
-                startingPoint.set(t.getDate().getYear(),t.getDate().getMonth(),t.getDate().getDay());
+                startingPoint.setTime(t.getDate());
+
                 Calendar endPoint = Calendar.getInstance();
-                startingPoint.set(t.getEndDate().getYear(),t.getEndDate().getMonth(),t.getEndDate().getDay());
+                endPoint.setTime(t.getEndDate());
 
                 if (cal.compareTo(startingPoint) >= 0 && cal.compareTo(endPoint) <= 0) {
                     lista.add(t);
                 }
-                lista.add(t);
-
             } else {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(t.getDate());
