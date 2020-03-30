@@ -13,4 +13,8 @@ public interface IFinancePresenter {
     void setTransactions();
 
     void deleteTransaction(Transaction t);
+    void addTransaction(Transaction t);
+
+    void modifyTransaction(Transaction transaction, Transaction newTransaction);
+
 }

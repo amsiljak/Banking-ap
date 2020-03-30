@@ -14,11 +14,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements IFinanceView{
+public class MainActivity extends AppCompatActivity implements IFinanceView {
     private TextView globalAmount2;
     private TextView limit2;
     private ListView transactionListView;
@@ -230,11 +234,30 @@ public class MainActivity extends AppCompatActivity implements IFinanceView{
         if (requestCode == 1) {
             if(resultCode == RESULT_OK) {
                 if(data.getStringExtra("action").equals("delete")) financePresenter.deleteTransaction(t);
+                else if(data.getStringExtra("action").equals("save")) {
+                    Transaction transaction = new Transaction((Date) getIntent().getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
+                            data.getStringExtra("title"), (Type) data.getSerializableExtra("type"), getIntent().getStringExtra("description"),
+                            getIntent().getIntExtra("interval", 0),
+                            (Date) getIntent().getSerializableExtra("enddate"));
+                    financePresenter.modifyTransaction(t, transaction);
+                }
+                //ako je korisnik samo izasao bez klika na save ne treba nista uraditi
             }
-
-//            t.setTitle("ksvnksd");
-//            transactionListAdapter.notifyDataSetChanged();
-
+        }
+        //dodavanje nove transakcije
+        else if(requestCode == 2) {
+            if(resultCode == RESULT_OK) {
+                //ovaj uslov je samo u jednom slucaju zadovoljen, a to je da je korisnik klikuno save pri dodavanju nove transakcije
+                if(data.getStringExtra("action").equals("add")) {
+                    Transaction transaction = null;
+                        transaction = new Transaction((Date)data.getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
+                                data.getStringExtra("title"), (Type) data.getSerializableExtra("type"), data.getStringExtra("description"),
+                                data.getIntExtra("interval", 0),
+                                (Date) data.getSerializableExtra("enddate"));
+                    financePresenter.addTransaction(transaction);
+                }
+            }
+            //ako je korisnik izasao na dugme back ne treba nista uraditi
         }
     }
 }

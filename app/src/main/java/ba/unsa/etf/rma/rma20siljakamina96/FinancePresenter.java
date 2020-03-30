@@ -66,14 +66,15 @@ public class FinancePresenter implements IFinancePresenter {
             if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
 
                 Calendar startingPoint = Calendar.getInstance();
-                startingPoint.setTime(t.getDate());
-
+                startingPoint.set(t.getDate().getYear(),t.getDate().getMonth(),t.getDate().getDay());
                 Calendar endPoint = Calendar.getInstance();
-                endPoint.setTime(t.getEndDate());
+                startingPoint.set(t.getEndDate().getYear(),t.getEndDate().getMonth(),t.getEndDate().getDay());
 
                 if (cal.compareTo(startingPoint) >= 0 && cal.compareTo(endPoint) <= 0) {
                     lista.add(t);
                 }
+                lista.add(t);
+
             } else {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(t.getDate());
@@ -96,5 +97,25 @@ public class FinancePresenter implements IFinancePresenter {
         }
         view.setTransactions(transactions);
     }
+
+    @Override
+    public void addTransaction(Transaction t) {
+        transactions.add(t);
+        view.setTransactions(transactions);
+    }
+
+    @Override
+    public void modifyTransaction(Transaction oldTransaction, Transaction newTransaction) {
+        int brojac = 0;
+        for(Transaction t: transactions) {
+            if (t.equals(oldTransaction)) {
+                transactions.set(brojac, newTransaction);
+                break;
+            }
+            brojac++;
+        }
+        view.setTransactions(transactions);
+    }
+
 }
 

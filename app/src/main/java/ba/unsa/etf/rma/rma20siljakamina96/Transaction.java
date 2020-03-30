@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 
