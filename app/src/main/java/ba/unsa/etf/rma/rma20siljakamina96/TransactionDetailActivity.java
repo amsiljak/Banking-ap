@@ -37,6 +37,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
     private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
+
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
             presenter = new TransactionDetailPresenter(this);
@@ -100,47 +101,66 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         endDateEditText.addTextChangedListener(endDateTextWatcher);
     }
     private void saveAction() {
-        if (getIntent().getIntExtra("calling-activity", 0) == 1) {
-            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
+        if(((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED || ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED ||
+                ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED ||
+                ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED || ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED ||
+                ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED || ((ColorDrawable)titleEditText.getBackground()).getColor() == Color.RED) {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(TransactionDetailActivity.this);
+            builder1.setTitle("Nevalidan unos!");
+            builder1.setCancelable(true);
 
-            try {
-                presenter.create(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-                        Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-                        Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-                        DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
         }
-        else if(getIntent().getIntExtra("calling-activity", 0) == 2) {
-            Intent resultIntent = new Intent();
+        else {
+            if (getIntent().getIntExtra("calling-activity", 0) == 1) {
+                titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+                amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+                descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+                dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+                endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+                typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+                intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
-            resultIntent.putExtra("action", "add");
-            resultIntent.putExtra("title", String.valueOf(titleEditText.getText()));
-            resultIntent.putExtra("amount", Double.parseDouble(String.valueOf(amountEditText.getText())));
-            try {
-                resultIntent.putExtra("date",  DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            try {
-                resultIntent.putExtra("enddate", DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            resultIntent.putExtra("interval", Integer.parseInt(String.valueOf(intervalEditText.getText())));
-            resultIntent.putExtra("description", String.valueOf(descriptionEditText.getText()));
-            resultIntent.putExtra("type", Type.valueOf(typeEditText.getText().toString().toUpperCase()));
+                try {
+                    presenter.create(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
+                            DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-            setResult(RESULT_OK, resultIntent);
-            finish();
+            } else if (getIntent().getIntExtra("calling-activity", 0) == 2) {
+                Intent resultIntent = new Intent();
+
+                resultIntent.putExtra("action", "add");
+                resultIntent.putExtra("title", String.valueOf(titleEditText.getText()));
+                resultIntent.putExtra("amount", Double.parseDouble(String.valueOf(amountEditText.getText())));
+                try {
+                    resultIntent.putExtra("date", DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    resultIntent.putExtra("enddate", DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                resultIntent.putExtra("interval", Integer.parseInt(String.valueOf(intervalEditText.getText())));
+                resultIntent.putExtra("description", String.valueOf(descriptionEditText.getText()));
+                resultIntent.putExtra("type", Type.valueOf(typeEditText.getText().toString().toUpperCase()));
+
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
         }
     }
 

@@ -30,13 +30,13 @@ public class FinanceModel {
             } catch (ParseException e) {
                 e.printStackTrace();
             }try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-16"),-100,"Transakcija 20",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-16"),-150,"Transakcija 20",
                     Type.INDIVIDUALINCOME, null));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-06-8"),-20,"Transakcija 4",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-06-8"),-200,"Transakcija 4",
                         Type.REGULARINCOME, null, 3, new SimpleDateFormat("yyyy-MM-dd").parse("2021-01-02")));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -44,7 +44,7 @@ public class FinanceModel {
 
 
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-07-14"),2000,"Transakcija 5",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-07-14"),-2000,"Transakcija 5",
                         Type.INDIVIDUALPAYMENT, "opis"));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -62,7 +62,7 @@ public class FinanceModel {
                 e.printStackTrace();
             }
             try {
-            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-10-16"),-200,"Transakcija 8",
+            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-10-16"),-1000,"Transakcija 8",
                     Type.INDIVIDUALINCOME, null));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -82,7 +82,7 @@ public class FinanceModel {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),-73.4,"Transakcija 11",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),-730.4,"Transakcija 11",
                         Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2022-11-06")));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -93,7 +93,7 @@ public class FinanceModel {
             } catch (ParseException e) {
                 e.printStackTrace();
             }try {
-            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-16"),-50,"Transakcija 13",
+            add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-16"),-500,"Transakcija 13",
                     Type.INDIVIDUALINCOME, null));
         } catch (ParseException e) {
             e.printStackTrace();
@@ -123,7 +123,7 @@ public class FinanceModel {
                 e.printStackTrace();
             }
             try {
-                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-10-16"),-20,"Transakcija 18",
+                add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-10-16"),-2000,"Transakcija 18",
                         Type.INDIVIDUALINCOME, null));
             } catch (ParseException e) {
                 e.printStackTrace();
