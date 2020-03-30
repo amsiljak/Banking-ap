@@ -312,7 +312,8 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 //ovdje ce ici sve vezano za save
         switch(keyCode) {
             case(KeyEvent.KEYCODE_BACK):
-                Intent resultIntent = new Intent();
+                if(getIntent().getIntExtra("calling-activity", 0) == 1) {
+                    Intent resultIntent = new Intent();
 
                     resultIntent.putExtra("action", "save");
                     resultIntent.putExtra("title", presenter.getTransaction().getTitle());
@@ -323,8 +324,15 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                     resultIntent.putExtra("description", presenter.getTransaction().getItemDescription());
                     resultIntent.putExtra("type", presenter.getTransaction().getType());
 
-                setResult(RESULT_OK, resultIntent);
-                finish();
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
+                else {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("action", "none");
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
         }
         return false;
     }
