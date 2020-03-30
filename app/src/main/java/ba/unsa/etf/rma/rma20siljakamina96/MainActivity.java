@@ -235,10 +235,10 @@ public class MainActivity extends AppCompatActivity implements IFinanceView {
             if(resultCode == RESULT_OK) {
                 if(data.getStringExtra("action").equals("delete")) financePresenter.deleteTransaction(t);
                 else if(data.getStringExtra("action").equals("save")) {
-                    Transaction transaction = new Transaction((Date) getIntent().getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
-                            data.getStringExtra("title"), (Type) data.getSerializableExtra("type"), getIntent().getStringExtra("description"),
-                            getIntent().getIntExtra("interval", 0),
-                            (Date) getIntent().getSerializableExtra("enddate"));
+                    Transaction transaction = new Transaction((Date) data.getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
+                            data.getStringExtra("title"), (Type) data.getSerializableExtra("type"), data.getStringExtra("description"),
+                            data.getIntExtra("interval", 0),
+                            (Date) data.getSerializableExtra("enddate"));
                     financePresenter.modifyTransaction(t, transaction);
                 }
                 //ako je korisnik samo izasao bez klika na save ne treba nista uraditi
@@ -249,8 +249,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView {
             if(resultCode == RESULT_OK) {
                 //ovaj uslov je samo u jednom slucaju zadovoljen, a to je da je korisnik klikuno save pri dodavanju nove transakcije
                 if(data.getStringExtra("action").equals("add")) {
-                    Transaction transaction = null;
-                        transaction = new Transaction((Date)data.getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
+                    Transaction transaction = new Transaction((Date)data.getSerializableExtra("date"), data.getDoubleExtra("amount", 0),
                                 data.getStringExtra("title"), (Type) data.getSerializableExtra("type"), data.getStringExtra("description"),
                                 data.getIntExtra("interval", 0),
                                 (Date) data.getSerializableExtra("enddate"));

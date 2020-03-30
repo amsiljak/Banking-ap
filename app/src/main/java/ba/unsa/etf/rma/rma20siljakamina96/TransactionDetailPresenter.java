@@ -28,8 +28,4 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         return transaction;
     }
 
-    @Override
-    public void setTransactionTitle(String title) {
-        transaction.setTitle(title);
-    }
 }

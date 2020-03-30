@@ -62,7 +62,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
         deleteButton = (Button) findViewById(R.id.deleteButton);
 
-getPresenter();
+        getPresenter();
         if (getIntent().getIntExtra("calling-activity", 0) == 1) {
 
             getPresenter().create(getIntent().getStringExtra("title"), getIntent().getDoubleExtra("amount", 0),
@@ -99,6 +99,50 @@ getPresenter();
         dateEditText.addTextChangedListener(dateTextWatcher);
         endDateEditText.addTextChangedListener(endDateTextWatcher);
     }
+    private void saveAction() {
+        if (getIntent().getIntExtra("calling-activity", 0) == 1) {
+            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
+
+            try {
+                presenter.create(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+                        Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+                        Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
+                        DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        else if(getIntent().getIntExtra("calling-activity", 0) == 2) {
+            Intent resultIntent = new Intent();
+
+            resultIntent.putExtra("action", "add");
+            resultIntent.putExtra("title", String.valueOf(titleEditText.getText()));
+            resultIntent.putExtra("amount", Double.parseDouble(String.valueOf(amountEditText.getText())));
+            try {
+                resultIntent.putExtra("date",  DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                resultIntent.putExtra("enddate", DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            resultIntent.putExtra("interval", Integer.parseInt(String.valueOf(intervalEditText.getText())));
+            resultIntent.putExtra("description", String.valueOf(descriptionEditText.getText()));
+            resultIntent.putExtra("type", Type.valueOf(typeEditText.getText().toString().toUpperCase()));
+
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }
+    }
 
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
@@ -113,31 +157,8 @@ getPresenter();
                             "Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    if (getIntent().getIntExtra("calling-activity", 0) == 1) {
-                                        titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
-                                        dialog.cancel();
-                                    }
-                                    else if(getIntent().getIntExtra("calling-activity", 0) == 2) {
-                                        Intent resultIntent = new Intent();
-
-                                        resultIntent.putExtra("action", "add");
-                                        resultIntent.putExtra("title", presenter.getTransaction().getTitle());
-                                        resultIntent.putExtra("amount", presenter.getTransaction().getAmount());
-                                        resultIntent.putExtra("date", presenter.getTransaction().getDate());
-                                        resultIntent.putExtra("enddate", presenter.getTransaction().getEndDate());
-                                        resultIntent.putExtra("interval", presenter.getTransaction().getTransactionInterval());
-                                        resultIntent.putExtra("description", presenter.getTransaction().getItemDescription());
-                                        resultIntent.putExtra("type", presenter.getTransaction().getType());
-
-                                        setResult(RESULT_OK, resultIntent);
-                                        finish();
-                                    }
+                                    saveAction();
+                                    dialog.cancel();
                                 }
                             });
 
@@ -152,40 +173,7 @@ getPresenter();
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
-                else  {
-                    if (getIntent().getIntExtra("calling-activity", 0) == 1) {
-                        titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-                        intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
-                    }
-                    else if(getIntent().getIntExtra("calling-activity", 0) == 2) {
-                        Intent resultIntent = new Intent();
-
-                        resultIntent.putExtra("action", "add");
-                        resultIntent.putExtra("title", String.valueOf(titleEditText.getText()));
-                        resultIntent.putExtra("amount", Double.parseDouble(String.valueOf(amountEditText.getText())));
-                        try {
-                            resultIntent.putExtra("date",  DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            resultIntent.putExtra("enddate", DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        resultIntent.putExtra("interval", Integer.valueOf(String.valueOf(intervalEditText.getText())));
-                        resultIntent.putExtra("description", String.valueOf(descriptionEditText.getText()));
-                        resultIntent.putExtra("type", Type.valueOf(typeEditText.getText().toString().toUpperCase()));
-
-                        setResult(RESULT_OK, resultIntent);
-                        finish();
-                    }
-                }
+                else saveAction();
         }
     }
 
