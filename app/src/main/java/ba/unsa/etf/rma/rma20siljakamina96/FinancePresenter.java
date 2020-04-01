@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.content.Context;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +32,13 @@ public class FinancePresenter implements IFinancePresenter {
 
     @Override
     public void setAccount() {
+        DecimalFormat df = new DecimalFormat("#.##");
         double iznos = 0;
         for(Transaction t : transactions) {
             iznos += t.getAmount();
         }
         iznos = financeInteractor.getAccount().getBudget() + iznos;
-        view.setAccountData(String.valueOf(iznos), String.valueOf(financeInteractor.getAccount().getTotalLimit()));
+        view.setAccountData(df.format(iznos), String.valueOf(financeInteractor.getAccount().getTotalLimit()));
     }
 
     @Override
