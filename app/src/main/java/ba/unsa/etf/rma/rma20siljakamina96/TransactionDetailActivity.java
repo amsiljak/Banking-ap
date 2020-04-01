@@ -232,25 +232,26 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
             }
         };
         void validateInterval() {
-            if (intervalEditText.getText().toString().matches("[0-9]+") &&
-                    (typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT"))) {
-                validInterval = true;
+            if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT"))) {
+                if(intervalEditText.getText().toString().matches("[0-9]+")) validInterval = true;
+                else validInterval = false;
             }
             else {
-                validInterval = false;
+                if (TextUtils.isEmpty(intervalEditText.getText().toString())) validInterval = true;
+                else validInterval = false;
             }
         }
         void validateEndDate() {
 
         }
         void validateDescription() {
-            if (!TextUtils.isEmpty(descriptionEditText.getText().toString()) ||
-                    ((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("INDIVIDUALINCOME")) &&
-                            TextUtils.isEmpty(descriptionEditText.getText().toString()))) {
-                validDescription = true;
+            if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("INDIVIDUALINCOME"))) {
+                if(TextUtils.isEmpty(descriptionEditText.getText().toString())) validDescription = true;
+                else validDescription = false;
             }
             else {
-                validDescription = false;
+                if(TextUtils.isEmpty(descriptionEditText.getText().toString())) validDescription = false;
+                else validDescription = true;
             }
         }
         private TextWatcher titleTextWatcher = new TextWatcher() {
@@ -308,7 +309,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                     valid = false;
                 }
 
-                if (valid && !amountEditText.toString().equals("")) {
+                if (valid) {
                     validAmount = true;
                     amountEditText.setBackgroundColor(Color.GREEN);
                 }
