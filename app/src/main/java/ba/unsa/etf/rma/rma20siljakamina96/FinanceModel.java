@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class FinanceModel {
-    public static Account account = new Account(50000, 40000, 1000);
+    public static Account account = new Account(3000, 40000, 1000);
     public static Calendar cal = Calendar.getInstance();
     public static ArrayList<Transaction> transactions = new ArrayList<Transaction>() {
         {

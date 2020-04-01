@@ -11,6 +11,7 @@ public interface IFinancePresenter {
     ArrayList<Transaction> filterTransactionsByDate(ArrayList<Transaction> transactions, Calendar cal);
 
     void setTransactions();
+    void setAccount();
 
     void deleteTransaction(Transaction t);
     void addTransaction(Transaction t);

@@ -28,8 +28,18 @@ public class FinancePresenter implements IFinancePresenter {
     }
 
     @Override
+    public void setAccount() {
+        double iznos = 0;
+        for(Transaction t : transactions) {
+            iznos += t.getAmount();
+        }
+        iznos = financeInteractor.getAccount().getBudget() + iznos;
+        view.setAccountData(String.valueOf(iznos), String.valueOf(financeInteractor.getAccount().getTotalLimit()));
+    }
+
+    @Override
     public void refresh() {
-        view.setAccountData(String.valueOf(financeInteractor.getAccount().getBudget()),String.valueOf(financeInteractor.getAccount().getTotalLimit()));
+        setAccount();
         view.setTransactions(transactions);
         view.notifyTransactionDataSetChanged();
         view.setDate();
@@ -94,12 +104,14 @@ public class FinancePresenter implements IFinancePresenter {
             if (t.equals(transaction))
                 itr.remove();
         }
+        setAccount();
         view.setTransactions(transactions);
     }
 
     @Override
     public void addTransaction(Transaction t) {
         transactions.add(t);
+        setAccount();
         view.setTransactions(transactions);
     }
 
@@ -113,6 +125,7 @@ public class FinancePresenter implements IFinancePresenter {
             }
             brojac++;
         }
+        setAccount();
         view.setTransactions(transactions);
     }
 
