@@ -13,10 +13,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         this.interactor = new FinanceInteractor();
     }
 
-    public boolean checkBudget(double iznos) {
-        if(interactor.getAccount().getBudget() + iznos < 0 || iznos > interactor.getAccount().getMonthLimit()) return true;
-        return false;
-    }
 
     @Override
     public void create(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
@@ -31,5 +27,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     @Override
     public void create(String title, double amount, Type type, String itemDescription, Date date) {
         this.transaction = new Transaction(date, amount, title, type, itemDescription);
+    }
+
+    @Override
+    public Account getAccount() {
+        return interactor.getAccount();
     }
 }

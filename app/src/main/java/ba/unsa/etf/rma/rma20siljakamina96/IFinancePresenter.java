@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public interface IFinancePresenter {
     void refresh();
@@ -17,5 +18,5 @@ public interface IFinancePresenter {
     void addTransaction(Transaction t);
 
     void modifyTransaction(Transaction transaction, Transaction newTransaction);
-
+    HashMap<String, Double> getMonthlyPayments();
 }

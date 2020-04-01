@@ -2,11 +2,13 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class FinancePresenter implements IFinancePresenter {
@@ -81,7 +83,11 @@ public class FinancePresenter implements IFinancePresenter {
                 Calendar endPoint = Calendar.getInstance();
                 endPoint.setTime(t.getEndDate());
 
-                if (cal.compareTo(startingPoint) >= 0 && cal.compareTo(endPoint) <= 0) {
+                //ovo sam dodala da bi se prikazivala transakcija i u mjesecu u kojem je datum
+                Calendar temp = (Calendar) cal.clone();
+                temp.add(Calendar.MONTH,1);
+
+                if (startingPoint.compareTo(temp) <= 0 && cal.compareTo(endPoint) <= 0) {
                     lista.add(t);
                 }
             } else {
@@ -127,6 +133,17 @@ public class FinancePresenter implements IFinancePresenter {
         }
         setAccount();
         view.setTransactions(transactions);
+    }
+    public HashMap<String, Double> getMonthlyPayments() {
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
+        HashMap<String, Double> iznosi = new HashMap<>();
+        for(Transaction t: transactions) {
+            if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
+                Double vrijednost = iznosi.get(DATE_FORMAT.format(t.getDate())) + t.getAmount();
+                iznosi.put(DATE_FORMAT.format(t.getDate()), vrijednost);
+            } else iznosi.put(t.getDate().toString(), t.getAmount());
+        }
+        return iznosi;
     }
 
 }

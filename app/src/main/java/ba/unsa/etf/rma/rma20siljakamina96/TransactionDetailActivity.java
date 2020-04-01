@@ -1,13 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -172,7 +170,12 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
             } else {
-                if (presenter.checkBudget(Double.parseDouble(amountEditText.getText().toString()))) {
+                double iznos = 0;
+                double totalPayments = getIntent().getDoubleExtra("totalPayments", 0);
+                if(getIntent().hasExtra(String.valueOf(dateEditText.getText()).substring(3))) iznos = getIntent().getDoubleExtra(String.valueOf(dateEditText.getText()), 0);
+
+                if(((Double.parseDouble(amountEditText.getText().toString()) + iznos) < presenter.getAccount().getMonthLimit()) ||
+                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) < presenter.getAccount().getTotalLimit())) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(TransactionDetailActivity.this);
                     builder1.setTitle("Save transaction");
                     builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");
@@ -241,9 +244,9 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
 
         }
         void validateDescription() {
-            if (!descriptionEditText.equals("") ||
+            if (!TextUtils.isEmpty(descriptionEditText.getText().toString()) ||
                     ((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("INDIVIDUALINCOME")) &&
-                            descriptionEditText.equals(""))) {
+                            TextUtils.isEmpty(descriptionEditText.getText().toString()))) {
                 validDescription = true;
             }
             else {
@@ -254,9 +257,10 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
             public void afterTextChanged(Editable s) {
                 if (titleEditText.getText().toString().length() <= 3 || titleEditText.getText().toString().length() >= 15) {
                     titleEditText.setBackgroundColor(Color.RED);
+                    validTitle = false;
                 } else {
                     titleEditText.setBackgroundColor(Color.GREEN);
-                    validTitle = false;
+                    validTitle = true;
                 }
             }
 
@@ -276,6 +280,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                 }
                 if (valid) {
                     typeEditText.setBackgroundColor(Color.GREEN);
+                    validType = true;
                     validateInterval();
                     validateDescription();
                     validateEndDate();
@@ -303,8 +308,10 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
                     valid = false;
                 }
 
-                if (valid && !amountEditText.toString().equals(""))
+                if (valid && !amountEditText.toString().equals("")) {
+                    validAmount = true;
                     amountEditText.setBackgroundColor(Color.GREEN);
+                }
                 else {
                     amountEditText.setBackgroundColor(Color.RED);
                     validAmount = false;
@@ -358,7 +365,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         private TextWatcher endDateTextWatcher = new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 endDateEditText.setBackgroundColor(Color.GREEN);
-                validDate = true;
+                validEndDate = true;
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
