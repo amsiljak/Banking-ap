@@ -2,6 +2,8 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements IFinanceView {
     private IFinancePresenter financePresenter;
     private TransactionListAdapter transactionListAdapter;
 
+    private boolean twoPaneMode=false;
 
     public IFinancePresenter getPresenter() {
         if (financePresenter == null) {
@@ -75,52 +79,99 @@ public class MainActivity extends AppCompatActivity implements IFinanceView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        transactionListAdapter = new TransactionListAdapter(getApplicationContext(), R.layout.list_element, new ArrayList<Transaction>());
-        transactionListView = (ListView)findViewById(R.id.transactionList);
-        transactionListView.setAdapter(transactionListAdapter);
-        transactionListView.setOnItemClickListener(transactionListItemClickListener);
+//        transactionListAdapter = new TransactionListAdapter(getApplicationContext(), R.layout.list_element, new ArrayList<Transaction>());
+//        transactionListView = (ListView)findViewById(R.id.transactionList);
+//        transactionListView.setAdapter(transactionListAdapter);
+//        transactionListView.setOnItemClickListener(transactionListItemClickListener);
+//
+//        globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
+//        limit2 = findViewById(R.id.limit2);
+//
+//
+//        type = "All";
+//        filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
+//        filterList = new ArrayList<>();
+//        for(Type t: Type.values()) filterList.add(t.toString());
+//        filterList.add("All");
+//        filterList.add("Filter by");
+//        filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, filterList);
+//        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
+//        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, this));
+//        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
+//
+//        sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
+//        sortList = new ArrayList<>();
+//        sortList.add("Price - Ascending");
+//        sortList.add("Price - Descending");
+//        sortList.add("Title - Ascending");
+//        sortList.add("Title - Descending");
+//        sortList.add("Date - Ascending");
+//        sortList.add("Date - Descending");
+//        sortSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortList);
+//        sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, this));
+//        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
+//
+//        cal = Calendar.getInstance();
+//        dateView = (TextView)findViewById(R.id.date);
+//
+//        leftImageButton = (ImageButton)findViewById(R.id.leftButton);
+//        rightImageButton = (ImageButton)findViewById(R.id.rightButton);
+//
+//        leftImageButton.setOnClickListener(leftButtonClickListener);
+//        rightImageButton.setOnClickListener(rightButtonClickListener);
+//
+//        addTransactionButton = (Button)findViewById(R.id.addTransaction);
+//        addTransactionButton.setOnClickListener(addTransactionClickListenr);
+//        getPresenter().refresh();
 
-        globalAmount2 = (TextView)findViewById(R.id.globalAmount2);
-        limit2 = findViewById(R.id.limit2);
+
+        // twoPaneMode je privatni atribut klase Pocetni koji je tipa boolean
+// ovu variablu ´cemo koristiti da znamo o kojem layoutu se radi
+// ako je twoPaneMode true tada se radi o ˇsirem layoutu (dva fragmenta)
+// ako je twoPaneMode false tada se radi o poˇcetnom layoutu (jedan fragment)
 
 
-        type = "All";
-        filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
-        filterList = new ArrayList<>();
-        for(Type t: Type.values()) filterList.add(t.toString());
-        filterList.add("All");
-        filterList.add("Filter by");
-        filterSpinnerAdapter = new FilterSpinnerAdapter(getApplicationContext(), R.layout.filter_spinner_item, filterList);
-        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
-        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, this));
-        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
+//dohvatanje FragmentManager-a
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FrameLayout details = findViewById(R.id.movie_detail);
+//slucaj layouta za ˇsiroke ekrane
+        if (details != null) {
+            twoPaneMode = true;
+            TransactionDetailFragment detailFragment = (TransactionDetailFragment)
+                    fragmentManager.findFragmentById(R.id.movie_detail);
+//provjerimo da li je fragment detalji ve´c kreiran
+            if (detailFragment==null) {
+//kreiramo novi fragment FragmentDetalji ukoliko ve´c nije kreiran
+                detailFragment = new TransactionDetailFragment();
+                fragmentManager.beginTransaction().
+                        replace(R.id.movie_detail,detailFragment)
+                        .commit();
+            }
+        } else {
+            twoPaneMode = false;
+        }
+//Dodjeljivanje fragmenta MovieListFragment
+        Fragment listFragment =
+                fragmentManager.findFragmentByTag("list");
+//provjerimo da li je ve´c kreiran navedeni fragment
+        if (listFragment==null){
+//ukoliko nije, kreiramo
+            listFragment = new TransactionListFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.movies_list,listFragment,"list")
+                    .commit();
+        }else{
+//sluˇcaj kada mijenjamo orijentaciju uredaja
+//iz portrait (uspravna) u landscape (vodoravna)
+//a u aktivnosti je bio otvoren fragment MovieDetailFragment
+//tada je potrebno skinuti MovieDetailFragment sa steka
+//kako ne bi bio dodan na mjesto fragmenta MovieListFragment
+            fragmentManager.popBackStack(null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
-        sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
-        sortList = new ArrayList<>();
-        sortList.add("Price - Ascending");
-        sortList.add("Price - Descending");
-        sortList.add("Title - Ascending");
-        sortList.add("Title - Descending");
-        sortList.add("Date - Ascending");
-        sortList.add("Date - Descending");
-        sortSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortList);
-        sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, this));
-        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
-
-        cal = Calendar.getInstance();
-        dateView = (TextView)findViewById(R.id.date);
-
-        leftImageButton = (ImageButton)findViewById(R.id.leftButton);
-        rightImageButton = (ImageButton)findViewById(R.id.rightButton);
-
-        leftImageButton.setOnClickListener(leftButtonClickListener);
-        rightImageButton.setOnClickListener(rightButtonClickListener);
-
-        addTransactionButton = (Button)findViewById(R.id.addTransaction);
-        addTransactionButton.setOnClickListener(addTransactionClickListenr);
-        getPresenter().refresh();
-    }
+        }
 
 
     @Override
