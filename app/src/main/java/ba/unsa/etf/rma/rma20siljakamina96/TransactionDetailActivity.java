@@ -243,6 +243,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements ITra
         }
         void validateEndDate() {
 
+
         }
         void validateDescription() {
             if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("INDIVIDUALINCOME"))) {
