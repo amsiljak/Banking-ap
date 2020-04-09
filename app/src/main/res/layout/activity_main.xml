@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal">
-    <FrameLayout
+
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/movies_list"
+        android:id="@+id/transactions_list"
         android:layout_weight="1">
-    </FrameLayout>
+    </ScrollView>
+
 </LinearLayout>

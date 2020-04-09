@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="5"
     android:baselineAligned="false">
-    <FrameLayout
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        android:id="@+id/movies_list">
-    </FrameLayout>
-    <FrameLayout
+        android:id="@+id/transactions_list">
+    </ScrollView>
+
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_weight="4"
         android:layout_height="match_parent"
-        android:id="@+id/movie_detail">
-    </FrameLayout>
+        android:id="@+id/transaction_detail">
+    </ScrollView>
+
 </LinearLayout>

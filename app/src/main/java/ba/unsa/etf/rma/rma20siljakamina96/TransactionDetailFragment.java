@@ -13,6 +13,10 @@ public class TransactionDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        if (getArguments() != null && getArguments().containsKey("movie")) {
+            
+        }
+        return view;
     }
 }

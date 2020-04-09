@@ -1,10 +1,15 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 
-public class Transaction {
+public class Transaction implements Parcelable{
     private Date date;
     private double amount;
     private String title;
@@ -12,6 +17,8 @@ public class Transaction {
     private String itemDescription;
     private int transactionInterval;
     private Date endDate;
+
+    private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
     public Transaction(Date date, double amount, String title, Type type, String itemDescription) {
         this.date = date;
@@ -151,4 +158,48 @@ public class Transaction {
             return date2.compareTo(date1);
         }
     };
+    protected Transaction(Parcel in) {
+
+        try {
+            this.date = DATE_FORMAT.parse(in.readString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        this.amount = in.readDouble();
+        this.title = in.readString();
+        this.type = Type.valueOf(in.readString());
+        this.itemDescription = in.readString();;
+        this.transactionInterval = in.readInt();
+        try {
+            this.endDate = DATE_FORMAT.parse(in.readString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    public static final Parcelable.Creator<Transaction> CREATOR = new Parcelable.Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(DATE_FORMAT.format(date));
+        dest.writeDouble(amount);
+        dest.writeString(title);
+        dest.writeString(type.toString());
+        dest.writeString(itemDescription);
+        dest.writeInt(transactionInterval);
+        dest.writeString(DATE_FORMAT.format(endDate));
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
 }
