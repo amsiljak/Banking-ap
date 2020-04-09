@@ -1,6 +1,7 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import java.util.Date;
 
@@ -32,5 +33,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     @Override
     public Account getAccount() {
         return interactor.getAccount();
+    }
+
+    @Override
+    public void setTransaction(Parcelable movie) {
+        this.transaction = (Transaction) movie;
     }
 }
