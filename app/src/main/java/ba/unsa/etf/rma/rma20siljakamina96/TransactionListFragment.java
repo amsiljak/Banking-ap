@@ -1,10 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,6 +54,8 @@ TransactionListFragment extends Fragment implements IFinanceView{
     private IFinancePresenter financePresenter;
     private TransactionListAdapter transactionListAdapter;
 
+    private int pozi;
+
     public IFinancePresenter getPresenter() {
         if (financePresenter == null) {
             financePresenter = new FinancePresenter(this, getActivity());
@@ -90,6 +94,7 @@ TransactionListFragment extends Fragment implements IFinanceView{
 
         transactionListAdapter = new TransactionListAdapter(getActivity(), R.layout.list_element, new ArrayList<Transaction>());
         transactionListView = (ListView)fragmentView.findViewById(R.id.listView);
+        transactionListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         transactionListView.setAdapter(transactionListAdapter);
         transactionListView.setOnItemClickListener(transactionListItemClickListener);
 
@@ -132,7 +137,6 @@ TransactionListFragment extends Fragment implements IFinanceView{
 
         addTransactionButton = (Button)fragmentView.findViewById(R.id.addTransaction);
         addTransactionButton.setOnClickListener(addTransactionClickListenr);
-        transactionListView.setOnItemClickListener(listItemClickListener);
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
@@ -143,13 +147,6 @@ TransactionListFragment extends Fragment implements IFinanceView{
         void onItemClicked(Transaction transaction);
     }
 
-    private AdapterView.OnItemClickListener listItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Transaction transaction = transactionListAdapter.getTransaction(position);
-            onItemClick.onItemClicked(transaction);
-        }
-    };
     private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -221,8 +218,18 @@ TransactionListFragment extends Fragment implements IFinanceView{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Transaction transaction = transactionListAdapter.getTransaction(position);
-            onItemClick.onItemClicked(transaction);
-
+            //drugi klik na stavku
+            if(pozi == position) {
+                transactionListView.setItemChecked(position,false);
+                addTransactionButton.setEnabled(true);
+                onAddButtonClick.onAddButtonClicked();
+                pozi = -1;
+            }
+            else{
+                pozi = position;
+                addTransactionButton.setEnabled(false);
+                onItemClick.onItemClicked(transaction);
+            }
 //            transactionDetailIntent.putExtra("calling-activity", 1);
 //            double totalPayments = 0;
 //            for(Map.Entry <String,Double> el : financePresenter.getMonthlyPayments().entrySet()) {

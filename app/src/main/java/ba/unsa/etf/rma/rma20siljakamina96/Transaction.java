@@ -39,7 +39,6 @@ public class Transaction implements Parcelable{
         this.endDate = endDate;
     }
 
-
     public Date getDate() {
         return date;
     }
