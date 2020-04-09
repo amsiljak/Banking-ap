@@ -17,6 +17,5 @@ public interface IFinancePresenter {
     void deleteTransaction(Transaction t);
     void addTransaction(Transaction t);
 
-    void modifyTransaction(Transaction transaction, Transaction newTransaction);
     HashMap<String, Double> getMonthlyPayments();
 }

@@ -250,26 +250,26 @@ public class TransactionDetailFragment extends Fragment {
 
     private void saveAction() {
 //        if (getIntent().getIntExtra("calling-activity", 0) == 1) {
-//            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
-//
-//            try {
-//                if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT")))
-//                    presenter.create(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-//                            DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
-//                else presenter.create(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                        Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                        DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
+            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
+
+            try {
+                if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT")))
+                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
+                            DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+                else presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+                        Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+                        DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 //
 //        } else if (getIntent().getIntExtra("calling-activity", 0) == 2) {
 //            Intent resultIntent = new Intent();
@@ -299,21 +299,22 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            if(!(validTitle && validAmount && validDate && validDescription && validEndDate && validInterval && validType)) {
-//                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-//                builder1.setTitle("Nevalidan unos!");
-//                builder1.setCancelable(true);
-//
-//                builder1.setPositiveButton(
-//                        "OK",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                dialog.cancel();
-//                            }
-//                        });
-//                AlertDialog alert11 = builder1.create();
-//                alert11.show();
-//            } else {
+            if(!(validTitle && validAmount && validDate && validDescription && validEndDate && validInterval && validType)) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                builder1.setTitle("Nevalidan unos!");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+            }
+//            else {
 //                double iznos = 0;
 //                double totalPayments = getIntent().getDoubleExtra("totalPayments", 0);
 //                if(getIntent().hasExtra(String.valueOf(dateEditText.getText()).substring(3))) iznos = getIntent().getDoubleExtra(String.valueOf(dateEditText.getText()), 0);
@@ -344,13 +345,10 @@ public class TransactionDetailFragment extends Fragment {
 //
 //                    AlertDialog alert11 = builder1.create();
 //                    alert11.show();
-//                } else saveAction();
-//            }
-//        }
-        }
-    }
-
-            ;
+//                }
+            else saveAction();
+            }
+    };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {

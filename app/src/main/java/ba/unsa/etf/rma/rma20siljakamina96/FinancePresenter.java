@@ -14,15 +14,21 @@ import java.util.Iterator;
 
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
-    private IFinanceInteractor financeInteractor;
+
+
+    private static IFinanceInteractor financeInteractor;
     private IFinanceView view;
-    private ArrayList<Transaction> transactions;
+    private static ArrayList<Transaction> transactions;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
         this.financeInteractor = new FinanceInteractor();
         this.view = view;
         transactions = financeInteractor.getTransactions();
+    }
+
+    public static ArrayList<Transaction> getTransactions() {
+        return transactions;
     }
 
     @Override
@@ -123,19 +129,19 @@ public class FinancePresenter implements IFinancePresenter {
         view.setTransactions(transactions);
     }
 
-    @Override
-    public void modifyTransaction(Transaction oldTransaction, Transaction newTransaction) {
-        int brojac = 0;
-        for(Transaction t: transactions) {
-            if (t.equals(oldTransaction)) {
-                transactions.set(brojac, newTransaction);
-                break;
-            }
-            brojac++;
-        }
-        setAccount();
-        view.setTransactions(transactions);
-    }
+//    @Override
+//    public void modifyTransaction(Transaction oldTransaction, Transaction newTransaction) {
+//        int brojac = 0;
+//        for(Transaction t: transactions) {
+//            if (t.equals(oldTransaction)) {
+//                transactions.set(brojac, newTransaction);
+//                break;
+//            }
+//            brojac++;
+//        }
+//        setAccount();
+//        view.setTransactions(transactions);
+//    }
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();
