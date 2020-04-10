@@ -377,6 +377,7 @@ public class TransactionDetailFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             // Continue with delete operation
                             presenter.delete();
+                            onTransactionModify.onTransactionModified();
                         }
                     })
                     // A null listener allows the button to dismiss the dialog and take no further action.

@@ -153,6 +153,9 @@ TransactionListFragment extends Fragment implements IFinanceView{
             cal.add(Calendar.MONTH,-1);
             financePresenter.setTransactions();
             setDate();
+            transactionListView.setItemChecked(pozi,false);
+            addTransactionButton.setEnabled(true);
+            onAddButtonClick.onAddButtonClicked();
         }
     };
     private AdapterView.OnClickListener rightButtonClickListener = new AdapterView.OnClickListener() {
@@ -161,6 +164,7 @@ TransactionListFragment extends Fragment implements IFinanceView{
             cal.add(Calendar.MONTH,1);
             financePresenter.setTransactions();
             setDate();
+            transactionListView.setItemChecked(pozi,false);
         }
     };
     private AdapterView.OnItemSelectedListener sortSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
