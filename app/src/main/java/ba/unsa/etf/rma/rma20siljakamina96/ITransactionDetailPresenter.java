@@ -24,5 +24,6 @@ public interface ITransactionDetailPresenter {
 
     double getTotalPayments();
 
-    boolean checkLimit(double amount);
+
+    boolean isOverLimit(double amount, String date);
 }

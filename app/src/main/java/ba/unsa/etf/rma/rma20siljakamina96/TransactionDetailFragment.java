@@ -342,38 +342,38 @@ public class TransactionDetailFragment extends Fragment {
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
             }
-//            else {
-//                double iznos = 0;
-//                double totalPayments = presenter.getTotalPayments();
-//                if(getIntent().hasExtra(String.valueOf(dateEditText.getText()).substring(3))) iznos = getIntent().getDoubleExtra(String.valueOf(dateEditText.getText()), 0);
-//
-//                if(((Double.parseDouble(amountEditText.getText().toString()) + iznos) < presenter.getAccount().getMonthLimit()) ||
-//                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) < presenter.getAccount().getTotalLimit())) {
-//                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-//                    builder1.setTitle("Save transaction");
-//                    builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");
-//                    builder1.setCancelable(true);
-//
-//                    builder1.setPositiveButton(
-//                            "Yes",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    saveAction();
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    builder1.setNegativeButton(
-//                            "No",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    AlertDialog alert11 = builder1.create();
-//                    alert11.show();
-//                }
+            else {
+                presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3));
+            }
+                double iznos = 0;
+                double totalPayments = presenter.getTotalPayments();
+                if(presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3))||
+                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) < presenter.getAccount().getTotalLimit())) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                    builder1.setTitle("Save transaction");
+                    builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    saveAction();
+                                    dialog.cancel();
+                                }
+                            });
+
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
             else saveAction();
             }
     };

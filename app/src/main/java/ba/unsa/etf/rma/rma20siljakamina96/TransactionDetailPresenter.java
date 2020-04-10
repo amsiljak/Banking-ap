@@ -115,11 +115,16 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         return totalPayments;
     }
     @Override
-    public boolean checkLimit(double amount) {
+    public boolean isOverLimit(double amount, String date) {
         for(Map.Entry <String,Double> el : getMonthlyPayments().entrySet()) {
+            if(el.getKey().equals(date)) {
+                if(el.getValue() + amount < getAccount().getMonthLimit()) return true;
+                else return false;
+            }
             //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
 //            transactionDetailIntent.putExtra(el.getKey(), el.getValue());
         }
-        return true;
+        if(amount < getAccount().getMonthLimit()) return true;
+        else return false;
     }
 }
