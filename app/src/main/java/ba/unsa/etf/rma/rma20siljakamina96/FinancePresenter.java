@@ -15,7 +15,6 @@ import java.util.Iterator;
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
 
-
     private static IFinanceInteractor financeInteractor;
     private IFinanceView view;
     private static ArrayList<Transaction> transactions;
@@ -30,6 +29,7 @@ public class FinancePresenter implements IFinancePresenter {
     public static ArrayList<Transaction> getTransactions() {
         return transactions;
     }
+
 
     @Override
     public void setTransactions() {
@@ -109,39 +109,26 @@ public class FinancePresenter implements IFinancePresenter {
         return lista;
     }
 
-    @Override
-    public void deleteTransaction(Transaction t) {
-        Iterator itr = transactions.iterator();
-        while (itr.hasNext())
-        {
-            Transaction transaction = (Transaction)itr.next();
-            if (t.equals(transaction))
-                itr.remove();
-        }
-        setAccount();
-        view.setTransactions(transactions);
-    }
-
-    @Override
-    public void addTransaction(Transaction t) {
-        transactions.add(t);
-        setAccount();
-        view.setTransactions(transactions);
-    }
-
 //    @Override
-//    public void modifyTransaction(Transaction oldTransaction, Transaction newTransaction) {
-//        int brojac = 0;
-//        for(Transaction t: transactions) {
-//            if (t.equals(oldTransaction)) {
-//                transactions.set(brojac, newTransaction);
-//                break;
-//            }
-//            brojac++;
+//    public void deleteTransaction(Transaction t) {
+//        Iterator itr = transactions.iterator();
+//        while (itr.hasNext())
+//        {
+//            Transaction transaction = (Transaction)itr.next();
+//            if (t.equals(transaction))
+//                itr.remove();
 //        }
 //        setAccount();
 //        view.setTransactions(transactions);
 //    }
+
+//    @Override
+//    public void addTransaction(Transaction t) {
+//        transactions.add(t);
+//        setAccount();
+//        view.setTransactions(transactions);
+//    }
+
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();

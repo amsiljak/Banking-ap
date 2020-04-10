@@ -1,9 +1,7 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,7 +20,6 @@ import androidx.fragment.app.Fragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class TransactionDetailFragment extends Fragment {
     private ITransactionDetailPresenter presenter;
@@ -39,14 +36,14 @@ public class TransactionDetailFragment extends Fragment {
 
     private SimpleDateFormat DATE_FORMAT;
 
-    private OnSaveClick onSaveClick;
+    private OnTransactionModify onTransactionModify;
 
-    boolean validTitle, validAmount, validDate, validEndDate, validDescription, validInterval, validType;
+    private boolean validTitle, validAmount, validDate, validEndDate, validDescription, validInterval, validType;
 
-    boolean saving;
+    private boolean saving;
 
-    public interface OnSaveClick{
-        void onSaveClicked();
+    public interface OnTransactionModify {
+        void onTransactionModified();
     }
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
@@ -73,7 +70,7 @@ public class TransactionDetailFragment extends Fragment {
         deleteButton = (Button) view.findViewById(R.id.deleteButton);
 
 
-        onSaveClick = (OnSaveClick) getActivity();
+        onTransactionModify = (OnTransactionModify) getActivity();
 
         getPresenter();
         DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -291,6 +288,7 @@ public class TransactionDetailFragment extends Fragment {
                     presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+                onTransactionModify.onTransactionModified();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -306,7 +304,7 @@ public class TransactionDetailFragment extends Fragment {
                     presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-                onSaveClick.onSaveClicked();
+                onTransactionModify.onTransactionModified();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -369,25 +367,22 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            new AlertDialog.Builder(TransactionDetailActivity.this)
-//                    .setTitle("Delete transaction")
-//                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
-//
-//                    // Specifying a listener allows you to take an action before dismissing the dialog.
-//                    // The dialog is automatically dismissed when a dialog button is clicked.
-//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // Continue with delete operation
-//                            Intent resultIntent = new Intent();
-//                            resultIntent.putExtra("action", "delete");
-//                            setResult(RESULT_OK, resultIntent);
-//                            finish();
-//                        }
-//                    })
-//                    // A null listener allows the button to dismiss the dialog and take no further action.
-//                    .setNegativeButton(android.R.string.no, null)
-//                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                    .show();
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Delete transaction")
+                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                            presenter.delete();
+                        }
+                    })
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
 
         }
     };

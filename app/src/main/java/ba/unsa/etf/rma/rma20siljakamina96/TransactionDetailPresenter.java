@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     private Transaction transaction;
@@ -42,6 +43,20 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
             }
         }
     }
+
+    @Override
+    public void delete() {
+        Iterator itr = transactions.iterator();
+        while (itr.hasNext())
+        {
+            Transaction t = (Transaction)itr.next();
+            if (t.equals(transaction))
+                itr.remove();
+        }
+//        setAccount();
+//        view.setTransactions(transactions);
+    }
+
     @Override
     public void add(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
         transactions.add(new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate));

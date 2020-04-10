@@ -86,6 +86,9 @@ TransactionListFragment extends Fragment implements IFinanceView{
     public interface OnAddButtonClick {
         void onAddButtonClicked();
     }
+    public interface OnItemClick {
+        void onItemClicked(Transaction transaction);
+    }
 
     @Nullable
     @Override
@@ -142,9 +145,6 @@ TransactionListFragment extends Fragment implements IFinanceView{
 
         getPresenter().refresh();
         return fragmentView;
-    }
-    public interface OnItemClick {
-        void onItemClicked(Transaction transaction);
     }
 
     private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {

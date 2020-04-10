@@ -19,4 +19,6 @@ public interface ITransactionDetailPresenter {
     void setTransaction(Parcelable movie);
 
     void save(String title, double amount, Type type, String itemDescription, Date date);
+
+    void delete();
 }
