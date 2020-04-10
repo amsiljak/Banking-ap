@@ -3,9 +3,12 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 import android.content.Context;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     private Transaction transaction;
@@ -89,5 +92,34 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     @Override
     public void setTransaction(Parcelable transaction) {
         this.transaction = (Transaction) transaction;
+    }
+
+
+    public HashMap<String, Double> getMonthlyPayments() {
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
+        HashMap<String, Double> iznosi = new HashMap<>();
+        for(Transaction t: transactions) {
+            if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
+                Double vrijednost = iznosi.get(DATE_FORMAT.format(t.getDate())) + t.getAmount();
+                iznosi.put(DATE_FORMAT.format(t.getDate()), vrijednost);
+            } else iznosi.put(t.getDate().toString(), t.getAmount());
+        }
+        return iznosi;
+    }
+    @Override
+    public double getTotalPayments() {
+        double totalPayments = 0;
+        for(Map.Entry <String,Double> el : getMonthlyPayments().entrySet()) {
+            totalPayments += el.getValue();
+        }
+        return totalPayments;
+    }
+    @Override
+    public boolean checkLimit(double amount) {
+        for(Map.Entry <String,Double> el : getMonthlyPayments().entrySet()) {
+            //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
+//            transactionDetailIntent.putExtra(el.getKey(), el.getValue());
+        }
+        return true;
     }
 }

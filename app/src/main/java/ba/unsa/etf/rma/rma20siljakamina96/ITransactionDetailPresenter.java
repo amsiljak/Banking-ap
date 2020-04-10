@@ -21,4 +21,8 @@ public interface ITransactionDetailPresenter {
     void save(String title, double amount, Type type, String itemDescription, Date date);
 
     void delete();
+
+    double getTotalPayments();
+
+    boolean checkLimit(double amount);
 }

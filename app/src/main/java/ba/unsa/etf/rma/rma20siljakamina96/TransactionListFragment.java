@@ -1,8 +1,13 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +51,6 @@ TransactionListFragment extends Fragment implements IFinanceView{
     private ArrayList<String> sortList;
     private Button addTransactionButton;
     private String sort = "Price - Ascending";
-    private int pozicija;
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;
@@ -55,6 +59,7 @@ TransactionListFragment extends Fragment implements IFinanceView{
     private TransactionListAdapter transactionListAdapter;
 
     private int pozi;
+    private int screenWidthDp;
 
     public IFinancePresenter getPresenter() {
         if (financePresenter == null) {
@@ -94,6 +99,9 @@ TransactionListFragment extends Fragment implements IFinanceView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_list, container, false);
+
+        Configuration configuration = getActivity().getResources().getConfiguration();
+        screenWidthDp = configuration.screenWidthDp;
 
         transactionListAdapter = new TransactionListAdapter(getActivity(), R.layout.list_element, new ArrayList<Transaction>());
         transactionListView = (ListView)fragmentView.findViewById(R.id.listView);
@@ -223,14 +231,21 @@ TransactionListFragment extends Fragment implements IFinanceView{
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Transaction transaction = transactionListAdapter.getTransaction(position);
             //drugi klik na stavku
-            if(pozi == position) {
-                transactionListView.setItemChecked(position,false);
-                addTransactionButton.setEnabled(true);
-                onAddButtonClick.onAddButtonClicked();
-                pozi = -1;
+
+            if( screenWidthDp >= 500) {
+                if (pozi == position) {
+                    transactionListView.setItemChecked(position, false);
+                    addTransactionButton.setEnabled(true);
+                    onAddButtonClick.onAddButtonClicked();
+                    pozi = -1;
+                } else {
+                    pozi = position;
+                    addTransactionButton.setEnabled(false);
+                    onItemClick.onItemClicked(transaction);
+                }
             }
-            else{
-                pozi = position;
+            else {
+                transactionListView.setItemChecked(position, false);
                 addTransactionButton.setEnabled(false);
                 onItemClick.onItemClicked(transaction);
             }

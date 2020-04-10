@@ -3,14 +3,9 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 import android.content.Context;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
@@ -108,38 +103,5 @@ public class FinancePresenter implements IFinancePresenter {
         }
         return lista;
     }
-
-//    @Override
-//    public void deleteTransaction(Transaction t) {
-//        Iterator itr = transactions.iterator();
-//        while (itr.hasNext())
-//        {
-//            Transaction transaction = (Transaction)itr.next();
-//            if (t.equals(transaction))
-//                itr.remove();
-//        }
-//        setAccount();
-//        view.setTransactions(transactions);
-//    }
-
-//    @Override
-//    public void addTransaction(Transaction t) {
-//        transactions.add(t);
-//        setAccount();
-//        view.setTransactions(transactions);
-//    }
-
-    public HashMap<String, Double> getMonthlyPayments() {
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
-        HashMap<String, Double> iznosi = new HashMap<>();
-        for(Transaction t: transactions) {
-            if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
-                Double vrijednost = iznosi.get(DATE_FORMAT.format(t.getDate())) + t.getAmount();
-                iznosi.put(DATE_FORMAT.format(t.getDate()), vrijednost);
-            } else iznosi.put(t.getDate().toString(), t.getAmount());
-        }
-        return iznosi;
-    }
-
 }
 

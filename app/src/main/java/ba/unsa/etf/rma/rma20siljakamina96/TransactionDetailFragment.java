@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,13 +38,18 @@ public class TransactionDetailFragment extends Fragment {
     private SimpleDateFormat DATE_FORMAT;
 
     private OnTransactionModify onTransactionModify;
+    private OnTransactionAddOrDelete onTransactionAddOrDelete;
 
     private boolean validTitle, validAmount, validDate, validEndDate, validDescription, validInterval, validType;
 
     private boolean saving;
+    private int screenWidthDp;
 
     public interface OnTransactionModify {
         void onTransactionModified();
+    }
+    public interface OnTransactionAddOrDelete {
+        void onTransactionAddedOrDeleted();
     }
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
@@ -55,6 +61,9 @@ public class TransactionDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        Configuration configuration = getActivity().getResources().getConfiguration();
+        screenWidthDp = configuration.screenWidthDp;
 
         titleEditText = (EditText) view.findViewById(R.id.transactionTitle);
         amountEditText = (EditText) view.findViewById(R.id.transactionAmount);
@@ -71,6 +80,7 @@ public class TransactionDetailFragment extends Fragment {
 
 
         onTransactionModify = (OnTransactionModify) getActivity();
+        onTransactionAddOrDelete = (OnTransactionAddOrDelete) getActivity();
 
         getPresenter();
         DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -305,6 +315,9 @@ public class TransactionDetailFragment extends Fragment {
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
                 onTransactionModify.onTransactionModified();
+                if(screenWidthDp < 500) {
+                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -331,7 +344,7 @@ public class TransactionDetailFragment extends Fragment {
             }
 //            else {
 //                double iznos = 0;
-//                double totalPayments = getIntent().getDoubleExtra("totalPayments", 0);
+//                double totalPayments = presenter.getTotalPayments();
 //                if(getIntent().hasExtra(String.valueOf(dateEditText.getText()).substring(3))) iznos = getIntent().getDoubleExtra(String.valueOf(dateEditText.getText()), 0);
 //
 //                if(((Double.parseDouble(amountEditText.getText().toString()) + iznos) < presenter.getAccount().getMonthLimit()) ||
@@ -378,13 +391,15 @@ public class TransactionDetailFragment extends Fragment {
                             // Continue with delete operation
                             presenter.delete();
                             onTransactionModify.onTransactionModified();
+                            if(screenWidthDp < 500) {
+                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                            }
                         }
                     })
                     // A null listener allows the button to dismiss the dialog and take no further action.
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-
         }
     };
 
