@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,8 @@ public class BudgetFragment extends Fragment implements IAccountView{
     private TextView budgetText;
     private TextView totalLimitText;
     private TextView monthLimitText;
+
+    private Button saveButton;
 
     private IAccountPresenter accountPresenter;
 
@@ -36,6 +40,16 @@ public class BudgetFragment extends Fragment implements IAccountView{
         budgetText.setText(String.valueOf(getAccountPresenter().getAccount().getBudget()));
         totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
         monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
+
+        saveButton = (Button)fragmentView.findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(saveClickListener);
+
         return fragmentView;
     }
+    private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            accountPresenter.modifyAccount(Double.parseDouble(budgetText.getText().toString()), Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
+        }
+    };
 }
