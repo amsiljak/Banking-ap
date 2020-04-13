@@ -6,5 +6,5 @@ public interface IAccountPresenter {
 
     Account getAccount();
 
-    void modifyAccount(double budget, double totalLimit, double monthLimit);
+    void modifyAccount(double totalLimit, double monthLimit);
 }

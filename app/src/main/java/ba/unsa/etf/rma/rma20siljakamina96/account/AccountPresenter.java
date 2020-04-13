@@ -21,7 +21,7 @@ public class AccountPresenter implements IAccountPresenter{
         return accountInteractor.getAccount();
     }
     @Override
-    public void modifyAccount(double budget, double totalLimit, double monthLimit) {
-        accountInteractor.modifyAccount(budget, totalLimit, monthLimit);
+    public void modifyAccount(double totalLimit, double monthLimit) {
+        accountInteractor.modifyAccount(totalLimit, monthLimit);
     }
 }

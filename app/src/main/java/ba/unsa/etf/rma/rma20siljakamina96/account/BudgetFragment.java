@@ -49,7 +49,7 @@ public class BudgetFragment extends Fragment implements IAccountView{
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            accountPresenter.modifyAccount(Double.parseDouble(budgetText.getText().toString()), Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
+            accountPresenter.modifyAccount(Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
         }
     };
 }
