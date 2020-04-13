@@ -1,9 +1,8 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;

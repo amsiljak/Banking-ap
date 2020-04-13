@@ -1,8 +1,9 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 
 public interface IFinancePresenter {
     void refresh();

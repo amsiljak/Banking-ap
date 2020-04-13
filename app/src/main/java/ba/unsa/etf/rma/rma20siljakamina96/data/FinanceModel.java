@@ -1,15 +1,16 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.data;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public class FinanceModel {
     public static Account account = new Account(7000, 5000, 2000);
-    public static Calendar cal = Calendar.getInstance();
     public static ArrayList<Transaction> transactions = new ArrayList<Transaction>() {
         {
             try {

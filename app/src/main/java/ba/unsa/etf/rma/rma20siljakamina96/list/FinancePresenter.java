@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 
@@ -7,19 +7,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
 
-    private static IFinanceInteractor financeInteractor;
+    private static ITransactionInteractor financeInteractor;
+    private IAccountInteractor accountInteractor;
     private IFinanceView view;
     private static ArrayList<Transaction> transactions;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
-        this.financeInteractor = new FinanceInteractor();
+        this.financeInteractor = new TransactionInteractor();
+        this.accountInteractor = new AccountInteractor();
         this.view = view;
         transactions = financeInteractor.getTransactions();
     }
+
 
     public static ArrayList<Transaction> getTransactions() {
         return transactions;
@@ -38,8 +45,8 @@ public class FinancePresenter implements IFinancePresenter {
         for(Transaction t : transactions) {
             iznos += t.getAmount();
         }
-        iznos = financeInteractor.getAccount().getBudget() + iznos;
-        view.setAccountData(df.format(iznos), String.valueOf(financeInteractor.getAccount().getTotalLimit()));
+        iznos = accountInteractor.getAccount().getBudget() + iznos;
+        view.setAccountData(df.format(iznos), String.valueOf(accountInteractor.getAccount().getTotalLimit()));
     }
 
     @Override

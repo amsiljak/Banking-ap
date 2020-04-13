@@ -1,24 +1,10 @@
 package ba.unsa.etf.rma.rma20siljakamina96;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.ITransactionDetailActivity;
 
 public class TransactionDetailActivity extends AppCompatActivity implements ITransactionDetailActivity {
 //    private ITransactionDetailPresenter presenter;

@@ -1,13 +1,7 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,28 +10,34 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Map;
 
-public class
-TransactionListFragment extends Fragment implements IFinanceView{
+import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
+import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+
+public class TransactionListFragment extends Fragment implements IFinanceView, IAccountView {
 
     private ListView transactionListView;
     private OnItemClick onItemClick;
     private OnAddButtonClick onAddButtonClick;
+    private OnSwipeLeft onSwipeLeft;
+
     private TextView globalAmount2;
     private TextView limit2;
     private Spinner filterSpinner;
@@ -61,7 +61,9 @@ TransactionListFragment extends Fragment implements IFinanceView{
     private int pozi;
     private int screenWidthDp;
 
-    public IFinancePresenter getPresenter() {
+    ConstraintLayout listLayout;
+
+    public IFinancePresenter getTransactionPresenter() {
         if (financePresenter == null) {
             financePresenter = new FinancePresenter(this, getActivity());
         }
@@ -94,6 +96,9 @@ TransactionListFragment extends Fragment implements IFinanceView{
     public interface OnItemClick {
         void onItemClicked(Transaction transaction);
     }
+    public interface OnSwipeLeft {
+        void onSwipedLeft();
+    }
 
     @Nullable
     @Override
@@ -112,7 +117,15 @@ TransactionListFragment extends Fragment implements IFinanceView{
         globalAmount2 = (TextView)fragmentView.findViewById(R.id.globalAmount2);
         limit2 = fragmentView.findViewById(R.id.limit2);
 
+        listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
 
+        onSwipeLeft = (OnSwipeLeft) getActivity();
+        listLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            @Override
+            public void onSwipeLeft() {
+                onSwipeLeft.onSwipedLeft();
+            }
+        });
         type = "All";
         filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
         filterList = new ArrayList<>();
@@ -151,7 +164,7 @@ TransactionListFragment extends Fragment implements IFinanceView{
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
-        getPresenter().refresh();
+        getTransactionPresenter().refresh();
         return fragmentView;
     }
 

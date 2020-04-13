@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -10,15 +10,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.list.FinancePresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
+
 public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     private Transaction transaction;
     private Context context;
-    private IFinanceInteractor interactor;
+    private ITransactionInteractor transactionInteractor;
+    private IAccountInteractor accountInteractor;
+
     private ArrayList<Transaction> transactions = FinancePresenter.getTransactions();
 
     public TransactionDetailPresenter(Context context) {
         this.context = context;
-        this.interactor = new FinanceInteractor();
+        this.transactionInteractor = new TransactionInteractor();
     }
     @Override
     public void save(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
@@ -86,7 +96,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
 
     @Override
     public Account getAccount() {
-        return interactor.getAccount();
+        return accountInteractor.getAccount();
     }
 
     @Override

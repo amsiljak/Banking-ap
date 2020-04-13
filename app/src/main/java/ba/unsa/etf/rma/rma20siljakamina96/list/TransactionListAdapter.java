@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,8 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 
 public class TransactionListAdapter extends ArrayAdapter<Transaction> {
     public int resource;

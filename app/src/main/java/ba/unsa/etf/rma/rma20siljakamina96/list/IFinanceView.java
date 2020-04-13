@@ -1,9 +1,10 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import java.util.ArrayList;
 
-public interface IFinanceView {
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 
+public interface IFinanceView {
     void notifyTransactionDataSetChanged();
 
     void setAccountData(String globalAmount, String limit);

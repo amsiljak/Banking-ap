@@ -4,11 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+
+import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailFragment;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListFragment;
+
 public class MainActivity extends AppCompatActivity implements TransactionListFragment.OnItemClick, TransactionListFragment.OnAddButtonClick,
-        TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete {
+        TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete, TransactionListFragment.OnSwipeLeft {
     private boolean twoPaneMode=false;
     private TransactionListFragment listFragment;
     private TransactionDetailFragment detailFragment;
+    private BudgetFragment budgetFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,26 +120,46 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
 
     @Override
     public void onTransactionModified() {
-        listFragment.getPresenter().setTransactions();
-        listFragment.getPresenter().setAccount();
+        listFragment.getTransactionPresenter().setTransactions();
+        listFragment.getTransactionPresenter().setAccount();
     }
 
     @Override
     public void onTransactionAddedOrDeleted() {
         Bundle arguments = new Bundle();
-//        arguments.putParcelable("transaction", transaction);
         listFragment = new TransactionListFragment();
         listFragment.setArguments(arguments);
         if (twoPaneMode){
             //Sluˇcaj za ekrane sa ˇsirom dijagonalom
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.transaction_detail, listFragment)
+                    .replace(R.id.transactions_list, listFragment)
                     .commit();
         }
         else{
             //Sluˇcaj za ekrane sa poˇcetno zadanom ˇsirinom
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.transactions_list,listFragment)
+                    .addToBackStack(null)
+                    .commit();
+            //Primijetite liniju .addToBackStack(null)
+        }
+    }
+
+    @Override
+    public void onSwipedLeft() {
+        Bundle arguments = new Bundle();
+        budgetFragment = new BudgetFragment();
+        listFragment.setArguments(arguments);
+        if (twoPaneMode){
+            //Sluˇcaj za ekrane sa ˇsirom dijagonalom
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.transactions_list, budgetFragment)
+                    .commit();
+        }
+        else{
+            //Sluˇcaj za ekrane sa poˇcetno zadanom ˇsirinom
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.transactions_list,budgetFragment)
                     .addToBackStack(null)
                     .commit();
             //Primijetite liniju .addToBackStack(null)

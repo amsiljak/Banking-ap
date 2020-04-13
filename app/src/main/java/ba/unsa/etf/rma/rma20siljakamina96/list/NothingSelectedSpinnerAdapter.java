@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 import android.database.DataSetObserver;

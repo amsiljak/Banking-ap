@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+
+import ba.unsa.etf.rma.rma20siljakamina96.R;
 
 public class FilterSpinnerAdapter extends ArrayAdapter<String> {
     private int resource;

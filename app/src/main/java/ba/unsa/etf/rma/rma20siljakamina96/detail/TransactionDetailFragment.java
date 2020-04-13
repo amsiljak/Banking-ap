@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +21,10 @@ import androidx.fragment.app.Fragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public class TransactionDetailFragment extends Fragment {
     private ITransactionDetailPresenter presenter;
@@ -327,7 +331,7 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!(validTitle && validAmount && validDate && validDescription && validEndDate && validInterval && validType)) {
+            if (!(validTitle && validAmount && validDate && validDescription && validEndDate && validInterval && validType)) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                 builder1.setTitle("Nevalidan unos!");
                 builder1.setCancelable(true);
@@ -341,13 +345,9 @@ public class TransactionDetailFragment extends Fragment {
                         });
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
-            }
-            else {
-                presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3));
-            }
-                double iznos = 0;
+            } else {
                 double totalPayments = presenter.getTotalPayments();
-                if(presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3))||
+                if (presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
                         ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) < presenter.getAccount().getTotalLimit())) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                     builder1.setTitle("Save transaction");
@@ -373,9 +373,9 @@ public class TransactionDetailFragment extends Fragment {
 
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                }
-            else saveAction();
+                } else saveAction();
             }
+        }
     };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
