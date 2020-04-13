@@ -14,6 +14,9 @@ import ba.unsa.etf.rma.rma20siljakamina96.R;
 
 public class BudgetFragment extends Fragment implements IAccountView{
     private TextView budgetText;
+    private TextView totalLimitText;
+    private TextView monthLimitText;
+
     private IAccountPresenter accountPresenter;
 
     public IAccountPresenter getAccountPresenter() {
@@ -27,7 +30,12 @@ public class BudgetFragment extends Fragment implements IAccountView{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_budget, container, false);
         budgetText = (TextView)fragmentView.findViewById(R.id.budgetView);
+        totalLimitText = (TextView)fragmentView.findViewById(R.id.totalLimitView);
+        monthLimitText = (TextView)fragmentView.findViewById(R.id.monthLimitView);
+
         budgetText.setText(String.valueOf(getAccountPresenter().getAccount().getBudget()));
+        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
+        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
         return fragmentView;
     }
 }
