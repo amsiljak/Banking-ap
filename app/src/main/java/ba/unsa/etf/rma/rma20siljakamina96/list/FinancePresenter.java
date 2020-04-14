@@ -17,32 +17,24 @@ public class FinancePresenter implements IFinancePresenter {
     private static ITransactionInteractor financeInteractor;
     private IAccountInteractor accountInteractor;
     private IFinanceView view;
-    private static ArrayList<Transaction> transactions;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
         this.financeInteractor = new TransactionInteractor();
         this.accountInteractor = new AccountInteractor();
         this.view = view;
-        transactions = financeInteractor.getTransactions();
     }
-
-
-    public static ArrayList<Transaction> getTransactions() {
-        return transactions;
-    }
-
 
     @Override
     public void setTransactions() {
-        view.setTransactions(transactions);
+        view.setTransactions(financeInteractor.getTransactions());
     }
 
     @Override
     public void setAccount() {
         DecimalFormat df = new DecimalFormat("#.##");
         double iznos = 0;
-        for(Transaction t : transactions) {
+        for(Transaction t : financeInteractor.getTransactions()) {
             if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
             || t.getType().toString().equals("REGULARPAYMENT")) iznos -= t.getAmount();
             else iznos += t.getAmount();
@@ -54,7 +46,7 @@ public class FinancePresenter implements IFinancePresenter {
     @Override
     public void refresh() {
         setAccount();
-        view.setTransactions(transactions);
+        view.setTransactions(financeInteractor.getTransactions());
         view.notifyTransactionDataSetChanged();
         view.setDate();
     }
@@ -62,7 +54,7 @@ public class FinancePresenter implements IFinancePresenter {
     @Override
     public ArrayList<Transaction> sortTransactions(String tip) {
         ArrayList<Transaction> transakcije = new ArrayList<>();
-        transakcije.addAll(transactions);
+        transakcije.addAll(financeInteractor.getTransactions());
         if(tip.equals("Price - Ascending")) Collections.sort(transakcije, Transaction.TranPriceComparatorAsc);
         if(tip.equals("Price - Descending")) Collections.sort(transakcije, Transaction.TranPriceComparatorDesc);
         if(tip.equals("Title - Ascending")) Collections.sort(transakcije, Transaction.TranTitleComparatorAsc);

@@ -13,20 +13,22 @@ import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
 
-public class GraphsFragment extends Fragment {
+public class GraphsFragment extends Fragment implements IGraphsView{
     private OnSwipeLeft onSwipeLeft;
     private OnSwipeRight onSwipeRight;
     private ConstraintLayout graphsLayout;
+    private IGraphsPresenter presenter;
 
+    public IGraphsPresenter getPresenter() {
+        if (presenter == null) {
+            presenter = new GraphsPresenter(this, getActivity());
+        }
+        return presenter;
+    }
     private BarChart consumptionBarChart;
     public interface OnSwipeLeft {
         void openListFragmentFromGraphs();
@@ -55,21 +57,11 @@ public class GraphsFragment extends Fragment {
         });
 
         consumptionBarChart = (BarChart) fragmentView.findViewById(R.id.chart);
-        List<BarEntry> entries = new ArrayList<BarEntry>();
-        entries.add(new BarEntry(0f, 30f));
-
-        BarDataSet dataSet = new BarDataSet(entries, "Potrošnja"); // add entries to dataset
-        dataSet.setColor(Color.RED);
-        dataSet.setValueTextColor(Color.BLACK); // styling, ...
-
-        BarData barData = new BarData(dataSet);
-        barData.setBarWidth(0.9f); // set custom bar width
-        consumptionBarChart.setData(barData);
-        consumptionBarChart.setFitBars(true); // make the x-axis fit exactly all bars
-        consumptionBarChart.invalidate(); // refresh
+        getPresenter().putDataToBarData("Month");
 
         return fragmentView;
     }
+    @Override
     public void setConsumptionBarChart(BarData barData) {
         consumptionBarChart.setData(barData);
         consumptionBarChart.setFitBars(true); // make the x-axis fit exactly all bars

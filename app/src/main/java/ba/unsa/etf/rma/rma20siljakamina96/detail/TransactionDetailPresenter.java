@@ -24,7 +24,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     private ITransactionInteractor transactionInteractor;
     private IAccountInteractor accountInteractor;
 
-    private ArrayList<Transaction> transactions = FinancePresenter.getTransactions();
 
     public TransactionDetailPresenter(Context context) {
         this.context = context;
@@ -85,7 +84,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();
-        for(Transaction t: transactions) {
+        for(Transaction t: transactionInteractor.getTransactions()) {
             if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
                     || t.getType().toString().equals("REGULARPAYMENT")) {
                 if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
