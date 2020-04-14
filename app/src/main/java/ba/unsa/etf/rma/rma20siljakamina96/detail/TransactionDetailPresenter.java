@@ -68,8 +68,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
             if (t.equals(transaction))
                 itr.remove();
         }
-//        setAccount();
-//        view.setTransactions(transactions);
     }
 
     @Override
@@ -111,10 +109,13 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();
         for(Transaction t: transactions) {
-            if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
-                Double vrijednost = iznosi.get(DATE_FORMAT.format(t.getDate())) + t.getAmount();
-                iznosi.put(DATE_FORMAT.format(t.getDate()), vrijednost);
-            } else iznosi.put(t.getDate().toString(), t.getAmount());
+            if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
+                    || t.getType().toString().equals("REGULARPAYMENT")) {
+                if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
+                    Double vrijednost = iznosi.get(DATE_FORMAT.format(t.getDate())) + t.getAmount();
+                    iznosi.put(DATE_FORMAT.format(t.getDate()), vrijednost);
+                } else iznosi.put(t.getDate().toString(), t.getAmount());
+            }
         }
         return iznosi;
     }
@@ -128,15 +129,15 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     }
     @Override
     public boolean isOverLimit(double amount, String date) {
+        //trazi zbir postrosnji u određenom mjesecu i vraca true ako je proslo mjesecni limit
         for(Map.Entry <String,Double> el : getMonthlyPayments().entrySet()) {
             if(el.getKey().equals(date)) {
-                if(el.getValue() + amount < getAccount().getMonthLimit()) return true;
+                if(el.getValue() + amount > getAccount().getMonthLimit()) return true;
                 else return false;
             }
-            //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
-//            transactionDetailIntent.putExtra(el.getKey(), el.getValue());
         }
-        if(amount < getAccount().getMonthLimit()) return true;
+        //ako je ovo prva potrosnja za taj mjesec provjerava samo nju
+        if(amount > getAccount().getMonthLimit()) return true;
         else return false;
     }
 }

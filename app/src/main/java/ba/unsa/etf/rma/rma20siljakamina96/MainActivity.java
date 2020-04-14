@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         TransactionListFragment.OnSwipeLeft, TransactionListFragment.OnSwipeRight,
         BudgetFragment.OnSwipeLeft, BudgetFragment.OnSwipeRight,
         GraphsFragment.OnSwipeRight, GraphsFragment.OnSwipeLeft {
+
     private boolean twoPaneMode=false;
     private TransactionListFragment listFragment;
     private TransactionDetailFragment detailFragment;

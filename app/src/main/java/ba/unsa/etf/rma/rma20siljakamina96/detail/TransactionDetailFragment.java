@@ -282,6 +282,8 @@ public class TransactionDetailFragment extends Fragment {
     };
 
     private void saveAction() {
+        String type = typeEditText.getText().toString().toUpperCase();
+
         //izmjena transakcije
         if (saving) {
             titleEditText.setBackgroundColor(android.R.attr.editTextColor);
@@ -293,7 +295,7 @@ public class TransactionDetailFragment extends Fragment {
             intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
             try {
-                if ((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT")))
+                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
                     presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
@@ -309,7 +311,7 @@ public class TransactionDetailFragment extends Fragment {
         //dodavanje transakcije
         } else {
             try {
-                if ((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT")))
+                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
                     presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
@@ -331,6 +333,8 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
+            String type = typeEditText.getText().toString().toUpperCase();
+
             if (!(validTitle && validAmount && validDate && validDescription && validEndDate && validInterval && validType)) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                 builder1.setTitle("Nevalidan unos!");
@@ -345,10 +349,11 @@ public class TransactionDetailFragment extends Fragment {
                         });
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
-            } else {
+            } else if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                    || type.equals("REGULARPAYMENT")){
                 double totalPayments = presenter.getTotalPayments();
                 if (presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
-                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) < presenter.getAccount().getTotalLimit())) {
+                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > presenter.getAccount().getTotalLimit())) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                     builder1.setTitle("Save transaction");
                     builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");

@@ -43,7 +43,9 @@ public class FinancePresenter implements IFinancePresenter {
         DecimalFormat df = new DecimalFormat("#.##");
         double iznos = 0;
         for(Transaction t : transactions) {
-            iznos += t.getAmount();
+            if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
+            || t.getType().toString().equals("REGULARPAYMENT")) iznos -= t.getAmount();
+            else iznos += t.getAmount();
         }
         iznos = accountInteractor.getAccount().getBudget() + iznos;
         view.setAccountData(df.format(iznos), String.valueOf(accountInteractor.getAccount().getTotalLimit()));
