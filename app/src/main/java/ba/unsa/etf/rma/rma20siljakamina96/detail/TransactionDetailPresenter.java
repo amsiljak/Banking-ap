@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
@@ -34,49 +33,25 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     }
     @Override
     public void save(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
-        for(Transaction t: transactions) {
-            if (t.getTitle().equals(transaction.getTitle())) {
-                t.setTitle(title);
-                t.setAmount(amount);
-                t.setItemDescription(itemDescription);
-                t.setTransactionInterval(transactionInterval);
-                t.setType(type);
-                t.setDate(date);
-                t.setEndDate(endDate);
-            }
-        }
+        transactionInteractor.save(transaction, title, amount, type, itemDescription, transactionInterval, date, endDate);
     }
     @Override
     public void save(String title, double amount, Type type, String itemDescription, Date date) {
-        for(Transaction t: transactions) {
-            if (t.getTitle().equals(transaction.getTitle())) {
-                t.setTitle(title);
-                t.setAmount(amount);
-                t.setItemDescription(itemDescription);
-                t.setType(type);
-                t.setDate(date);
-            }
-        }
+        transactionInteractor.save(transaction, title, amount, type, itemDescription, date);
     }
 
     @Override
     public void delete() {
-        Iterator itr = transactions.iterator();
-        while (itr.hasNext())
-        {
-            Transaction t = (Transaction)itr.next();
-            if (t.equals(transaction))
-                itr.remove();
-        }
+        transactionInteractor.delete(transaction);
     }
 
     @Override
     public void add(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
-        transactions.add(new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate));
+       transactionInteractor.add(title, amount, type, itemDescription, transactionInterval, date, endDate);
     }
     @Override
     public void add(String title, double amount, Type type, String itemDescription, Date date) {
-        transactions.add(new Transaction(date, amount, title, type, itemDescription));
+        transactionInteractor.add(title, amount, type, itemDescription, date);
     }
 
     @Override
@@ -88,6 +63,8 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public void create(String title, double amount, Type type, String itemDescription, Date date) {
         this.transaction = new Transaction(date, amount, title, type, itemDescription);
     }
+
+
 
     @Override
     public Transaction getTransaction() {

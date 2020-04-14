@@ -55,9 +55,10 @@
             <artifactId>android</artifactId>
             <scope>provided</scope>
             <version>4.1.1.4</version>
+
+
         </dependency>
     </dependencies>
-
 
     <issueManagement>
         <url>https://github.com/PhilJay/MPAndroidChart/issues</url>

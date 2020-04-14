@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.rma20siljakamina96;
+package ba.unsa.etf.rma.rma20siljakamina96.graphs;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,23 +12,22 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
+import ba.unsa.etf.rma.rma20siljakamina96.R;
 
 public class GraphsFragment extends Fragment {
     private OnSwipeLeft onSwipeLeft;
     private OnSwipeRight onSwipeRight;
     private ConstraintLayout graphsLayout;
 
-    private BarChart barChart;
+    private BarChart consumptionBarChart;
     public interface OnSwipeLeft {
         void openListFragmentFromGraphs();
     }
@@ -55,20 +54,25 @@ public class GraphsFragment extends Fragment {
             }
         });
 
-        barChart = (BarChart) fragmentView.findViewById(R.id.chart);
+        consumptionBarChart = (BarChart) fragmentView.findViewById(R.id.chart);
         List<BarEntry> entries = new ArrayList<BarEntry>();
         entries.add(new BarEntry(0f, 30f));
 
-        BarDataSet dataSet = new BarDataSet(entries, "BarDataSet"); // add entries to dataset
-        dataSet.setColor(Color.GRAY);
+        BarDataSet dataSet = new BarDataSet(entries, "Potrošnja"); // add entries to dataset
+        dataSet.setColor(Color.RED);
         dataSet.setValueTextColor(Color.BLACK); // styling, ...
 
         BarData barData = new BarData(dataSet);
         barData.setBarWidth(0.9f); // set custom bar width
-        barChart.setData(barData);
-        barChart.setFitBars(true); // make the x-axis fit exactly all bars
-        barChart.invalidate(); // refresh
+        consumptionBarChart.setData(barData);
+        consumptionBarChart.setFitBars(true); // make the x-axis fit exactly all bars
+        consumptionBarChart.invalidate(); // refresh
 
         return fragmentView;
+    }
+    public void setConsumptionBarChart(BarData barData) {
+        consumptionBarChart.setData(barData);
+        consumptionBarChart.setFitBars(true); // make the x-axis fit exactly all bars
+        consumptionBarChart.invalidate(); // refresh
     }
 }

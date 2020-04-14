@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailFragment;
+import ba.unsa.etf.rma.rma20siljakamina96.graphs.GraphsFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListFragment;
 
 public class MainActivity extends AppCompatActivity implements TransactionListFragment.OnItemClick, TransactionListFragment.OnAddButtonClick,
