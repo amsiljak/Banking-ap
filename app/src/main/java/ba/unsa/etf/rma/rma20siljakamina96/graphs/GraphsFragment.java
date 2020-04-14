@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96.graphs;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,16 +46,19 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         onSwipeRight = (OnSwipeRight) getActivity();
         graphsLayout = (ConstraintLayout) fragmentView.findViewById(R.id.graphsLayout);
 
-        graphsLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-            @Override
-            public void onSwipeLeft() {
-                onSwipeLeft.openListFragmentFromGraphs();
-            }
-            @Override
-            public void onSwipeRight() {
-                onSwipeRight.openBudgetFragmentFromGraphs();
-            }
-        });
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            graphsLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+                @Override
+                public void onSwipeLeft() {
+                    onSwipeLeft.openListFragmentFromGraphs();
+                }
+                @Override
+                public void onSwipeRight() {
+                    onSwipeRight.openBudgetFragmentFromGraphs();
+                }
+            });
+        }
+
 
         consumptionBarChart = (BarChart) fragmentView.findViewById(R.id.chart);
         getPresenter().putDataToBarData("Month");

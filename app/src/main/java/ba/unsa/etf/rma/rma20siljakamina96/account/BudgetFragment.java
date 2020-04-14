@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96.account;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,15 +62,18 @@ public class BudgetFragment extends Fragment implements IAccountView{
         onSwipeRight = (OnSwipeRight) getActivity();
 
         accountLayout = (ConstraintLayout) fragmentView.findViewById(R.id.accountLayout);
-        accountLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-            @Override
-            public void onSwipeLeft() {
-                onSwipeLeft.openGraphsFragmentFromBudget();
-            }
-            public void onSwipeRight() {
-                onSwipeRight.openListFragmentFromBudget();
-            }
-        });
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            accountLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+                @Override
+                public void onSwipeLeft() {
+                    onSwipeLeft.openGraphsFragmentFromBudget();
+                }
+                public void onSwipeRight() {
+                    onSwipeRight.openListFragmentFromBudget();
+                }
+            });
+        }
 
         return fragmentView;
     }

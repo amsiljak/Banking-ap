@@ -16,7 +16,7 @@ public class FinanceModel {
             }
             try {
                 add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),1000,"Transakcija 2",
-                        Type.REGULARPAYMENT, "Transakcija 2", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2021-11-14")));
+                        Type.REGULARPAYMENT, "Transakcija 2", 30, new SimpleDateFormat("yyyy-MM-dd").parse("2021-11-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -47,7 +47,7 @@ public class FinanceModel {
             }
             try {
                 add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-08-1"),943.5,"Transakcija 6",
-                        Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-14")));
+                        Type.REGULARPAYMENT, "opis", 60, new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-14")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -79,7 +79,7 @@ public class FinanceModel {
             }
             try {
                 add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-14"),730.4,"Transakcija 11",
-                        Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2022-11-06")));
+                        Type.REGULARPAYMENT, "opis", 20, new SimpleDateFormat("yyyy-MM-dd").parse("2022-11-06")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -108,7 +108,7 @@ public class FinanceModel {
             }
             try {
                 add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-08-1"),300,"Transakcija 16",
-                        Type.REGULARPAYMENT, "opis", 2, new SimpleDateFormat("yyyy-MM-dd").parse("2021-03-16")));
+                        Type.REGULARPAYMENT, "opis", 30, new SimpleDateFormat("yyyy-MM-dd").parse("2021-03-16")));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

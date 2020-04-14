@@ -125,17 +125,19 @@ public class TransactionListFragment extends Fragment implements IFinanceView, I
         onSwipeLeft = (OnSwipeLeft) getActivity();
         onSwipeRight = (OnSwipeRight) getActivity();
 
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            listLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+                @Override
+                public void onSwipeRight() {
+                    onSwipeRight.openGraphsFragmentFromList();
+                }
+                @Override
+                public void onSwipeLeft() {
+                    onSwipeLeft.openBudgetFragmentFromList();
+                }
+            });
+        }
 
-        listLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-            @Override
-            public void onSwipeRight() {
-                onSwipeRight.openGraphsFragmentFromList();
-            }
-            @Override
-            public void onSwipeLeft() {
-                onSwipeLeft.openBudgetFragmentFromList();
-            }
-        });
         type = "All";
         filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
         filterList = new ArrayList<>();

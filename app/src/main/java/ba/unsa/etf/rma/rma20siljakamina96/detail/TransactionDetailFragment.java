@@ -47,7 +47,6 @@ public class TransactionDetailFragment extends Fragment {
     private boolean validTitle, validAmount, validDate, validEndDate, validDescription, validInterval, validType;
 
     private boolean saving;
-    private int screenWidthDp;
 
     public interface OnTransactionModify {
         void onTransactionModified();
@@ -67,7 +66,6 @@ public class TransactionDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
         Configuration configuration = getActivity().getResources().getConfiguration();
-        screenWidthDp = configuration.screenWidthDp;
 
         titleEditText = (EditText) view.findViewById(R.id.transactionTitle);
         amountEditText = (EditText) view.findViewById(R.id.transactionAmount);
@@ -321,9 +319,10 @@ public class TransactionDetailFragment extends Fragment {
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
                 onTransactionModify.onTransactionModified();
-                if(screenWidthDp < 500) {
+                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                     onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                 }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -396,7 +395,7 @@ public class TransactionDetailFragment extends Fragment {
                             // Continue with delete operation
                             presenter.delete();
                             onTransactionModify.onTransactionModified();
-                            if(screenWidthDp < 500) {
+                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                                 onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                             }
                         }
