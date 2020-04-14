@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -29,6 +30,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public TransactionDetailPresenter(Context context) {
         this.context = context;
         this.transactionInteractor = new TransactionInteractor();
+        this.accountInteractor = new AccountInteractor();
     }
     @Override
     public void save(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {

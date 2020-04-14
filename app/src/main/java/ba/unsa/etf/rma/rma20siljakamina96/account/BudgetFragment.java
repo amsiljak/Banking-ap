@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
 
 public class BudgetFragment extends Fragment implements IAccountView{
@@ -21,6 +23,11 @@ public class BudgetFragment extends Fragment implements IAccountView{
 
     private Button saveButton;
 
+    private OnSwipeLeft onSwipeLeft;
+    private OnSwipeRight onSwipeRight;
+
+    private ConstraintLayout accountLayout;
+
     private IAccountPresenter accountPresenter;
 
     public IAccountPresenter getAccountPresenter() {
@@ -28,6 +35,12 @@ public class BudgetFragment extends Fragment implements IAccountView{
             accountPresenter = new AccountPresenter(this, getActivity());
         }
         return accountPresenter;
+    }
+    public interface OnSwipeLeft {
+        void openGraphsFragmentFromBudget();
+    }
+    public interface OnSwipeRight{
+        void openListFragmentFromBudget();
     }
     @Nullable
     @Override
@@ -43,6 +56,20 @@ public class BudgetFragment extends Fragment implements IAccountView{
 
         saveButton = (Button)fragmentView.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
+
+        onSwipeLeft = (OnSwipeLeft) getActivity();
+        onSwipeRight = (OnSwipeRight) getActivity();
+
+        accountLayout = (ConstraintLayout) fragmentView.findViewById(R.id.accountLayout);
+        accountLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            @Override
+            public void onSwipeLeft() {
+                onSwipeLeft.openGraphsFragmentFromBudget();
+            }
+            public void onSwipeRight() {
+                onSwipeRight.openListFragmentFromBudget();
+            }
+        });
 
         return fragmentView;
     }

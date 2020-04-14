@@ -25,8 +25,6 @@ import java.util.Calendar;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
-import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
-import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
@@ -36,7 +34,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView, I
     private ListView transactionListView;
     private OnItemClick onItemClick;
     private OnAddButtonClick onAddButtonClick;
+
     private OnSwipeLeft onSwipeLeft;
+    private OnSwipeRight onSwipeRight;
 
     private TextView globalAmount2;
     private TextView limit2;
@@ -97,7 +97,10 @@ public class TransactionListFragment extends Fragment implements IFinanceView, I
         void onItemClicked(Transaction transaction);
     }
     public interface OnSwipeLeft {
-        void onSwipedLeft();
+        void openBudgetFragmentFromList();
+    }
+    public interface OnSwipeRight {
+        void openGraphsFragmentFromList();
     }
 
     @Nullable
@@ -120,10 +123,17 @@ public class TransactionListFragment extends Fragment implements IFinanceView, I
         listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
 
         onSwipeLeft = (OnSwipeLeft) getActivity();
+        onSwipeRight = (OnSwipeRight) getActivity();
+
+
         listLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             @Override
+            public void onSwipeRight() {
+                onSwipeRight.openGraphsFragmentFromList();
+            }
+            @Override
             public void onSwipeLeft() {
-                onSwipeLeft.onSwipedLeft();
+                onSwipeLeft.openBudgetFragmentFromList();
             }
         });
         type = "All";

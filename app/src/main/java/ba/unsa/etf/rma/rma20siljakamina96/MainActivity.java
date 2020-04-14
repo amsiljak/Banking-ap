@@ -11,16 +11,22 @@ import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListFragment;
 
 public class MainActivity extends AppCompatActivity implements TransactionListFragment.OnItemClick, TransactionListFragment.OnAddButtonClick,
-        TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete, TransactionListFragment.OnSwipeLeft {
+        TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete,
+        TransactionListFragment.OnSwipeLeft, TransactionListFragment.OnSwipeRight,
+        BudgetFragment.OnSwipeLeft, BudgetFragment.OnSwipeRight,
+        GraphsFragment.OnSwipeRight, GraphsFragment.OnSwipeLeft {
     private boolean twoPaneMode=false;
     private TransactionListFragment listFragment;
     private TransactionDetailFragment detailFragment;
     private BudgetFragment budgetFragment;
+    private GraphsFragment graphsFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //dohvatanje FragmentManager-a
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -61,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
             fragmentManager.popBackStack(null,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-    }
 
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -124,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         listFragment.getTransactionPresenter().setAccount();
     }
 
-    @Override
-    public void onTransactionAddedOrDeleted() {
+
+    void openList() {
         Bundle arguments = new Bundle();
         listFragment = new TransactionListFragment();
         listFragment.setArguments(arguments);
@@ -144,12 +150,10 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
             //Primijetite liniju .addToBackStack(null)
         }
     }
-
-    @Override
-    public void onSwipedLeft() {
+    void openBudgetDetails() {
         Bundle arguments = new Bundle();
         budgetFragment = new BudgetFragment();
-        listFragment.setArguments(arguments);
+        budgetFragment.setArguments(arguments);
         if (twoPaneMode){
             //Sluˇcaj za ekrane sa ˇsirom dijagonalom
             getSupportFragmentManager().beginTransaction()
@@ -164,6 +168,60 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
                     .commit();
             //Primijetite liniju .addToBackStack(null)
         }
+    }
+    void openGraphs() {
+        Bundle arguments = new Bundle();
+        graphsFragment = new GraphsFragment();
+        graphsFragment.setArguments(arguments);
+        if (twoPaneMode){
+            //Sluˇcaj za ekrane sa ˇsirom dijagonalom
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.transactions_list,graphsFragment)
+                    .commit();
+        }
+        else{
+            //Sluˇcaj za ekrane sa poˇcetno zadanom ˇsirinom
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.transactions_list,graphsFragment)
+                    .addToBackStack(null)
+                    .commit();
+            //Primijetite liniju .addToBackStack(null)
+        }
+    }
+
+    @Override
+    public void openListFragmentFromGraphs() {
+        openList();
+    }
+
+    @Override
+    public void openBudgetFragmentFromGraphs() {
+        openBudgetDetails();
+    }
+
+    @Override
+    public void openGraphsFragmentFromBudget() {
+        openGraphs();
+    }
+
+    @Override
+    public void openListFragmentFromBudget() {
+        openList();
+    }
+
+    @Override
+    public void openBudgetFragmentFromList() {
+        openBudgetDetails();
+    }
+
+    @Override
+    public void openGraphsFragmentFromList() {
+        openGraphs();
+    }
+
+    @Override
+    public void onTransactionAddedOrDeleted() {
+        openList();
     }
 
 //    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
