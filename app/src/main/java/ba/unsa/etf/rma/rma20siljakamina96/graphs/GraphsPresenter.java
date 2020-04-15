@@ -2,7 +2,6 @@ package ba.unsa.etf.rma.rma20siljakamina96.graphs;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.format.DateUtils;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -23,6 +22,9 @@ import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionInteractor;
 
 public class GraphsPresenter implements IGraphsPresenter{
     private Context context;
+
+    private SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("dd");
+    private SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
 
     private static ITransactionInteractor financeInteractor;
     private IAccountInteractor accountInteractor;
@@ -45,158 +47,100 @@ public class GraphsPresenter implements IGraphsPresenter{
         else  week = 4f;
         return week;
     }
-    @Override
-    public void putDataToBarData(String timeUnit) {
-        SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("dd");
-        SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
+    private List<BarEntry> putMapDataToEntries(Map<Float, Float> mapa, String timeUnit) {
+        float limit;
+        if(timeUnit.equals("Day")) limit = 31f;
+        else if(timeUnit.equals("Week")) limit = 4f;
+        else limit = 12f;
 
-        List<BarEntry> entries = new ArrayList<BarEntry>();
+        List<BarEntry> entries = new ArrayList<>();
+        for(float i = 1f; i <= limit; i++) {
+            if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
+            else entries.add(new BarEntry(i, 0f));
+        }
+
+        return entries;
+    }
+    private Map<Float,Float> putValueToMap(Float key, Float mapValue, Map<Float,Float> mapa) {
+        if (mapa.containsKey(key)) {
+            Float value = mapa.get(key) + mapValue;
+            mapa.put(key, value);
+        } else {
+            mapa.put(key, mapValue);
+        }
+        return mapa;
+    }
+    private Map<Float,Float> monthForRegular(Transaction t, Map<Float, Float> mapa) {
+        Calendar dateOfPayment = Calendar.getInstance();
+        Calendar endDateOfPayment = Calendar.getInstance();
+        dateOfPayment.setTime(t.getDate());
+        endDateOfPayment.setTime(t.getEndDate());
+
+        //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
+        //i onda uzima mjesec pocetnog i na njega stavlja amount
+        while(dateOfPayment.compareTo(endDateOfPayment) <= 0) {
+            if(dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
+                float month = Float.valueOf(MONTH_DATE_FORMAT.format(dateOfPayment.getTime()));
+                mapa = putValueToMap(month, (float)t.getAmount(), mapa);
+            }
+            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
+        }
+        return mapa;
+    }
+    private Map<Float,Float> dayOrWeekForRegular(Transaction t, Map<Float, Float> mapa, String timeUnit) {
+        Calendar dateOfPayment = Calendar.getInstance();
+        Calendar endDateOfPayment = Calendar.getInstance();
+        dateOfPayment.setTime(t.getDate());
+        endDateOfPayment.setTime(t.getEndDate());
+
+        //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
+        //i onda uzima dan pocetnog i na njega stavlja amount
+        while (dateOfPayment.compareTo(endDateOfPayment) <= 0) {
+            if (dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                    dateOfPayment.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+                float day = Float.valueOf(DAY_DATE_FORMAT.format(dateOfPayment.getTime()));
+                if(timeUnit.equals("Week")) day = determineWeek(day);
+
+                mapa = putValueToMap(day, (float)t.getAmount(), mapa);
+            }
+            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
+        }
+        return mapa;
+    }
+    @Override
+    public void putConsumptionDataToBarData(String timeUnit) {
+        List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
         for(Transaction t: financeInteractor.getTransactions()) {
+
             Calendar transactionMonth = Calendar.getInstance();
             transactionMonth.setTime(t.getDate());
+
             if((t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
                     || t.getType().toString().equals("REGULARPAYMENT"))) {
 
                 if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
-                    if (t.getType().toString().equals("REGULARPAYMENT")) {
-
-                        Calendar dateOfPayment = Calendar.getInstance();
-                        Calendar endDateOfPayment = Calendar.getInstance();
-                        dateOfPayment.setTime(t.getDate());
-                        endDateOfPayment.setTime(t.getEndDate());
-
-                        //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
-                        //i onda uzima dan pocetnog i na njega stavlja amount
-                        while (dateOfPayment.compareTo(endDateOfPayment) <= 0) {
-                            if (dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-                                    dateOfPayment.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
-                                float day = Float.valueOf(DAY_DATE_FORMAT.format(dateOfPayment.getTime()));
-                                if(timeUnit.equals("Week")) day = determineWeek(day);
-
-                                if (mapa.containsKey(day)) {
-                                    Float oldValue = mapa.get(day) + (float) t.getAmount();
-                                    mapa.put(day, oldValue);
-                                } else mapa.put(day, (float) t.getAmount());
-                            }
-                            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
-                        }
-
-                    } else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                    if (t.getType().toString().equals("REGULARPAYMENT")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
+                    else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
                             transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
 
                         float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
                         if(timeUnit.equals("Week")) day = determineWeek(day);
 
-                        if (mapa.containsKey(day)) {
-                            Float value = mapa.get(day) + (float) t.getAmount();
-                            mapa.put(day, value);
-                        } else {
-                            mapa.put(day, (float) t.getAmount());
-                        }
+                        mapa = putValueToMap(day, (float)t.getAmount(), mapa);
                     }
                 }
                 else if(timeUnit.equals("Month")) {
-                    if(t.getType().toString().equals("REGULARPAYMENT")) {
-
-                        Calendar dateOfPayment = Calendar.getInstance();
-                        Calendar endDateOfPayment = Calendar.getInstance();
-                        dateOfPayment.setTime(t.getDate());
-                        endDateOfPayment.setTime(t.getEndDate());
-
-                        //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
-                        //i onda uzima mjesec pocetnog i na njega stavlja amount
-                        while(dateOfPayment.compareTo(endDateOfPayment) <= 0) {
-                            if(dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
-                                float month = Float.valueOf(MONTH_DATE_FORMAT.format(dateOfPayment.getTime()));
-                                if (mapa.containsKey(month)) {
-                                    Float oldValue = mapa.get(month) + (float) t.getAmount();
-                                    mapa.put(month, oldValue);
-                                } else mapa.put(month, (float) t.getAmount());
-                            }
-                            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
-                        }
-                    }
+                    if(t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
                     else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
-                        float month = Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate()));
-                        if (mapa.containsKey(month)) {
-                            Float value = mapa.get(month) + (float) t.getAmount();
-                            mapa.put(month, value);
-                        } else {
-                            mapa.put(month, (float) t.getAmount());
-                        }
+                        mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
                     }
                 }
-
-            }
-        }
-        if(timeUnit.equals("Day")) {
-            for(float i = 1f; i <= 31f; i++) {
-                if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
-                else entries.add(new BarEntry(i, 0f));
-            }
-        }
-        else if(timeUnit.equals("Month")) {
-            for(float i = 1f; i <= 12f; i++) {
-                if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
-                else entries.add(new BarEntry(i, 0f));
-            }
-        }
-        else {
-            for(float i = 1f; i <= 4f; i++) {
-                if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
-                else entries.add(new BarEntry(i, 0f));
             }
         }
 
-//        else if(timeUnit.equals("Week")) {
-//            float week;
-//            for(float i = 1f; i <= 4f; i++) {
-//                for(Transaction t: financeInteractor.getTransactions()) {
-//                    if((t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
-//                            || t.getType().toString().equals("REGULARPAYMENT")) && (YEAR_DATE_FORMAT.format(t.getDate())).equals(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))) {
-//
-//                        day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
-//
-//                        if (day == i) {
-//                            if(t.getType().toString().equals("REGULARPAYMENT")) {
-//
-//                                Calendar dateOfPayment = Calendar.getInstance();
-//                                Calendar endDateOfPayment = Calendar.getInstance();
-//                                dateOfPayment.setTime(t.getDate());
-//                                endDateOfPayment.setTime(t.getEndDate());
-//
-//                                //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
-//                                //i onda uzima dan pocetnog i na njega stavlja amount
-//                                while(dateOfPayment.compareTo(endDateOfPayment) <= 0 && dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
-//                                    day = Float.valueOf(DAY_DATE_FORMAT.format(dateOfPayment.getTime()));
-//                                    if (mapa.containsKey(day)) {
-//                                        Float oldValue = mapa.get(day) + (float)t.getAmount();
-//                                        mapa.put(day, oldValue);
-//                                    } else mapa.put(day, (float)t.getAmount());
-//
-//                                    dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
-//                                }
-//
-//                            }
-//                            else {
-//                                if (mapa.containsKey(i)) {
-//                                    Float value = mapa.get(i) + (float) t.getAmount();
-//                                    mapa.put(i, value);
-//                                } else {
-//                                    mapa.put(i, (float) t.getAmount());
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            for(float i = 1f; i <= 4f; i++) {
-//                if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
-//                else entries.add(new BarEntry(i, 0f));
-//            }
-//        }
+        entries = putMapDataToEntries(mapa, timeUnit);
 
         BarDataSet dataSet = new BarDataSet(entries, "Potrošnja"); // add entries to dataset
         dataSet.setColor(Color.RED);
@@ -206,5 +150,48 @@ public class GraphsPresenter implements IGraphsPresenter{
         barData.setBarWidth(0.9f); // set custom bar width
 
         view.setConsumptionBarChart(barData);
+    }
+    @Override
+    public void putEarningsDataToBarData(String timeUnit) {
+        List<BarEntry> entries;
+        Map<Float, Float> mapa = new HashMap<>();
+
+        for(Transaction t: financeInteractor.getTransactions()) {
+
+            Calendar transactionMonth = Calendar.getInstance();
+            transactionMonth.setTime(t.getDate());
+
+            if(t.getType().toString().equals("INDIVIDUALINCOME") || t.getType().toString().equals("INDIVIDUALPAYMENT")) {
+
+                if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
+                    if (t.getType().toString().equals("REGULARINCOME")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
+                    else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                            transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+
+                        float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
+                        if(timeUnit.equals("Week")) day = determineWeek(day);
+
+                        mapa = putValueToMap(day, (float)t.getAmount(), mapa);
+                    }
+                }
+                else if(timeUnit.equals("Month")) {
+                    if(t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
+                    else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
+                        mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
+                    }
+                }
+            }
+        }
+
+        entries = putMapDataToEntries(mapa, timeUnit);
+
+        BarDataSet dataSet = new BarDataSet(entries, "Zarada"); // add entries to dataset
+        dataSet.setColor(Color.GREEN);
+        dataSet.setValueTextColor(Color.BLACK); // styling, ...
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.9f); // set custom bar width
+
+        view.setEarningsBarChart(barData);
     }
 }
