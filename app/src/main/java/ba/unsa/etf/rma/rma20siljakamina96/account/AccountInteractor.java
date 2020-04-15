@@ -14,4 +14,8 @@ public class AccountInteractor implements IAccountInteractor {
         FinanceModel.account.setTotalLimit(totalLimit);
         FinanceModel.account.setMonthLimit(monthLimit);
     }
+    @Override
+    public void setAccountBudget(double budget) {
+        FinanceModel.account.setBudget(budget);
+    }
 }

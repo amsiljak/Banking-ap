@@ -37,19 +37,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView9">
 
         <RadioButton
-            android:id="@+id/radioButton6"
+            android:id="@+id/day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Dan" />
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/week"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sedmica" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/month"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mjesec" />

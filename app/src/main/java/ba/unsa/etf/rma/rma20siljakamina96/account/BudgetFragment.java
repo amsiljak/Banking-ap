@@ -61,10 +61,8 @@ public class BudgetFragment extends Fragment implements IAccountView{
         onSwipeLeft = (OnSwipeLeft) getActivity();
         onSwipeRight = (OnSwipeRight) getActivity();
 
-        accountLayout = (ConstraintLayout) fragmentView.findViewById(R.id.accountLayout);
-
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            accountLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
                 @Override
                 public void onSwipeLeft() {
                     onSwipeLeft.openGraphsFragmentFromBudget();

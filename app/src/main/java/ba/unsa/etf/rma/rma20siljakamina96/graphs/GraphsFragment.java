@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,12 +20,17 @@ import com.github.mikephil.charting.data.BarData;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;
 
 public class GraphsFragment extends Fragment implements IGraphsView{
     private OnSwipeLeft onSwipeLeft;
     private OnSwipeRight onSwipeRight;
-    private ConstraintLayout graphsLayout;
     private IGraphsPresenter presenter;
+
+    private RadioGroup radioGroup;
+    private RadioButton dayButton;
+    private RadioButton weekButton;
+    private RadioButton monthButton;
 
     public IGraphsPresenter getPresenter() {
         if (presenter == null) {
@@ -44,10 +52,9 @@ public class GraphsFragment extends Fragment implements IGraphsView{
 
         onSwipeLeft = (OnSwipeLeft) getActivity();
         onSwipeRight = (OnSwipeRight) getActivity();
-        graphsLayout = (ConstraintLayout) fragmentView.findViewById(R.id.graphsLayout);
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            graphsLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
                 @Override
                 public void onSwipeLeft() {
                     onSwipeLeft.openListFragmentFromGraphs();
@@ -59,10 +66,50 @@ public class GraphsFragment extends Fragment implements IGraphsView{
             });
         }
 
-
         consumptionBarChart = (BarChart) fragmentView.findViewById(R.id.chart);
+
+        radioGroup = (RadioGroup) fragmentView.findViewById(R.id.radioGroup);
+        dayButton = (RadioButton) fragmentView.findViewById(R.id.day);
+        weekButton = (RadioButton)fragmentView.findViewById(R.id.week);
+        monthButton = (RadioButton)fragmentView.findViewById(R.id.month);
+
+        monthButton.setChecked(true);
         getPresenter().putDataToBarData("Month");
 
+//        dayButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                getPresenter().putDataToBarData("Day");
+//            }
+//        });
+//        weekButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                getPresenter().putDataToBarData("Week");
+//            }
+//        });
+//        monthButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                getPresenter().putDataToBarData("Month");
+//            }
+//        });
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch(i) {
+                    case R.id.day:
+                        getPresenter().putDataToBarData("Day");
+                        break;
+                    case R.id.week:
+                        getPresenter().putDataToBarData("Week");
+                        break;
+                    case R.id.month:
+                        getPresenter().putDataToBarData("Month");
+                        break;
+                }
+            }
+        });
         return fragmentView;
     }
     @Override
