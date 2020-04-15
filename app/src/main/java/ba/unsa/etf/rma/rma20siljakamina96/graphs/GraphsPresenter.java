@@ -125,6 +125,9 @@ public class GraphsPresenter implements IGraphsPresenter{
                 if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
             }
         }
+        else if(timeUnit.equals("Day")) {
+
+        }
 
         BarDataSet dataSet = new BarDataSet(entries, "Potrošnja"); // add entries to dataset
         dataSet.setColor(Color.RED);

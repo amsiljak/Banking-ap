@@ -85,13 +85,13 @@ public class FinancePresenter implements IFinancePresenter {
                 startingPoint.setTime(t.getDate());
 
                 Calendar endPoint = Calendar.getInstance();
-                endPoint.setTime(t.getEndDate());
+                if(t.getEndDate()!= null) endPoint.setTime(t.getEndDate());
 
                 //ovo sam dodala da bi se prikazivala transakcija i u mjesecu u kojem je datum
                 Calendar temp = (Calendar) cal.clone();
                 temp.add(Calendar.MONTH,1);
 
-                if (startingPoint.compareTo(temp) <= 0 && cal.compareTo(endPoint) <= 0) {
+                if (startingPoint.compareTo(temp) <= 0 && (t.getEndDate()==null || cal.compareTo(endPoint) <= 0)) {
                     lista.add(t);
                 }
             } else {
