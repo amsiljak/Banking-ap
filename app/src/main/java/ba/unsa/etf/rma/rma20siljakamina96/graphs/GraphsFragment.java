@@ -36,6 +36,7 @@ public class GraphsFragment extends Fragment implements IGraphsView{
     }
     private BarChart consumptionBarChart;
     private BarChart earningsBarChart;
+    private BarChart totalChart;
 
     public interface OnSwipeLeft {
         void openListFragmentFromGraphs();
@@ -66,6 +67,7 @@ public class GraphsFragment extends Fragment implements IGraphsView{
 
         consumptionBarChart = (BarChart) fragmentView.findViewById(R.id.consumptionChart);
         earningsBarChart = (BarChart) fragmentView.findViewById(R.id.earningsChart);
+        totalChart = (BarChart)fragmentView.findViewById(R.id.totalChart);
 
         radioGroup = (RadioGroup) fragmentView.findViewById(R.id.radioGroup);
         dayButton = (RadioButton) fragmentView.findViewById(R.id.day);
@@ -75,6 +77,7 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         monthButton.setChecked(true);
         getPresenter().putConsumptionDataToBarData("Month");
         getPresenter().putEarningsDataToBarData("Month");
+        getPresenter().putTotalDataToBarData("Month");
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -83,14 +86,17 @@ public class GraphsFragment extends Fragment implements IGraphsView{
                     case R.id.day:
                         getPresenter().putConsumptionDataToBarData("Day");
                         getPresenter().putEarningsDataToBarData("Day");
+                        getPresenter().putTotalDataToBarData("Day");
                         break;
                     case R.id.week:
                         getPresenter().putConsumptionDataToBarData("Week");
                         getPresenter().putEarningsDataToBarData("Week");
+                        getPresenter().putTotalDataToBarData("Week");
                         break;
                     case R.id.month:
                         getPresenter().putConsumptionDataToBarData("Month");
                         getPresenter().putEarningsDataToBarData("Month");
+                        getPresenter().putTotalDataToBarData("Month");
                         break;
                 }
             }
@@ -109,5 +115,12 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         earningsBarChart.setData(barData);
         earningsBarChart.setFitBars(true); // make the x-axis fit exactly all bars
         earningsBarChart.invalidate(); // refresh
+    }
+
+    @Override
+    public void setTotalBarChart(BarData barData) {
+        totalChart.setData(barData);
+        totalChart.setFitBars(true); // make the x-axis fit exactly all bars
+        totalChart.invalidate(); // refresh
     }
 }

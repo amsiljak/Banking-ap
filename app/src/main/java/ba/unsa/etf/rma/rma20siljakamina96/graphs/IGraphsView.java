@@ -6,4 +6,6 @@ public interface IGraphsView {
     void setConsumptionBarChart(BarData barData);
 
     void setEarningsBarChart(BarData barData);
+
+    void setTotalBarChart(BarData barData);
 }

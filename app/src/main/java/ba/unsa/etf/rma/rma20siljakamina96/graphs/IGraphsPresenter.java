@@ -5,4 +5,6 @@ public interface IGraphsPresenter {
     void putConsumptionDataToBarData(String timeUnit);
 
     void putEarningsDataToBarData(String timeUnit);
+
+    void putTotalDataToBarData(String timeUnit);
 }

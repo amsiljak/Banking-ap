@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:fillViewport="false">
+    android:padding="10dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id = "@+id/graphsLayout"
+        android:id="@+id/graphsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -77,8 +78,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/consumptionChart" />
+            app:layout_constraintTop_toBottomOf="@+id/consumptionChart" >
 
+        </com.github.mikephil.charting.charts.BarChart>
 
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/totalChart"
+            android:layout_width="346dp"
+            android:layout_height="220dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/earningsChart" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -213,4 +213,44 @@ public class GraphsPresenter implements IGraphsPresenter{
 
         view.setEarningsBarChart(barData);
     }
+    @Override
+    public void putTotalDataToBarData(String timeUnit) {
+        List<BarEntry> entries;
+        Map<Float, Float> mapa = new HashMap<>();
+
+        for(Transaction t: financeInteractor.getTransactions()) {
+
+            Calendar transactionMonth = Calendar.getInstance();
+            transactionMonth.setTime(t.getDate());
+
+            if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
+                if (t.getType().toString().equals("REGULARINCOME") || t.getType().toString().equals("REGULARPAYMENT")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
+                else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                        transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+
+                    float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
+                    if(timeUnit.equals("Week")) day = determineWeek(day);
+
+                    mapa = putValueToMap(day, (float)t.getAmount(), mapa);
+                }
+            }
+            else if(timeUnit.equals("Month")) {
+                if(t.getType().toString().equals("REGULARINCOME")  || t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
+                else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
+                    mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
+                }
+            }
+        }
+
+        entries = putMapDataToEntries(mapa, timeUnit);
+
+        BarDataSet dataSet = new BarDataSet(entries, "Ukupno stanje"); // add entries to dataset
+        dataSet.setColor(Color.BLUE);
+        dataSet.setValueTextColor(Color.BLACK); // styling, ...
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.9f); // set custom bar width
+
+        view.setTotalBarChart(barData);
+    }
 }
