@@ -43,6 +43,7 @@ public class TransactionDetailFragment extends Fragment {
 
     private OnTransactionModify onTransactionModify;
     private OnTransactionAddOrDelete onTransactionAddOrDelete;
+    private OnAddButtonClick onAddButtonClick;
 
     private boolean validTitle, validAmount, validDate, validEndDate, validDescription, validInterval, validType;
 
@@ -53,6 +54,9 @@ public class TransactionDetailFragment extends Fragment {
     }
     public interface OnTransactionAddOrDelete {
         void onTransactionAddedOrDeleted();
+    }
+    public interface OnAddButtonClick {
+        void onAddButtonClicked();
     }
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
@@ -83,6 +87,7 @@ public class TransactionDetailFragment extends Fragment {
 
         onTransactionModify = (OnTransactionModify) getActivity();
         onTransactionAddOrDelete = (OnTransactionAddOrDelete) getActivity();
+        onAddButtonClick = (OnAddButtonClick) getActivity();
 
         getPresenter();
         DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -104,7 +109,7 @@ public class TransactionDetailFragment extends Fragment {
             if (transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARPAYMENT"))
                 intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
             else intervalEditText.setText("");
-            if (transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARPAYMENT"))
+        if (transaction.getEndDate() != null)
                 endDateEditText.setText(DATE_FORMAT.format(transaction.getEndDate()));
             else endDateEditText.setText("");
 
@@ -137,14 +142,7 @@ public class TransactionDetailFragment extends Fragment {
         }
     }
     void validateEndDate() {
-        if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("REGULARPAYMENT"))) {
-            if(TextUtils.isEmpty(endDateEditText.getText().toString())) validEndDate = false;
-            else validInterval = true;
-        }
-        else {
-            if (TextUtils.isEmpty(endDateEditText.getText().toString())) validEndDate = true;
-            else validEndDate = false;
-        }
+        validEndDate = true;
     }
     void validateDescription() {
         if((typeEditText.getText().toString().toUpperCase().equals("REGULARINCOME") || typeEditText.getText().toString().toUpperCase().equals("INDIVIDUALINCOME"))) {
@@ -395,8 +393,12 @@ public class TransactionDetailFragment extends Fragment {
                             // Continue with delete operation
                             presenter.delete();
                             onTransactionModify.onTransactionModified();
-                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                                 onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                            }
+                            else {
+                                onTransactionModify.onTransactionModified();
+                                onAddButtonClick.onAddButtonClicked();
                             }
                         }
                     })
