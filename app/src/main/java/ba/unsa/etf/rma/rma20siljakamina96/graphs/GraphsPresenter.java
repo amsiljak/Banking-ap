@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.rma20siljakamina96.graphs;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.format.DateUtils;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -38,29 +39,29 @@ public class GraphsPresenter implements IGraphsPresenter{
     private float getXCoordinate(String month) {
         switch (month) {
             case "01":
-                return 0f;
-            case "02":
                 return 1f;
-            case "03":
+            case "02":
                 return 2f;
-            case "04":
+            case "03":
                 return 3f;
-            case "05":
+            case "04":
                 return 4f;
-            case "06":
+            case "05":
                 return 5f;
-            case "07":
+            case "06":
                 return 6f;
-            case "08":
+            case "07":
                 return 7f;
-            case "09":
+            case "08":
                 return 8f;
-            case "10":
+            case "09":
                 return 9f;
-            case "11":
+            case "10":
                 return 10f;
-            case "12":
+            case "11":
                 return 11f;
+            case "12":
+                return 12f;
         }
         return 0f;
     }
@@ -84,50 +85,75 @@ public class GraphsPresenter implements IGraphsPresenter{
                         month = getXCoordinate(DATE_FORMAT.format(t.getDate()));
 
                         //ako je regular payment dodaji na vrijednost mjeseca kojeg predstavlja brojac
-                        if(t.getType().toString().equals("REGULARPAYMENT")) {
 
-                            int transactionInterval = t.getTransactionInterval();
-                            float brojac = i;
+                        if (month == i) {
+                            if(t.getType().toString().equals("REGULARPAYMENT")) {
 
-                            endMonth = getXCoordinate(DATE_FORMAT.format(t.getEndDate()));
+                                Calendar dateOfPayment = Calendar.getInstance();
+                                Calendar endDateOfPayment = Calendar.getInstance();
+                                dateOfPayment.setTime(t.getDate());
+                                endDateOfPayment.setTime(t.getEndDate());
 
-                            int pom = 30;
-                            while(brojac >= month && brojac <= endMonth) {
+                                //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
+                                //i onda uzima mjesec pocetnog i na njega stavlja amount
+                                while(dateOfPayment.compareTo(endDateOfPayment) <= 0 && dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
+                                    month = getXCoordinate(DATE_FORMAT.format(dateOfPayment.getTime()));
+                                    if (mapa.containsKey(month)) {
+                                        Float oldValue = mapa.get(month) + (float)t.getAmount();
+                                        mapa.put(month, oldValue);
+                                    } else mapa.put(month, (float)t.getAmount());
 
-                                Float value = 0f;
-
-                                //oduzimam od 30 zbog moguceg ostatak od predhodnog mjeseca
-                                pom-= 30;
-
-                                //zbrajanje vrijednosti za mjesec brojac
-                                while(pom != 0 && pom <= 30) {
-                                    value += (float)t.getAmount();
-                                    pom += transactionInterval;
+                                    dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
                                 }
 
-                                //dodavanje vrijednosti u mjesec brojac za ovu transakciju
-                                if (mapa.containsKey(i)) {
-                                    Float oldValue = mapa.get(i) + value;
-                                    mapa.put(i, oldValue);
-                                } else mapa.put(i, value);
-
-                                brojac++;
+//                                int transactionInterval = t.getTransactionInterval();
+//                                float brojac = i;
+//
+//                                endMonth = getXCoordinate(DATE_FORMAT.format(t.getEndDate()));
+//
+//                                int pom = 30;
+//                                while(brojac >= month && brojac <= endMonth) {
+//
+//                                    Float value = (float)0;
+//
+//                                    //oduzimam od 30 zbog moguceg ostatak od predhodnog mjeseca
+//                                    pom-= 30;
+//
+//                                    //zbrajanje vrijednosti za mjesec brojac
+//                                    while(pom <= 30) {
+//                                        value += (float)t.getAmount();
+//                                        pom += transactionInterval;
+//                                    }
+//
+//                                    //dodavanje vrijednosti u mjesec brojac za ovu transakciju
+//                                    if (mapa.containsKey(brojac)) {
+//                                        Float oldValue = mapa.get(brojac) + value;
+//                                        mapa.put(brojac, oldValue);
+//                                    } else mapa.put(brojac, value);
+//
+//                                    brojac++;
+//                                }
                             }
-                        }
-                        else if (month == i) {
-                            if (mapa.containsKey(i)) {
-                                Float value = mapa.get(i) + (float)t.getAmount();
-                                mapa.put(i, value);
-                            } else mapa.put(i, (float)t.getAmount());
+                            else {
+                                if (mapa.containsKey(i)) {
+                                    Float value = mapa.get(i) + (float) t.getAmount();
+                                    mapa.put(i, value);
+                                } else {
+                                    mapa.put(i, (float) t.getAmount());
+                                }
+                            }
                         }
                     }
                 }
+            }
+            for(float i = 0f; i < 12f; i++) {
                 if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
+                else entries.add(new BarEntry(i, 0f));
             }
         }
-        else if(timeUnit.equals("Day")) {
-
-        }
+//        else if(timeUnit.equals("Day")) {
+//
+//        }
 
         BarDataSet dataSet = new BarDataSet(entries, "Potrošnja"); // add entries to dataset
         dataSet.setColor(Color.RED);
