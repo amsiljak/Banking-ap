@@ -56,9 +56,11 @@ public class GraphsPresenter implements IGraphsPresenter{
         else limit = 12f;
 
         List<BarEntry> entries = new ArrayList<>();
+
         for(float i = 1f; i <= limit; i++) {
-            if(mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
+            if (mapa.containsKey(i)) entries.add(new BarEntry(i, mapa.get(i)));
             else entries.add(new BarEntry(i, 0f));
+
         }
 
         return entries;
@@ -127,7 +129,7 @@ public class GraphsPresenter implements IGraphsPresenter{
         return mapa;
     }
     @Override
-    public void putConsumptionDataToBarData(String timeUnit) {
+    public Map<Float, Float> putConsumptionDataToBarData(String timeUnit) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
@@ -169,9 +171,11 @@ public class GraphsPresenter implements IGraphsPresenter{
         barData.setBarWidth(0.9f); // set custom bar width
 
         view.setConsumptionBarChart(barData);
+
+        return mapa;
     }
     @Override
-    public void putEarningsDataToBarData(String timeUnit) {
+    public Map<Float, Float> putEarningsDataToBarData(String timeUnit) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
@@ -212,36 +216,56 @@ public class GraphsPresenter implements IGraphsPresenter{
         barData.setBarWidth(0.9f); // set custom bar width
 
         view.setEarningsBarChart(barData);
+
+        return mapa;
     }
     @Override
     public void putTotalDataToBarData(String timeUnit) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
-        for(Transaction t: financeInteractor.getTransactions()) {
+//        for(Transaction t: financeInteractor.getTransactions()) {
+//
+//            Calendar transactionMonth = Calendar.getInstance();
+//            transactionMonth.setTime(t.getDate());
+//
+//            if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
+//                if (t.getType().toString().equals("REGULARINCOME") || t.getType().toString().equals("REGULARPAYMENT")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
+//                else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+//                        transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+//
+//                    float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
+//                    if(timeUnit.equals("Week")) day = determineWeek(day);
+//
+//                    mapa = putValueToMap(day, (float)t.getAmount(), mapa);
+//                }
+//            }
+//            else if(timeUnit.equals("Month")) {
+//                if(t.getType().toString().equals("REGULARINCOME")  || t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
+//                else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
+//                    mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
+//                }
+//            }
+//        }
+        float limit;
+        if(timeUnit.equals("Day")) limit = 31f;
+        else if(timeUnit.equals("Week")) limit = 4f;
+        else limit = 12f;
 
-            Calendar transactionMonth = Calendar.getInstance();
-            transactionMonth.setTime(t.getDate());
+        float lastValue = 0f;
 
-            if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
-                if (t.getType().toString().equals("REGULARINCOME") || t.getType().toString().equals("REGULARPAYMENT")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
-                else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-                        transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+        Map<Float, Float> consumptionsMap = putConsumptionDataToBarData(timeUnit);
+        Map<Float, Float> earningsMap = putEarningsDataToBarData(timeUnit);
 
-                    float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
-                    if(timeUnit.equals("Week")) day = determineWeek(day);
+        for(float i = 1f; i < limit; i++) {
+            float consumption = 0f;
+            float earning = 0f;
 
-                    mapa = putValueToMap(day, (float)t.getAmount(), mapa);
-                }
-            }
-            else if(timeUnit.equals("Month")) {
-                if(t.getType().toString().equals("REGULARINCOME")  || t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
-                else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
-                    mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
-                }
-            }
+            if(consumptionsMap.containsKey(i)) consumption = consumptionsMap.get(i);
+            if(earningsMap.containsKey(i)) earning = earningsMap.get(i);
+            mapa.put(i, -consumption+earning+lastValue);
+            lastValue = -consumption+earning+lastValue;
         }
-
         entries = putMapDataToEntries(mapa, timeUnit);
 
         BarDataSet dataSet = new BarDataSet(entries, "Ukupno stanje"); // add entries to dataset
