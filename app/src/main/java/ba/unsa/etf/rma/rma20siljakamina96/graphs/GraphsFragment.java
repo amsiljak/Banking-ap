@@ -76,24 +76,6 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         monthButton.setChecked(true);
         getPresenter().putDataToBarData("Month");
 
-//        dayButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                getPresenter().putDataToBarData("Day");
-//            }
-//        });
-//        weekButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                getPresenter().putDataToBarData("Week");
-//            }
-//        });
-//        monthButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                getPresenter().putDataToBarData("Month");
-//            }
-//        });
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
