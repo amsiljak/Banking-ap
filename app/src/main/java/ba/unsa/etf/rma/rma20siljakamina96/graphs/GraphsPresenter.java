@@ -7,9 +7,11 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,10 +73,19 @@ public class GraphsPresenter implements IGraphsPresenter{
         return mapa;
     }
     private Map<Float,Float> monthForRegular(Transaction t, Map<Float, Float> mapa) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+
+        Date endOfYear = null;
+        try {
+            endOfYear = format.parse("31.12."+Calendar.getInstance().get(Calendar.YEAR));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Calendar dateOfPayment = Calendar.getInstance();
         Calendar endDateOfPayment = Calendar.getInstance();
         dateOfPayment.setTime(t.getDate());
-        endDateOfPayment.setTime(t.getEndDate());
+        if(t.getEndDate() != null) endDateOfPayment.setTime(t.getEndDate());
+        else endDateOfPayment.setTime(endOfYear);
 
         //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
         //i onda uzima mjesec pocetnog i na njega stavlja amount
@@ -88,10 +99,18 @@ public class GraphsPresenter implements IGraphsPresenter{
         return mapa;
     }
     private Map<Float,Float> dayOrWeekForRegular(Transaction t, Map<Float, Float> mapa, String timeUnit) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        Date endOfYear = null;
+        try {
+            endOfYear = format.parse("31.12."+Calendar.getInstance().get(Calendar.YEAR));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Calendar dateOfPayment = Calendar.getInstance();
         Calendar endDateOfPayment = Calendar.getInstance();
         dateOfPayment.setTime(t.getDate());
-        endDateOfPayment.setTime(t.getEndDate());
+        if(t.getEndDate() != null) endDateOfPayment.setTime(t.getEndDate());
+        else endDateOfPayment.setTime(endOfYear);
 
         //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
         //i onda uzima dan pocetnog i na njega stavlja amount
@@ -161,7 +180,7 @@ public class GraphsPresenter implements IGraphsPresenter{
             Calendar transactionMonth = Calendar.getInstance();
             transactionMonth.setTime(t.getDate());
 
-            if(t.getType().toString().equals("INDIVIDUALINCOME") || t.getType().toString().equals("INDIVIDUALPAYMENT")) {
+            if(t.getType().toString().equals("INDIVIDUALINCOME") || t.getType().toString().equals("REGULARINCOME")) {
 
                 if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
                     if (t.getType().toString().equals("REGULARINCOME")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
@@ -175,7 +194,7 @@ public class GraphsPresenter implements IGraphsPresenter{
                     }
                 }
                 else if(timeUnit.equals("Month")) {
-                    if(t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
+                    if(t.getType().toString().equals("REGULARINCOME")) mapa = monthForRegular(t, mapa);
                     else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
                         mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
                     }

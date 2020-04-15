@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import ba.unsa.etf.rma.rma20siljakamina96.R;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -280,6 +281,14 @@ public class TransactionDetailFragment extends Fragment {
     private void saveAction() {
         String type = typeEditText.getText().toString().toUpperCase();
 
+        Date date = null;
+        if(!endDateEditText.getText().equals("")) {
+            try {
+                date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         //izmjena transakcije
         if (saving) {
             titleEditText.setBackgroundColor(android.R.attr.editTextColor);
@@ -291,11 +300,13 @@ public class TransactionDetailFragment extends Fragment {
             intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
             try {
-                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
+                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT"))) {
+
                     presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-                            DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+                            date);
+                }
                 else
                     presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
@@ -311,7 +322,7 @@ public class TransactionDetailFragment extends Fragment {
                     presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
                             Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-                            DATE_FORMAT.parse(String.valueOf(endDateEditText.getText())));
+                            date);
                 else
                     presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
                             Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
