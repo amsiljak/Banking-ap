@@ -9,4 +9,8 @@ public interface IAccountPresenter {
     void modifyAccount(double totalLimit, double monthLimit);
 
     String getBudget();
+
+    String getTotalLimit();
+
+    String getMonthLimit();
 }

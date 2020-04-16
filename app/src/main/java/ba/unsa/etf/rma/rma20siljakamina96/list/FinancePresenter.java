@@ -32,7 +32,7 @@ public class FinancePresenter implements IFinancePresenter {
 
     @Override
     public void setAccount() {
-        view.setAccountData(String.valueOf(accountInteractor.getAccount().getTotalLimit()));
+        view.setAccountData();
     }
 
     @Override

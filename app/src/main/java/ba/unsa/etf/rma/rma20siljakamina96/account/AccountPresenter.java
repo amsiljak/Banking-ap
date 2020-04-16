@@ -41,4 +41,12 @@ public class AccountPresenter implements IAccountPresenter{
         iznos = accountInteractor.getAccount().getBudget() + iznos;
         return df.format(iznos);
     }
+    @Override
+    public String getTotalLimit() {
+        return String.valueOf(accountInteractor.getAccount().getTotalLimit());
+    }
+    @Override
+    public String getMonthLimit() {
+        return String.valueOf(accountInteractor.getAccount().getMonthLimit());
+    }
 }

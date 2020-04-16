@@ -67,8 +67,8 @@ public class BudgetFragment extends Fragment implements IAccountView{
             });
         }
         budgetText.setText(getAccountPresenter().getBudget());
-        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
-        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
+        totalLimitText.setText(accountPresenter.getTotalLimit());
+        monthLimitText.setText(accountPresenter.getMonthLimit());
 
         return fragmentView;
     }
