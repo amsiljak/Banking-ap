@@ -25,6 +25,8 @@ import java.util.Calendar;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
@@ -56,10 +58,11 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     private ArrayAdapter<String> sortSpinnerAdapter;
 
     private IFinancePresenter financePresenter;
+    private IAccountPresenter accountPresenter;
+
     private TransactionListAdapter transactionListAdapter;
 
     private int pozi;
-    private int screenWidthDp;
 
     ConstraintLayout listLayout;
 
@@ -68,6 +71,12 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             financePresenter = new FinancePresenter(this, getActivity());
         }
         return financePresenter;
+    }
+    public IAccountPresenter getAccountPresenter() {
+        if (accountPresenter == null) {
+            accountPresenter = new AccountPresenter(getActivity());
+        }
+        return accountPresenter;
     }
     private String getMonth() {
         int mjesec = cal.get(Calendar.MONTH);
@@ -107,9 +116,6 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_list, container, false);
-
-        Configuration configuration = getActivity().getResources().getConfiguration();
-        screenWidthDp = configuration.screenWidthDp;
 
         transactionListAdapter = new TransactionListAdapter(getActivity(), R.layout.list_element, new ArrayList<Transaction>());
         transactionListView = (ListView)fragmentView.findViewById(R.id.listView);
@@ -176,7 +182,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
+        getAccountPresenter();
         getTransactionPresenter().refresh();
+
         return fragmentView;
     }
 
@@ -234,8 +242,8 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         }
     };
     @Override
-    public void setAccountData(String globalAmount, String limit) {
-        globalAmount2.setText(globalAmount);
+    public void setAccountData(String limit) {
+        globalAmount2.setText(accountPresenter.getBudget());
         limit2.setText(limit);
     }
 
@@ -265,7 +273,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             Transaction transaction = transactionListAdapter.getTransaction(position);
             //drugi klik na stavku
 
-            if( screenWidthDp >= 500) {
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 if (pozi == position) {
                     transactionListView.setItemChecked(position, false);
                     addTransactionButton.setEnabled(true);

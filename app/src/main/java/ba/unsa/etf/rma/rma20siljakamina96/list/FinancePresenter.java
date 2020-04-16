@@ -14,7 +14,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 public class FinancePresenter implements IFinancePresenter {
     private Context context;
 
-    private static ITransactionInteractor financeInteractor;
+    private ITransactionInteractor financeInteractor;
     private IAccountInteractor accountInteractor;
     private IFinanceView view;
 
@@ -32,15 +32,7 @@ public class FinancePresenter implements IFinancePresenter {
 
     @Override
     public void setAccount() {
-        DecimalFormat df = new DecimalFormat("#.##");
-        double iznos = 0;
-        for(Transaction t : financeInteractor.getTransactions()) {
-            if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
-            || t.getType().toString().equals("REGULARPAYMENT")) iznos -= t.getAmount();
-            else iznos += t.getAmount();
-        }
-        iznos = accountInteractor.getAccount().getBudget() + iznos;
-        view.setAccountData(df.format(iznos), String.valueOf(accountInteractor.getAccount().getTotalLimit()));
+        view.setAccountData(String.valueOf(accountInteractor.getAccount().getTotalLimit()));
     }
 
     @Override

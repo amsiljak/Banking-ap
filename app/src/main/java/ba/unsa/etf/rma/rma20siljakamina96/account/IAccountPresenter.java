@@ -7,4 +7,6 @@ public interface IAccountPresenter {
     Account getAccount();
 
     void modifyAccount(double totalLimit, double monthLimit);
+
+    String getBudget();
 }

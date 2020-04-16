@@ -28,7 +28,7 @@ public class GraphsPresenter implements IGraphsPresenter{
     private SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("dd");
     private SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
 
-    private static ITransactionInteractor financeInteractor;
+    private ITransactionInteractor financeInteractor;
     private IGraphsView view;
 
     public GraphsPresenter(IGraphsView view, Context context) {

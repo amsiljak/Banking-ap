@@ -31,7 +31,7 @@ public class BudgetFragment extends Fragment implements IAccountView{
 
     public IAccountPresenter getAccountPresenter() {
         if (accountPresenter == null) {
-            accountPresenter = new AccountPresenter(this, getActivity());
+            accountPresenter = new AccountPresenter(getActivity());
         }
         return accountPresenter;
     }
@@ -66,7 +66,9 @@ public class BudgetFragment extends Fragment implements IAccountView{
                 }
             });
         }
-        setAccountData();
+        budgetText.setText(getAccountPresenter().getBudget());
+        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
+        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
 
         return fragmentView;
     }
@@ -76,10 +78,4 @@ public class BudgetFragment extends Fragment implements IAccountView{
             accountPresenter.modifyAccount(Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
         }
     };
-    @Override
-    public void setAccountData() {
-        budgetText.setText(String.valueOf(getAccountPresenter().getAccount().getBudget()));
-        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
-        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
-    }
 }

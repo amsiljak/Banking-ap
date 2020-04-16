@@ -7,7 +7,8 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 public interface IFinanceView {
     void notifyTransactionDataSetChanged();
 
-    void setAccountData(String globalAmount, String limit);
+    void setAccountData(String limit);
+
     void setTransactions(ArrayList<Transaction> transactions);
     void setDate();
 }
