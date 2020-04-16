@@ -29,6 +29,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public class TransactionDetailFragment extends Fragment {
     private ITransactionDetailPresenter presenter;
+
     private EditText titleEditText;
     private EditText amountEditText;
     private EditText dateEditText;
@@ -70,8 +71,6 @@ public class TransactionDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        Configuration configuration = getActivity().getResources().getConfiguration();
-
         titleEditText = (EditText) view.findViewById(R.id.transactionTitle);
         amountEditText = (EditText) view.findViewById(R.id.transactionAmount);
         typeEditText = (EditText) view.findViewById(R.id.transactionType);
@@ -84,7 +83,6 @@ public class TransactionDetailFragment extends Fragment {
         saveButton.setOnClickListener(saveClickListener);
 
         deleteButton = (Button) view.findViewById(R.id.deleteButton);
-
 
         onTransactionModify = (OnTransactionModify) getActivity();
         onTransactionAddOrDelete = (OnTransactionAddOrDelete) getActivity();

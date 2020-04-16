@@ -282,35 +282,11 @@ public class TransactionListFragment extends Fragment implements IFinanceView, I
                 addTransactionButton.setEnabled(false);
                 onItemClick.onItemClicked(transaction);
             }
-//            transactionDetailIntent.putExtra("calling-activity", 1);
-//            double totalPayments = 0;
-//            for(Map.Entry <String,Double> el : financePresenter.getMonthlyPayments().entrySet()) {
-//                //zbrajam sve potrosnje u toku svih mjeseci radi total limita
-//                totalPayments += el.getValue();
-//                //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
-//                transactionDetailIntent.putExtra(el.getKey(), el.getValue() - transaction.getAmount());
-//            }
-//            transactionDetailIntent.putExtra("totalPayments", totalPayments);
-//            pozicija = position;
-//
-//            MainActivity.this.startActivityForResult(transactionDetailIntent, 1);
-
         }
     };
     private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
-//            transactionDetailIntent.putExtra("calling-activity", 2);
-//            double totalPayments = 0;
-//            for(Map.Entry <String,Double> el : financePresenter.getMonthlyPayments().entrySet()) {
-//                //zbrajam sve potrosnje u toku svih mjeseci radi total limita
-//                totalPayments += el.getValue();
-//                //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
-//                transactionDetailIntent.putExtra(el.getKey(), el.getValue());
-//            }
-//            transactionDetailIntent.putExtra("totalPayments", totalPayments);
-//            MainActivity.this.startActivityForResult(transactionDetailIntent, 2);
             onAddButtonClick.onAddButtonClicked();
         }
     };

@@ -27,8 +27,6 @@ public class BudgetFragment extends Fragment implements IAccountView{
     private OnSwipeLeft onSwipeLeft;
     private OnSwipeRight onSwipeRight;
 
-    private ConstraintLayout accountLayout;
-
     private IAccountPresenter accountPresenter;
 
     public IAccountPresenter getAccountPresenter() {

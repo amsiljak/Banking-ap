@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     @Override
     public void onAddButtonClicked() {
         Bundle arguments = new Bundle();
-//        arguments.putParcelable("transaction", transaction);
         detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){
@@ -225,50 +224,4 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     public void onTransactionAddedOrDeleted() {
         openList();
     }
-
-//    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
-//            transactionDetailIntent.putExtra("calling-activity", 2);
-//            double totalPayments = 0;
-//            for(Map.Entry <String,Double> el : financePresenter.getMonthlyPayments().entrySet()) {
-//                //zbrajam sve potrosnje u toku svih mjeseci radi total limita
-//                totalPayments += el.getValue();
-//                //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
-//                transactionDetailIntent.putExtra(el.getKey(), el.getValue());
-//            }
-//            transactionDetailIntent.putExtra("totalPayments", totalPayments);
-//            MainActivity.this.startActivityForResult(transactionDetailIntent, 2);
-//        }
-//    };
-
-
-//    private AdapterView.OnItemClickListener transactionListItemClickListener = new AdapterView.OnItemClickListener() {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            Intent transactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
-//            Transaction transaction = transactionListAdapter.getTransaction(position);
-//
-//            transactionDetailIntent.putExtra("title", transaction.getTitle());
-//            transactionDetailIntent.putExtra("amount", transaction.getAmount());
-//            transactionDetailIntent.putExtra("description", transaction.getItemDescription());
-//            transactionDetailIntent.putExtra("type", transaction.getType());
-//            transactionDetailIntent.putExtra("interval", transaction.getTransactionInterval());
-//            transactionDetailIntent.putExtra("date", transaction.getDate());
-//            transactionDetailIntent.putExtra("enddate", transaction.getEndDate());
-//            transactionDetailIntent.putExtra("calling-activity", 1);
-//            double totalPayments = 0;
-//            for(Map.Entry <String,Double> el : financePresenter.getMonthlyPayments().entrySet()) {
-//                //zbrajam sve potrosnje u toku svih mjeseci radi total limita
-//                totalPayments += el.getValue();
-//                //saljem podatke o potrosnjama u svim mjesecima u kojima ima potrosnje ne ukljucujuci transakciju koja se modifikuje
-//                transactionDetailIntent.putExtra(el.getKey(), el.getValue() - transaction.getAmount());
-//            }
-//            transactionDetailIntent.putExtra("totalPayments", totalPayments);
-//            pozicija = position;
-//
-//            MainActivity.this.startActivityForResult(transactionDetailIntent, 1);
-//        }
-//    };
 }

@@ -29,17 +29,13 @@ public class GraphsPresenter implements IGraphsPresenter{
     private SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
 
     private static ITransactionInteractor financeInteractor;
-    private IAccountInteractor accountInteractor;
     private IGraphsView view;
-    private static ArrayList<Transaction> transactions;
 
     public GraphsPresenter(IGraphsView view, Context context) {
         this.context = context;
         this.financeInteractor = new TransactionInteractor();
-        this.accountInteractor = new AccountInteractor();
         this.view = view;
     }
-
 
     private float determineWeek(float day) {
         float week;
@@ -62,7 +58,6 @@ public class GraphsPresenter implements IGraphsPresenter{
             else entries.add(new BarEntry(i, 0f));
 
         }
-
         return entries;
     }
     private Map<Float,Float> putValueToMap(Float key, Float mapValue, Map<Float,Float> mapa) {
@@ -224,29 +219,6 @@ public class GraphsPresenter implements IGraphsPresenter{
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
-//        for(Transaction t: financeInteractor.getTransactions()) {
-//
-//            Calendar transactionMonth = Calendar.getInstance();
-//            transactionMonth.setTime(t.getDate());
-//
-//            if(timeUnit.equals("Day") || timeUnit.equals("Week")) {
-//                if (t.getType().toString().equals("REGULARINCOME") || t.getType().toString().equals("REGULARPAYMENT")) mapa = dayOrWeekForRegular(t, mapa, timeUnit);
-//                else if (transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-//                        transactionMonth.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
-//
-//                    float day = Float.valueOf(DAY_DATE_FORMAT.format(t.getDate()));
-//                    if(timeUnit.equals("Week")) day = determineWeek(day);
-//
-//                    mapa = putValueToMap(day, (float)t.getAmount(), mapa);
-//                }
-//            }
-//            else if(timeUnit.equals("Month")) {
-//                if(t.getType().toString().equals("REGULARINCOME")  || t.getType().toString().equals("REGULARPAYMENT")) mapa = monthForRegular(t, mapa);
-//                else if(transactionMonth.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
-//                    mapa = putValueToMap(Float.valueOf(MONTH_DATE_FORMAT.format(t.getDate())), (float)t.getAmount(), mapa);
-//                }
-//            }
-//        }
         float limit;
         if(timeUnit.equals("Day")) limit = 31f;
         else if(timeUnit.equals("Week")) limit = 4f;

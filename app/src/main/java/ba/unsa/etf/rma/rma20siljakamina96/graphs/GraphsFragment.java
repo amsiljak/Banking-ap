@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -24,9 +25,11 @@ public class GraphsFragment extends Fragment implements IGraphsView{
     private IGraphsPresenter presenter;
 
     private RadioGroup radioGroup;
-    private RadioButton dayButton;
-    private RadioButton weekButton;
     private RadioButton monthButton;
+
+    private BarChart consumptionBarChart;
+    private BarChart earningsBarChart;
+    private BarChart totalChart;
 
     public IGraphsPresenter getPresenter() {
         if (presenter == null) {
@@ -34,9 +37,6 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         }
         return presenter;
     }
-    private BarChart consumptionBarChart;
-    private BarChart earningsBarChart;
-    private BarChart totalChart;
 
     public interface OnSwipeLeft {
         void openListFragmentFromGraphs();
@@ -70,8 +70,6 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         totalChart = (BarChart)fragmentView.findViewById(R.id.totalChart);
 
         radioGroup = (RadioGroup) fragmentView.findViewById(R.id.radioGroup);
-        dayButton = (RadioButton) fragmentView.findViewById(R.id.day);
-        weekButton = (RadioButton)fragmentView.findViewById(R.id.week);
         monthButton = (RadioButton)fragmentView.findViewById(R.id.month);
 
         monthButton.setChecked(true);

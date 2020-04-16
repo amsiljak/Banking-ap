@@ -39,8 +39,8 @@ public class FinancePresenter implements IFinancePresenter {
             || t.getType().toString().equals("REGULARPAYMENT")) iznos -= t.getAmount();
             else iznos += t.getAmount();
         }
-        accountInteractor.setAccountBudget(accountInteractor.getAccount().getBudget() + iznos);
-        view.setAccountData(df.format(accountInteractor.getAccount().getBudget()), String.valueOf(accountInteractor.getAccount().getTotalLimit()));
+        iznos = accountInteractor.getAccount().getBudget() + iznos;
+        view.setAccountData(df.format(iznos), String.valueOf(accountInteractor.getAccount().getTotalLimit()));
     }
 
     @Override
