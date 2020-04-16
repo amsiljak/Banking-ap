@@ -49,10 +49,6 @@ public class BudgetFragment extends Fragment implements IAccountView{
         totalLimitText = (TextView)fragmentView.findViewById(R.id.totalLimitView);
         monthLimitText = (TextView)fragmentView.findViewById(R.id.monthLimitView);
 
-        budgetText.setText(String.valueOf(getAccountPresenter().getAccount().getBudget()));
-        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
-        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
-
         saveButton = (Button)fragmentView.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
 
@@ -70,6 +66,7 @@ public class BudgetFragment extends Fragment implements IAccountView{
                 }
             });
         }
+        setAccountData();
 
         return fragmentView;
     }
@@ -79,4 +76,10 @@ public class BudgetFragment extends Fragment implements IAccountView{
             accountPresenter.modifyAccount(Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
         }
     };
+    @Override
+    public void setAccountData() {
+        budgetText.setText(String.valueOf(getAccountPresenter().getAccount().getBudget()));
+        totalLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getTotalLimit()));
+        monthLimitText.setText(String.valueOf(getAccountPresenter().getAccount().getMonthLimit()));
+    }
 }

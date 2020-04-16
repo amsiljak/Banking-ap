@@ -29,7 +29,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
-public class TransactionListFragment extends Fragment implements IFinanceView, IAccountView {
+public class TransactionListFragment extends Fragment implements IFinanceView {
 
     private ListView transactionListView;
     private OnItemClick onItemClick;
