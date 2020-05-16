@@ -121,22 +121,22 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         limit2 = fragmentView.findViewById(R.id.limit2);
 //
 //        listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
-//
-//        onSwipeLeft = (OnSwipeLeft) getActivity();
-//        onSwipeRight = (OnSwipeRight) getActivity();
-//
-//        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-//            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-//                @Override
-//                public void onSwipeRight() {
-//                    onSwipeRight.openGraphsFragmentFromList();
-//                }
-//                @Override
-//                public void onSwipeLeft() {
-//                    onSwipeLeft.openBudgetFragmentFromList();
-//                }
-//            });
-//        }
+
+        onSwipeLeft = (OnSwipeLeft) getActivity();
+        onSwipeRight = (OnSwipeRight) getActivity();
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+                @Override
+                public void onSwipeRight() {
+                    onSwipeRight.openGraphsFragmentFromList();
+                }
+                @Override
+                public void onSwipeLeft() {
+                    onSwipeLeft.openBudgetFragmentFromList();
+                }
+            });
+        }
 //
 //        type = "All";
 //        filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
@@ -162,9 +162,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 //        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, getActivity()));
 //        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
 //
-//        cal = Calendar.getInstance();
-//        dateView = (TextView)fragmentView.findViewById(R.id.date);
-//
+        cal = Calendar.getInstance();
+        dateView = (TextView)fragmentView.findViewById(R.id.date);
+
 //        leftImageButton = (ImageButton)fragmentView.findViewById(R.id.leftButton);
 //        rightImageButton = (ImageButton)fragmentView.findViewById(R.id.rightButton);
 //

@@ -77,8 +77,8 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
             JSONObject accountDetails = new JSONObject(rezultat);
             Double budget = accountDetails.getDouble("budget");
             Double totalLimit = accountDetails.getDouble("totalLimit");
-
-            account = new Account(budget, totalLimit, 0);
+            Double monthLimit = accountDetails.getDouble("monthLimit");
+            account = new Account(budget, totalLimit, monthLimit);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

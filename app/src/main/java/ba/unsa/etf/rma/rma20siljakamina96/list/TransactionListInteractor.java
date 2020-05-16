@@ -31,7 +31,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     @Override
     public ArrayList<Transaction> getTransactions() {
-        return FinanceModel.transactions;
+        return transactions;
     }
 
     public TransactionListInteractor(OnTransactionGetDone p) {
