@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
 
     @Override
     public void onTransactionModified() {
-        listFragment.getTransactionPresenter().setTransactions();
-        listFragment.getTransactionPresenter().setAccount();
+//        listFragment.getTransactionPresenter().setTransactions();
+//        listFragment.getTransactionPresenter().setAccount();
     }
 
 

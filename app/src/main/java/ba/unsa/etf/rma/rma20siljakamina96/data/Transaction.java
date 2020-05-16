@@ -14,21 +14,14 @@ public class Transaction implements Parcelable{
     private String title;
     private Type type;
     private String itemDescription;
-    private int transactionInterval;
+    private Integer transactionInterval;
     private Date endDate;
+    private Integer id;
 
     private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
-    public Transaction(Date date, double amount, String title, Type type, String itemDescription) {
-        this.date = date;
-        this.amount = amount;
-        this.title = title;
-        this.type = type;
-        this.itemDescription = itemDescription;
-    }
-
     //sammo za regular transakcije
-    public Transaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
+    public Transaction(Date date, double amount, String title, Type type, String itemDescription, Integer transactionInterval, Date endDate) {
         this.date = date;
         this.amount = amount;
         this.title = title;
@@ -200,4 +193,11 @@ public class Transaction implements Parcelable{
         return 0;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

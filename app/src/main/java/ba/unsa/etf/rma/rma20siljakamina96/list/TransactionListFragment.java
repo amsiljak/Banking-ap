@@ -90,7 +90,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         return month;
     }
     @Override
-    public void notifyTransactionDataSetChanged() {
+    public void notifyTransactionListDataSetChanged() {
         transactionListAdapter.notifyDataSetChanged();
     }
 
@@ -122,125 +122,125 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         transactionListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         transactionListView.setAdapter(transactionListAdapter);
         transactionListView.setOnItemClickListener(transactionListItemClickListener);
-
-        globalAmount2 = (TextView)fragmentView.findViewById(R.id.globalAmount2);
-        limit2 = fragmentView.findViewById(R.id.limit2);
-
-        listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
-
-        onSwipeLeft = (OnSwipeLeft) getActivity();
-        onSwipeRight = (OnSwipeRight) getActivity();
-
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-                @Override
-                public void onSwipeRight() {
-                    onSwipeRight.openGraphsFragmentFromList();
-                }
-                @Override
-                public void onSwipeLeft() {
-                    onSwipeLeft.openBudgetFragmentFromList();
-                }
-            });
-        }
-
-        type = "All";
-        filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
-        filterList = new ArrayList<>();
-        for(Type t: Type.values()) filterList.add(t.toString());
-        filterList.add("All");
-        filterList.add("Filter by");
-        filterSpinnerAdapter = new FilterSpinnerAdapter(getActivity(), R.layout.filter_spinner_item, filterList);
-        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
-        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, getActivity()));
-        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
-
-        sortSpinner = (Spinner) fragmentView.findViewById(R.id.sortSpinner);
-        sortList = new ArrayList<>();
-        sortList.add("Price - Ascending");
-        sortList.add("Price - Descending");
-        sortList.add("Title - Ascending");
-        sortList.add("Title - Descending");
-        sortList.add("Date - Ascending");
-        sortList.add("Date - Descending");
-        sortSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortList);
-        sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, getActivity()));
-        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
-
-        cal = Calendar.getInstance();
-        dateView = (TextView)fragmentView.findViewById(R.id.date);
-
-        leftImageButton = (ImageButton)fragmentView.findViewById(R.id.leftButton);
-        rightImageButton = (ImageButton)fragmentView.findViewById(R.id.rightButton);
-
-        leftImageButton.setOnClickListener(leftButtonClickListener);
-        rightImageButton.setOnClickListener(rightButtonClickListener);
-
+//
+//        globalAmount2 = (TextView)fragmentView.findViewById(R.id.globalAmount2);
+//        limit2 = fragmentView.findViewById(R.id.limit2);
+//
+//        listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
+//
+//        onSwipeLeft = (OnSwipeLeft) getActivity();
+//        onSwipeRight = (OnSwipeRight) getActivity();
+//
+//        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+//            fragmentView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+//                @Override
+//                public void onSwipeRight() {
+//                    onSwipeRight.openGraphsFragmentFromList();
+//                }
+//                @Override
+//                public void onSwipeLeft() {
+//                    onSwipeLeft.openBudgetFragmentFromList();
+//                }
+//            });
+//        }
+//
+//        type = "All";
+//        filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
+//        filterList = new ArrayList<>();
+//        for(Type t: Type.values()) filterList.add(t.toString());
+//        filterList.add("All");
+//        filterList.add("Filter by");
+//        filterSpinnerAdapter = new FilterSpinnerAdapter(getActivity(), R.layout.filter_spinner_item, filterList);
+//        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
+//        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, getActivity()));
+//        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
+//
+//        sortSpinner = (Spinner) fragmentView.findViewById(R.id.sortSpinner);
+//        sortList = new ArrayList<>();
+//        sortList.add("Price - Ascending");
+//        sortList.add("Price - Descending");
+//        sortList.add("Title - Ascending");
+//        sortList.add("Title - Descending");
+//        sortList.add("Date - Ascending");
+//        sortList.add("Date - Descending");
+//        sortSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortList);
+//        sortSpinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//        sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, getActivity()));
+//        sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
+//
+//        cal = Calendar.getInstance();
+//        dateView = (TextView)fragmentView.findViewById(R.id.date);
+//
+//        leftImageButton = (ImageButton)fragmentView.findViewById(R.id.leftButton);
+//        rightImageButton = (ImageButton)fragmentView.findViewById(R.id.rightButton);
+//
+//        leftImageButton.setOnClickListener(leftButtonClickListener);
+//        rightImageButton.setOnClickListener(rightButtonClickListener);
+//
         addTransactionButton = (Button)fragmentView.findViewById(R.id.addTransaction);
-        addTransactionButton.setOnClickListener(addTransactionClickListenr);
+//        addTransactionButton.setOnClickListener(addTransactionClickListenr);
         onItemClick = (OnItemClick) getActivity();
-        onAddButtonClick = (OnAddButtonClick) getActivity();
-
-        getAccountPresenter();
-        getTransactionPresenter().refresh();
-
+//        onAddButtonClick = (OnAddButtonClick) getActivity();
+//
+//        getAccountPresenter();
+//        getTransactionPresenter().refresh();
+        getTransactionPresenter().getTransactions();
         return fragmentView;
     }
 
-    private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            cal.add(Calendar.MONTH,-1);
-            financePresenter.setTransactions();
-            setDate();
-
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                transactionListView.setItemChecked(pozi,false);
-                addTransactionButton.setEnabled(true);
-                onAddButtonClick.onAddButtonClicked();
-            }
-        }
-    };
-    private AdapterView.OnClickListener rightButtonClickListener = new AdapterView.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            cal.add(Calendar.MONTH,1);
-            financePresenter.setTransactions();
-            setDate();
-
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                transactionListView.setItemChecked(pozi,false);
-                addTransactionButton.setEnabled(true);
-                onAddButtonClick.onAddButtonClicked();
-            }
-        }
-    };
-    private AdapterView.OnItemSelectedListener sortSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (parent.getItemAtPosition(position) != null) {
-                sort = parent.getItemAtPosition(position).toString();
-                financePresenter.setTransactions();
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    };
-    private AdapterView.OnItemSelectedListener filterSpinnerItemSelectListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
-            financePresenter.setTransactions();
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    };
+//    private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            cal.add(Calendar.MONTH,-1);
+//            financePresenter.setTransactions();
+//            setDate();
+//
+//            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+//                transactionListView.setItemChecked(pozi,false);
+//                addTransactionButton.setEnabled(true);
+//                onAddButtonClick.onAddButtonClicked();
+//            }
+//        }
+//    };
+//    private AdapterView.OnClickListener rightButtonClickListener = new AdapterView.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            cal.add(Calendar.MONTH,1);
+//            financePresenter.setTransactions();
+//            setDate();
+//
+//            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+//                transactionListView.setItemChecked(pozi,false);
+//                addTransactionButton.setEnabled(true);
+//                onAddButtonClick.onAddButtonClicked();
+//            }
+//        }
+//    };
+//    private AdapterView.OnItemSelectedListener sortSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+//        @Override
+//        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//            if (parent.getItemAtPosition(position) != null) {
+//                sort = parent.getItemAtPosition(position).toString();
+//                financePresenter.setTransactions();
+//            }
+//        }
+//
+//        @Override
+//        public void onNothingSelected(AdapterView<?> parent) {
+//
+//        }
+//    };
+//    private AdapterView.OnItemSelectedListener filterSpinnerItemSelectListener = new AdapterView.OnItemSelectedListener() {
+//        @Override
+//        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//            if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
+//            financePresenter.setTransactions();
+//        }
+//        @Override
+//        public void onNothingSelected(AdapterView<?> parent) {
+//
+//        }
+//    };
     @Override
     public void setAccountData() {
         globalAmount2.setText(accountPresenter.getBudget());
@@ -249,14 +249,14 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
-        transactionListAdapter.clear();
-
-        transactions = financePresenter.sortTransactions(sort);
-        transactions = financePresenter.filterTransactionsByDate(transactions, cal);
-        transactions = financePresenter.filterTransactionsByType(transactions, type);
+//        transactionListAdapter.clear();
+//
+//        transactions = financePresenter.sortTransactions(sort);
+//        transactions = financePresenter.filterTransactionsByDate(transactions, cal);
+//        transactions = financePresenter.filterTransactionsByType(transactions, type);
 
         transactionListAdapter.setTransactions(transactions);
-        transactionListAdapter.notifyDataSetChanged();
+//        notifyTransactionListDataSetChanged();
     }
 
     @Override
@@ -292,10 +292,10 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             }
         }
     };
-    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            onAddButtonClick.onAddButtonClicked();
-        }
-    };
+//    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            onAddButtonClick.onAddButtonClicked();
+//        }
+//    };
 }

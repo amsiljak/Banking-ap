@@ -16,11 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
-import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
-import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 
 public class GraphsPresenter implements IGraphsPresenter{
     private Context context;
@@ -33,7 +31,6 @@ public class GraphsPresenter implements IGraphsPresenter{
 
     public GraphsPresenter(IGraphsView view, Context context) {
         this.context = context;
-        this.financeInteractor = new TransactionInteractor();
         this.view = view;
     }
 

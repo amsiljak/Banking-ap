@@ -4,9 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Account implements Parcelable {
-    double budget;
-    double totalLimit;
-    double monthLimit;
+    private double budget;
+    private double totalLimit;
+    private double monthLimit;
+    private Integer id;
 
     public Account(double budget, double totalLimit, double monthLimit) {
         this.budget = budget;
@@ -63,5 +64,13 @@ public class Account implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

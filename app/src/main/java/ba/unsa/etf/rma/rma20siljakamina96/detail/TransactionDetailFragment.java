@@ -102,13 +102,14 @@ public class TransactionDetailFragment extends Fragment {
             amountEditText.setText(String.valueOf(transaction.getAmount()));
             typeEditText.setText(transaction.getType().toString());
 
-            if (!(transaction.getType().toString().equals("INDIVIDUALINCOME") || transaction.getType().toString().equals("REGULARINCOME")))
+            if (!(transaction.getType().toString().equals("INDIVIDUALINCOME") || transaction.getType().toString().equals("REGULARINCOME")) && transaction.getItemDescription() != null)
                 descriptionEditText.setText(transaction.getItemDescription());
             else descriptionEditText.setText("");
+
             if (transaction.getType().toString().equals("REGULARINCOME") || transaction.getType().toString().equals("REGULARPAYMENT"))
                 intervalEditText.setText(String.valueOf(transaction.getTransactionInterval()));
             else intervalEditText.setText("");
-        if (transaction.getEndDate() != null)
+            if (transaction.getEndDate() != null)
                 endDateEditText.setText(DATE_FORMAT.format(transaction.getEndDate()));
             else endDateEditText.setText("");
 
@@ -277,63 +278,63 @@ public class TransactionDetailFragment extends Fragment {
     };
 
     private void saveAction() {
-        String type = typeEditText.getText().toString().toUpperCase();
-
-        Date date = null;
-        if(!endDateEditText.getText().equals("")) {
-            try {
-                date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        //izmjena transakcije
-        if (saving) {
-            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
-
-            try {
-                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT"))) {
-
-                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-                            date);
-                }
-                else
-                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-                onTransactionModify.onTransactionModified();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        //dodavanje transakcije
-        } else {
-            try {
-                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
-                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-                            date);
-                else
-                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-                onTransactionModify.onTransactionModified();
-                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+//        String type = typeEditText.getText().toString().toUpperCase();
+//
+//        Date date = null;
+//        if(!endDateEditText.getText().equals("")) {
+//            try {
+//                date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        //izmjena transakcije
+//        if (saving) {
+//            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+//            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
+//
+//            try {
+//                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT"))) {
+//
+//                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+//                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
+//                            date);
+//                }
+//                else
+//                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+//                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+//                onTransactionModify.onTransactionModified();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        //dodavanje transakcije
+//        } else {
+//            try {
+//                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
+//                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+//                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
+//                            date);
+//                else
+//                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
+//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
+//                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
+//                onTransactionModify.onTransactionModified();
+//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+//                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+//                }
+//
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
@@ -391,30 +392,30 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Delete transaction")
-                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue with delete operation
-                            presenter.delete();
-                            onTransactionModify.onTransactionModified();
-                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
-                            }
-                            else {
-                                onTransactionModify.onTransactionModified();
-                                onAddButtonClick.onAddButtonClicked();
-                            }
-                        }
-                    })
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+//            new AlertDialog.Builder(getActivity())
+//                    .setTitle("Delete transaction")
+//                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
+//
+//                    // Specifying a listener allows you to take an action before dismissing the dialog.
+//                    // The dialog is automatically dismissed when a dialog button is clicked.
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            // Continue with delete operation
+//                            presenter.delete();
+//                            onTransactionModify.onTransactionModified();
+//                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+//                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+//                            }
+//                            else {
+//                                onTransactionModify.onTransactionModified();
+//                                onAddButtonClick.onAddButtonClicked();
+//                            }
+//                        }
+//                    })
+//                    // A null listener allows the button to dismiss the dialog and take no further action.
+//                    .setNegativeButton(android.R.string.no, null)
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .show();
         }
     };
 

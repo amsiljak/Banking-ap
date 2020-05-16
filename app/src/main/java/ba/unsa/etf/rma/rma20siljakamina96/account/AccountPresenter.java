@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
-import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 
 
 public class AccountPresenter implements IAccountPresenter{
@@ -19,7 +19,6 @@ public class AccountPresenter implements IAccountPresenter{
     public AccountPresenter(Context context) {
         this.context = context;
         this.accountInteractor = new AccountInteractor();
-        this.transactionInteractor = new TransactionInteractor();
     }
     @Override
     public Account getAccount() {
