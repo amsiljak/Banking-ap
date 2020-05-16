@@ -1,6 +1,5 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
-import android.graphics.Movie;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -12,16 +11,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -138,7 +134,6 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                 }
 
                 transactions.add(new Transaction(date,amount,title,Type.valueOf("REGULARPAYMENT"),itemDescription,transactionInterval,endDate));
-
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -147,22 +142,16 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
-//            try {
-//                transactions.add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-01-01"), 500, "t2",
-//                                Type.REGULARINCOME, null, 30, null));
-//            } catch (ParseException ex) {
-//                ex.printStackTrace();
-//            }
             e.printStackTrace();
         }
         return null;
     }
     public interface OnTransactionGetDone{
-        public void onDone(ArrayList<Transaction> results);
+        public void onTransactionGetDone(ArrayList<Transaction> results);
     }
     @Override
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
-        caller.onDone(transactions);
+        caller.onTransactionGetDone(transactions);
     }
 }

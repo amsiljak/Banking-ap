@@ -12,8 +12,10 @@ public interface IFinancePresenter {
 //    ArrayList<Transaction> filterTransactionsByType(ArrayList<Transaction> transactions, String type);
 //    ArrayList<Transaction> filterTransactionsByDate(ArrayList<Transaction> transactions, Calendar cal);
 
-//    void setTransactions();
-    void setAccount();
+    void getAccount();
+
+    //    void setTransactions();
+//    void setAccount();
 
     void getTransactions();
 }

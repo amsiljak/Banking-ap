@@ -10,10 +10,11 @@ import java.util.Collections;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
-public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone {
+public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone {
     private Context context;
     private IFinanceView view;
 
@@ -22,42 +23,25 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         this.view = view;
     }
     @Override
-    public void onDone(ArrayList<Transaction> results) {
-
-//        ArrayList<Transaction> transactions = new ArrayList<Transaction>() {
-//            {
-//                try {
-//                    add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-15"), 100, "t1",
-//                            Type.INDIVIDUALPAYMENT, "opis", null, null));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                try {
-//                    add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-01-01"), 500, "t2",
-//                            Type.REGULARINCOME, null, 30, null));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                try {
-//                    add(new Transaction(new SimpleDateFormat("yyyy-MM-dd").parse("2020-04-16"), 200, "t3",
-//                            Type.INDIVIDUALPAYMENT, "opis",null,null));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        view.setTransactions(transactions);
+    public void onTransactionGetDone(ArrayList<Transaction> results) {
         view.setTransactions(results);
         view.notifyTransactionListDataSetChanged();
     }
+
+    @Override
+    public void onAccountGetDone(Account account) {
+        view.setAccountData(account);
+    }
+
     @Override
     public void getTransactions(){
         new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
                 this).execute("transactions");
     }
     @Override
-    public void setAccount() {
-        view.setAccountData();
+    public void getAccount(){
+        new AccountInteractor((AccountInteractor.OnAccountGetDone)
+                this).execute("account");
     }
 
 //    @Override

@@ -18,7 +18,7 @@ public class AccountPresenter implements IAccountPresenter{
 
     public AccountPresenter(Context context) {
         this.context = context;
-        this.accountInteractor = new AccountInteractor();
+//        this.accountInteractor = new AccountInteractor();
     }
     @Override
     public Account getAccount() {

@@ -28,6 +28,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.R;
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
@@ -58,7 +59,6 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     private ArrayAdapter<String> sortSpinnerAdapter;
 
     private IFinancePresenter financePresenter;
-    private IAccountPresenter accountPresenter;
 
     private TransactionListAdapter transactionListAdapter;
 
@@ -71,12 +71,6 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             financePresenter = new FinancePresenter(this, getActivity());
         }
         return financePresenter;
-    }
-    public IAccountPresenter getAccountPresenter() {
-        if (accountPresenter == null) {
-            accountPresenter = new AccountPresenter(getActivity());
-        }
-        return accountPresenter;
     }
     private String getMonth() {
         int mjesec = cal.get(Calendar.MONTH);
@@ -122,9 +116,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         transactionListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         transactionListView.setAdapter(transactionListAdapter);
         transactionListView.setOnItemClickListener(transactionListItemClickListener);
-//
-//        globalAmount2 = (TextView)fragmentView.findViewById(R.id.globalAmount2);
-//        limit2 = fragmentView.findViewById(R.id.limit2);
+
+        globalAmount2 = (TextView)fragmentView.findViewById(R.id.globalAmount2);
+        limit2 = fragmentView.findViewById(R.id.limit2);
 //
 //        listLayout = (ConstraintLayout)fragmentView.findViewById(R.id.listlayout);
 //
@@ -185,6 +179,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 //        getAccountPresenter();
 //        getTransactionPresenter().refresh();
         getTransactionPresenter().getTransactions();
+        getTransactionPresenter().getAccount();
         return fragmentView;
     }
 
@@ -242,9 +237,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 //        }
 //    };
     @Override
-    public void setAccountData() {
-        globalAmount2.setText(accountPresenter.getBudget());
-        limit2.setText(accountPresenter.getTotalLimit());
+    public void setAccountData(Account account) {
+        globalAmount2.setText(String.valueOf(account.getBudget()));
+        limit2.setText(String.valueOf(account.getTotalLimit()));
     }
 
     @Override
