@@ -2,6 +2,8 @@ package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,9 +36,37 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     }
 
     @Override
-    public void getTransactions(){
+    public void getTransactions(String typeId, String sort, String month, String year){
+
+        String query = "";
+
+        if(typeId != null){
+            query += "typeId=" + typeId;
+        }
+        if(query != "") query+= "&";
+
+        if (sort != null) {
+            if(sort.equals("Price - Ascending")) sort = "amount.asc";
+            else if(sort.equals("Price - Descending"))  sort = "amount.desc";
+            else if(sort.equals("Title - Ascending"))  sort = "title.asc";
+            else if(sort.equals("Title - Descending"))  sort = "title.desc";
+            else if(sort.equals("Date - Ascending"))  sort = "date.asc";
+            else if(sort.equals("Date - Descending")) sort = "date.desc";
+            query += "sort=" + sort;
+        }
+        if(query != "") query+= "&";
+
+        if (month != null) {
+            if(month.length() == 1) month = '0' + month;
+            query += "month=" + month;
+        }
+        if(query != "") query+= "&";
+        if (year != null) {
+            query += "year=" + year;
+        }
+
         new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
-                this).execute("transactions");
+                this).execute(query);
     }
     @Override
     public void getAccount(){

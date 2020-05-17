@@ -11,9 +11,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,8 +41,6 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     public TransactionListInteractor(OnTransactionGetDone p) {
         caller = p;
-        transactions = new ArrayList<>();
-        transactionTypes = new HashMap<>();
     };
 //    @Override
 //    public void delete(Transaction transaction) {
@@ -107,12 +107,27 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     }
     @Override
     protected Void doInBackground(String... strings) {
+        transactions = new ArrayList<>();
         AddTypes();
         int page = 0;
+
+        String query = null;
+        query = strings[0];
+
         while(true) {
             String url1;
-            if(page == 0)  url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
-            else url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions?page="+page;
+            if(query == "") {
+                if (page == 0)
+                    url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
+                else
+                    url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions?page=" + page;
+            }
+            else {
+                if (page == 0)
+                    url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions/filter?"+query;
+                else
+                    url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions/filter?page=" + page+"&"+query;
+            }
             try {
                 SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 URL url = new URL(url1);
@@ -147,7 +162,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     for (Map.Entry<Integer,String> entry : transactionTypes.entrySet()) {
                         if(transactionTypeId == entry.getKey()) type = entry.getValue().toUpperCase();
                     }
-                        transactions.add(new Transaction(date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
+                    transactions.add(new Transaction(date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -160,12 +175,12 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
             }
             page++;
         }
-
         return null;
     }
 
     protected Void AddTypes(String... params)
     {
+        transactionTypes = new HashMap<>();
         try {
             URL url = null;
             String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/transactionTypes";
