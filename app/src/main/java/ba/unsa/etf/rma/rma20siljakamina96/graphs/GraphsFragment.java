@@ -22,6 +22,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.R;
 public class GraphsFragment extends Fragment implements IGraphsView{
     private OnSwipeLeft onSwipeLeft;
     private OnSwipeRight onSwipeRight;
+
     private IGraphsPresenter presenter;
 
     private RadioGroup radioGroup;
@@ -73,28 +74,29 @@ public class GraphsFragment extends Fragment implements IGraphsView{
         monthButton = (RadioButton)fragmentView.findViewById(R.id.month);
 
         monthButton.setChecked(true);
-        getPresenter().putConsumptionDataToBarData("Month");
-        getPresenter().putEarningsDataToBarData("Month");
-        getPresenter().putTotalDataToBarData("Month");
+        getPresenter().getData("Month");
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch(i) {
                     case R.id.day:
-                        getPresenter().putConsumptionDataToBarData("Day");
-                        getPresenter().putEarningsDataToBarData("Day");
-                        getPresenter().putTotalDataToBarData("Day");
+                        presenter.getData("Day");
+//                        getPresenter().putConsumptionDataToBarData("Day");
+//                        getPresenter().putEarningsDataToBarData("Day");
+//                        getPresenter().putTotalDataToBarData("Day");
                         break;
                     case R.id.week:
-                        getPresenter().putConsumptionDataToBarData("Week");
-                        getPresenter().putEarningsDataToBarData("Week");
-                        getPresenter().putTotalDataToBarData("Week");
+                        presenter.getData("Week");
+//                        getPresenter().putConsumptionDataToBarData("Week");
+//                        getPresenter().putEarningsDataToBarData("Week");
+//                        getPresenter().putTotalDataToBarData("Week");
                         break;
                     case R.id.month:
-                        getPresenter().putConsumptionDataToBarData("Month");
-                        getPresenter().putEarningsDataToBarData("Month");
-                        getPresenter().putTotalDataToBarData("Month");
+                        presenter.getData("Month");
+//                        getPresenter().putConsumptionDataToBarData("Month");
+//                        getPresenter().putEarningsDataToBarData("Month");
+//                        getPresenter().putTotalDataToBarData("Month");
                         break;
                 }
             }

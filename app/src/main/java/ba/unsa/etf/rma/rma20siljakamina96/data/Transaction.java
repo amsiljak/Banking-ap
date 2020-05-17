@@ -200,4 +200,19 @@ public class Transaction implements Parcelable{
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "date=" + date +
+                ", amount=" + amount +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                ", itemDescription='" + itemDescription + '\'' +
+                ", transactionInterval=" + transactionInterval +
+                ", endDate=" + endDate +
+                ", id=" + id +
+                ", DATE_FORMAT=" + DATE_FORMAT +
+                '}';
+    }
 }

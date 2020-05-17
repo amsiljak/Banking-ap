@@ -17,17 +17,24 @@ import java.util.List;
 import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
-import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 
-public class GraphsPresenter implements IGraphsPresenter{
+public class GraphsPresenter implements IGraphsPresenter,TransactionListInteractor.OnTransactionGetDone{
     private Context context;
+    private String timeUnit;
 
     private SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("dd");
     private SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
 
-    private ITransactionInteractor financeInteractor;
     private IGraphsView view;
+
+    @Override
+    public void getData(String timeUnit) {
+        this.timeUnit = timeUnit;
+        new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
+                this).execute("transactions");
+    }
 
     public GraphsPresenter(IGraphsView view, Context context) {
         this.context = context;
@@ -83,12 +90,14 @@ public class GraphsPresenter implements IGraphsPresenter{
 
         //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
         //i onda uzima mjesec pocetnog i na njega stavlja amount
+
         while(dateOfPayment.compareTo(endDateOfPayment) <= 0) {
             if(dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
                 float month = Float.valueOf(MONTH_DATE_FORMAT.format(dateOfPayment.getTime()));
                 mapa = putValueToMap(month, (float)t.getAmount(), mapa);
             }
-            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
+            if(t.getTransactionInterval() == 0) break;
+            else dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
         }
         return mapa;
     }
@@ -116,16 +125,16 @@ public class GraphsPresenter implements IGraphsPresenter{
 
                 mapa = putValueToMap(day, (float)t.getAmount(), mapa);
             }
-            dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
+            if(t.getTransactionInterval() == 0) break;
+            else dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
         }
         return mapa;
     }
-    @Override
-    public Map<Float, Float> putConsumptionDataToBarData(String timeUnit) {
+    public Map<Float, Float> putConsumptionDataToBarData(ArrayList<Transaction> transactions) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
-        for(Transaction t: financeInteractor.getTransactions()) {
+        for(Transaction t: transactions) {
 
             Calendar transactionMonth = Calendar.getInstance();
             transactionMonth.setTime(t.getDate());
@@ -166,12 +175,11 @@ public class GraphsPresenter implements IGraphsPresenter{
 
         return mapa;
     }
-    @Override
-    public Map<Float, Float> putEarningsDataToBarData(String timeUnit) {
+    public Map<Float, Float> putEarningsDataToBarData(ArrayList<Transaction> transactions) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
-        for(Transaction t: financeInteractor.getTransactions()) {
+        for(Transaction t: transactions) {
 
             Calendar transactionMonth = Calendar.getInstance();
             transactionMonth.setTime(t.getDate());
@@ -211,8 +219,7 @@ public class GraphsPresenter implements IGraphsPresenter{
 
         return mapa;
     }
-    @Override
-    public void putTotalDataToBarData(String timeUnit) {
+    public void putTotalDataToBarData(ArrayList<Transaction> transactions) {
         List<BarEntry> entries;
         Map<Float, Float> mapa = new HashMap<>();
 
@@ -223,8 +230,8 @@ public class GraphsPresenter implements IGraphsPresenter{
 
         float lastValue = 0f;
 
-        Map<Float, Float> consumptionsMap = putConsumptionDataToBarData(timeUnit);
-        Map<Float, Float> earningsMap = putEarningsDataToBarData(timeUnit);
+        Map<Float, Float> consumptionsMap = putConsumptionDataToBarData(transactions);
+        Map<Float, Float> earningsMap = putEarningsDataToBarData(transactions);
 
         for(float i = 1f; i < limit; i++) {
             float consumption = 0f;
@@ -245,5 +252,13 @@ public class GraphsPresenter implements IGraphsPresenter{
         barData.setBarWidth(0.9f); // set custom bar width
 
         view.setTotalBarChart(barData);
+    }
+
+
+    @Override
+    public void onTransactionGetDone(ArrayList<Transaction> results) {
+        putEarningsDataToBarData(results);
+        putConsumptionDataToBarData(results);
+        putTotalDataToBarData(results);
     }
 }
