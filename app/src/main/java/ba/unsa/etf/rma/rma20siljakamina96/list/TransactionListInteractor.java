@@ -18,6 +18,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -28,6 +30,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     private String tmdb_api_key = "";
     private OnTransactionGetDone caller;
     ArrayList<Transaction> transactions;
+    Map<Integer,String> transactionTypes;
 
     @Override
     public ArrayList<Transaction> getTransactions() {
@@ -36,7 +39,8 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     public TransactionListInteractor(OnTransactionGetDone p) {
         caller = p;
-        transactions = new ArrayList<Transaction>();
+        transactions = new ArrayList<>();
+        transactionTypes = new HashMap<>();
     };
 //    @Override
 //    public void delete(Transaction transaction) {
@@ -103,6 +107,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     }
     @Override
     protected Void doInBackground(String... strings) {
+        AddTypes();
         int page = 0;
         while(true) {
             String url1;
@@ -127,6 +132,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     String title = transaction.getString("title");
                     Double amount = transaction.getDouble("amount");
                     String itemDescription = transaction.getString("itemDescription");
+                    int transactionTypeId = transaction.getInt("TransactionTypeId");
 
                     Integer transactionInterval = 0;
                     if (!transaction.isNull("transactionInterval")) {
@@ -137,8 +143,11 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     if (!transaction.isNull("endDate")) {
                         endDate = DATE_FORMAT.parse(transaction.getString("endDate"));
                     }
-
-                    transactions.add(new Transaction(date, amount, title, Type.valueOf("REGULARPAYMENT"), itemDescription, transactionInterval, endDate));
+                    String type = "";
+                    for (Map.Entry<Integer,String> entry : transactionTypes.entrySet()) {
+                        if(transactionTypeId == entry.getKey()) type = entry.getValue().toUpperCase();
+                    }
+                        transactions.add(new Transaction(date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -151,8 +160,45 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
             }
             page++;
         }
+
         return null;
     }
+
+    protected Void AddTypes(String... params)
+    {
+        try {
+            URL url = null;
+            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/transactionTypes";
+            try {
+                url = new URL(url1);
+            }catch (MalformedURLException e){
+                e.printStackTrace();
+            }
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            String rezultat = convertStreamToString(in);
+            JSONObject jo = new JSONObject(rezultat);
+
+            JSONArray items = jo.getJSONArray("rows");
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject type = items.getJSONObject(i);
+                Integer id = type.getInt("id");
+                String name = type.getString("name");
+
+                if (!transactionTypes.containsKey(id)) {
+                    transactionTypes.put(id, name.replaceAll("\\s",""));
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public interface OnTransactionGetDone{
         public void onTransactionGetDone(ArrayList<Transaction> results);
     }
