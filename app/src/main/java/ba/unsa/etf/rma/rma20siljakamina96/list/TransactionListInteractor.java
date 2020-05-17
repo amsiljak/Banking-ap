@@ -103,46 +103,53 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     }
     @Override
     protected Void doInBackground(String... strings) {
+        int page = 0;
+        while(true) {
+            String url1;
+            if(page == 0)  url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
+            else url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions?page="+page;
+            try {
+                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                URL url = new URL(url1);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                String result = convertStreamToString(in);
+                JSONObject jo = new JSONObject(result);
+                JSONArray results = jo.getJSONArray("transactions");
+                if(results.length() == 0) break;
 
-        String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
-        try {
-            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            URL url = new URL(url1);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            String result = convertStreamToString(in);
-            JSONObject jo = new JSONObject(result);
-            JSONArray results = jo.getJSONArray("transactions");
-            for (int i = 0; i < results.length(); i++) {
+                for (int i = 0; i < results.length(); i++) {
 
-                JSONObject transaction = results.getJSONObject(i);
+                    JSONObject transaction = results.getJSONObject(i);
 
-                Integer id = transaction.getInt("id");
-                Date date = DATE_FORMAT.parse(transaction.getString("date"));
-                String title = transaction.getString("title");
-                Double amount = transaction.getDouble("amount");
-                String itemDescription = transaction.getString("itemDescription");
+                    Integer id = transaction.getInt("id");
+                    Date date = DATE_FORMAT.parse(transaction.getString("date"));
+                    String title = transaction.getString("title");
+                    Double amount = transaction.getDouble("amount");
+                    String itemDescription = transaction.getString("itemDescription");
 
-                Integer transactionInterval = 0;
-                if (!transaction.isNull("transactionInterval")) {
-                    transactionInterval = Integer.valueOf(transaction.getString("transactionInterval"));
+                    Integer transactionInterval = 0;
+                    if (!transaction.isNull("transactionInterval")) {
+                        transactionInterval = Integer.valueOf(transaction.getString("transactionInterval"));
+                    }
+
+                    Date endDate = null;
+                    if (!transaction.isNull("endDate")) {
+                        endDate = DATE_FORMAT.parse(transaction.getString("endDate"));
+                    }
+
+                    transactions.add(new Transaction(date, amount, title, Type.valueOf("REGULARPAYMENT"), itemDescription, transactionInterval, endDate));
                 }
-
-                Date endDate = null;
-                if (!transaction.isNull("endDate")) {
-                    endDate = DATE_FORMAT.parse(transaction.getString("endDate"));
-                }
-
-                transactions.add(new Transaction(date,amount,title,Type.valueOf("REGULARPAYMENT"),itemDescription,transactionInterval,endDate));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            page++;
         }
         return null;
     }
