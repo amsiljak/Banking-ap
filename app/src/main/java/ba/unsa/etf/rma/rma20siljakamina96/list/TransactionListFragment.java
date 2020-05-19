@@ -136,16 +136,16 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             });
         }
 
-//        type = "All";
-//        filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
-//        filterList = new ArrayList<>();
-//        for(Type t: Type.values()) filterList.add(t.toString());
-//        filterList.add("All");
-//        filterList.add("Filter by");
-//        filterSpinnerAdapter = new FilterSpinnerAdapter(getActivity(), R.layout.filter_spinner_item, filterList);
-//        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
-//        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, getActivity()));
-//        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
+        type = "All";
+        filterSpinner = (Spinner)fragmentView.findViewById(R.id.filterSpinner);
+        filterList = new ArrayList<>();
+        for(Type t: Type.values()) filterList.add(t.toString());
+        filterList.add("All");
+        filterList.add("Filter by");
+        filterSpinnerAdapter = new FilterSpinnerAdapter(getActivity(), R.layout.filter_spinner_item, filterList);
+        filterSpinnerAdapter.setDropDownViewResource(R.layout.filter_spinner_dropdown_item);
+        filterSpinner.setAdapter(new NothingSelectedSpinnerAdapter(filterSpinnerAdapter, R.layout.filter_spinner_row_nothing_selected, getActivity()));
+        filterSpinner.setOnItemSelectedListener(filterSpinnerItemSelectListener);
 
         sortSpinner = (Spinner) fragmentView.findViewById(R.id.sortSpinner);
         sortList = new ArrayList<>();
@@ -224,17 +224,18 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
         }
     };
-//    private AdapterView.OnItemSelectedListener filterSpinnerItemSelectListener = new AdapterView.OnItemSelectedListener() {
-//        @Override
-//        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//            if(parent.getItemAtPosition(position)!= null) type = parent.getItemAtPosition(position).toString();
-//            financePresenter.setTransactions();
-//        }
-//        @Override
-//        public void onNothingSelected(AdapterView<?> parent) {
-//
-//        }
-//    };
+    private AdapterView.OnItemSelectedListener filterSpinnerItemSelectListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(parent.getItemAtPosition(position)!= null)
+                type = parent.getItemAtPosition(position).toString();
+            financePresenter.getTransactions(type, sort,String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
     @Override
     public void setAccountData(Account account) {
         globalAmount2.setText(String.valueOf(account.getBudget()));

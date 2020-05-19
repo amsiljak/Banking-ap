@@ -29,7 +29,6 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
-    private String tmdb_api_key = "";
     private OnTransactionGetDone caller;
     ArrayList<Transaction> transactions;
     Map<Integer,String> transactionTypes;
@@ -105,14 +104,48 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         }
         return sb.toString();
     }
+    private String getQuery(String type, String sort, String month, String year) {
+        String query = "";
+
+        if(type != null && !type.equals("All")){
+            for (Map.Entry<Integer,String> entry : transactionTypes.entrySet()) {
+                if(type.equals(entry.getValue())) { //ako nadje ime tipa transakcije iz filter liste u query stavi id tog tipa
+                    type = entry.getKey().toString();
+                    break;
+                }
+            }
+            query += "typeId=" + type;
+        }
+        if(query != "") query+= "&";
+
+        if (sort != null) {
+            if(sort.equals("Price - Ascending")) sort = "amount.asc";
+            else if(sort.equals("Price - Descending"))  sort = "amount.desc";
+            else if(sort.equals("Title - Ascending"))  sort = "title.asc";
+            else if(sort.equals("Title - Descending"))  sort = "title.desc";
+            else if(sort.equals("Date - Ascending"))  sort = "date.asc";
+            else if(sort.equals("Date - Descending")) sort = "date.desc";
+            query += "sort=" + sort;
+        }
+        if(query != "") query+= "&";
+
+        if (month != null) {
+            if(month.length() == 1) month = '0' + month;
+            query += "month=" + month;
+        }
+        if(query != "") query+= "&";
+        if (year != null) {
+            query += "year=" + year;
+        }
+        return query;
+    }
     @Override
     protected Void doInBackground(String... strings) {
         transactions = new ArrayList<>();
         AddTypes();
         int page = 0;
 
-        String query = null;
-        query = strings[0];
+        String query = getQuery(strings[0],strings[1],strings[2],strings[3]);
 
         while(true) {
             String url1;
@@ -160,7 +193,10 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     }
                     String type = "";
                     for (Map.Entry<Integer,String> entry : transactionTypes.entrySet()) {
-                        if(transactionTypeId == entry.getKey()) type = entry.getValue().toUpperCase();
+                        if(transactionTypeId == entry.getKey()) {
+                            type = entry.getValue();
+                            break;
+                        }
                     }
                     transactions.add(new Transaction(date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
                 }
@@ -201,7 +237,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                 String name = type.getString("name");
 
                 if (!transactionTypes.containsKey(id)) {
-                    transactionTypes.put(id, name.replaceAll("\\s",""));
+                    transactionTypes.put(id, name.replaceAll("\\s","").toUpperCase());
                 }
             }
         } catch (MalformedURLException e) {
