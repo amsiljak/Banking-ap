@@ -173,9 +173,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         addTransactionButton.setOnClickListener(addTransactionClickListenr);
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
-//
-//        getAccountPresenter();
-//        getTransactionPresenter().refresh();
+
         getTransactionPresenter().getTransactions(null, "title.asc",String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
         financePresenter.getAccount();
         setDate();
@@ -245,13 +243,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
         transactionListAdapter.clear();
-//
-//        transactions = financePresenter.sortTransactions(sort);
-//        transactions = financePresenter.filterTransactionsByDate(transactions, cal);
-//        transactions = financePresenter.filterTransactionsByType(transactions, type);
-
         transactionListAdapter.setTransactions(transactions);
-//        notifyTransactionListDataSetChanged();
     }
 
     @Override

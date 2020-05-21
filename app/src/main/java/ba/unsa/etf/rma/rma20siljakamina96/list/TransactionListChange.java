@@ -73,7 +73,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> {
         body += "\"title\": \""+strings[1]+"\", ";
         body += "\"amount\": "+strings[2];
         if(!(strings[3]).equals("")) {
-            body += "\"endDate\": \""+strings[3]+"\"";
+            body += ", \"endDate\": \""+strings[3]+"\"";
         }
         if(!(strings[4]).equals("")) {
             body += ", \"itemDescription\": \""+strings[4]+"\"";
@@ -89,7 +89,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> {
                 break;
             }
         }
-        body += ", \"typeId\": "+typeId+"}";
+        body += ", \"TransactionTypeId\": "+typeId+"}";
         return body;
     }
 
