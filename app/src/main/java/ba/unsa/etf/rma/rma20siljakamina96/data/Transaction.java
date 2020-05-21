@@ -20,8 +20,17 @@ public class Transaction implements Parcelable{
 
     private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
-    //sammo za regular transakcije
     public Transaction(Date date, double amount, String title, Type type, String itemDescription, Integer transactionInterval, Date endDate) {
+        this.date = date;
+        this.amount = amount;
+        this.title = title;
+        this.type = type;
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = endDate;
+    }
+    public Transaction(int id, Date date, double amount, String title, Type type, String itemDescription, Integer transactionInterval, Date endDate) {
+        this.id = id;
         this.date = date;
         this.amount = amount;
         this.title = title;

@@ -3,7 +3,9 @@ package ba.unsa.etf.rma.rma20siljakamina96.detail;
 import android.content.Context;
 import android.os.Parcelable;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +13,13 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
-import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListChange;
 import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter {
+import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
+
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone {
     private Transaction transaction;
     private Context context;
     private ITransactionInteractor transactionInteractor;
@@ -25,28 +30,39 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         this.context = context;
         this.accountInteractor = new AccountInteractor();
     }
-//    @Override
-//    public void save(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
-//        transactionInteractor.save(transaction, title, amount, type, itemDescription, transactionInterval, date, endDate);
-//    }
-//    @Override
-//    public void save(String title, double amount, Type type, String itemDescription, Date date) {
-//        transactionInteractor.save(transaction, title, amount, type, itemDescription, date);
-//    }
+    private String formatDate(String date) {
+        SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat DATE_FORMAT_GET = new SimpleDateFormat("dd-MM-yyyy");
+        Date dateTemp = null;
+        try {
+            dateTemp = DATE_FORMAT_GET.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String dateString = DATE_FORMAT_SET.format(dateTemp);
+        return dateString;
+    }
+    @Override
+    public void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
+        date = formatDate(date);
+
+        if(!endDate.equals("")) endDate = formatDate(endDate);
+        String id = this.transaction.getId().toString();
+        new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
+    }
 //
 //    @Override
 //    public void delete() {
 //        transactionInteractor.delete(transaction);
 //    }
 //
-//    @Override
-//    public void add(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
-//       transactionInteractor.add(title, amount, type, itemDescription, transactionInterval, date, endDate);
-//    }
-//    @Override
-//    public void add(String title, double amount, Type type, String itemDescription, Date date) {
-//        transactionInteractor.add(title, amount, type, itemDescription, date);
-//    }
+    @Override
+    public void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
+        date = formatDate(date);
+
+        if(!endDate.equals("")) endDate = formatDate(endDate);
+        new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
+    }
 
 //    @Override
 //    public void create(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
@@ -79,7 +95,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();
-        for(Transaction t: transactionInteractor.getTransactions()) {
+        for(Transaction t: transactions) {
             if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
                     || t.getType().toString().equals("REGULARPAYMENT")) {
                 if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
@@ -110,5 +126,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         //ako je ovo prva potrosnja za taj mjesec provjerava samo nju
         if(amount > getAccount().getMonthLimit()) return true;
         else return false;
+    }
+
+    @Override
+    public void onTransactionPosted() {
+
     }
 }

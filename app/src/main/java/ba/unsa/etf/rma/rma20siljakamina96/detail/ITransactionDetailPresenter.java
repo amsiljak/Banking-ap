@@ -9,19 +9,15 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public interface ITransactionDetailPresenter {
-//    void save(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate);
-//
-//    void add(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate);
-//
-//    void add(String title, double amount, Type type, String itemDescription, Date date);
+    void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
+
+    void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
+
 //
 //    void create(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate);
 
 //    void create(String title, double amount, Type type, String itemDescription, Date date);
 
-
-//    void save(String title, double amount, Type type, String itemDescription, Date date);
-//
 //    void delete();
     void setTransaction(Parcelable movie);
     Transaction getTransaction();

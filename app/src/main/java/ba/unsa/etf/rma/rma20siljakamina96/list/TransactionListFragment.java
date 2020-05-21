@@ -170,9 +170,9 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         rightImageButton.setOnClickListener(rightButtonClickListener);
 
         addTransactionButton = (Button)fragmentView.findViewById(R.id.addTransaction);
-//        addTransactionButton.setOnClickListener(addTransactionClickListenr);
+        addTransactionButton.setOnClickListener(addTransactionClickListenr);
         onItemClick = (OnItemClick) getActivity();
-//        onAddButtonClick = (OnAddButtonClick) getActivity();
+        onAddButtonClick = (OnAddButtonClick) getActivity();
 //
 //        getAccountPresenter();
 //        getTransactionPresenter().refresh();
@@ -287,10 +287,10 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             }
         }
     };
-//    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            onAddButtonClick.onAddButtonClicked();
-//        }
-//    };
+    private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onAddButtonClick.onAddButtonClicked();
+        }
+    };
 }

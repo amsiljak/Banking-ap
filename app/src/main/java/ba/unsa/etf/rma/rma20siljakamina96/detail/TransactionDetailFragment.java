@@ -278,63 +278,40 @@ public class TransactionDetailFragment extends Fragment {
     };
 
     private void saveAction() {
-//        String type = typeEditText.getText().toString().toUpperCase();
-//
-//        Date date = null;
-//        if(!endDateEditText.getText().equals("")) {
-//            try {
-//                date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        //izmjena transakcije
-//        if (saving) {
-//            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
-//            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
-//
-//            try {
-//                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT"))) {
-//
-//                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-//                            date);
-//                }
-//                else
-//                    presenter.save(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-//                onTransactionModify.onTransactionModified();
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//        //dodavanje transakcije
-//        } else {
-//            try {
-//                if ((type.equals("REGULARINCOME") || type.equals("REGULARPAYMENT")))
-//                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                            Integer.parseInt(String.valueOf(intervalEditText.getText())), DATE_FORMAT.parse(String.valueOf(dateEditText.getText())),
-//                            date);
-//                else
-//                    presenter.add(String.valueOf(titleEditText.getText()), Double.parseDouble(String.valueOf(amountEditText.getText())),
-//                            Type.valueOf(typeEditText.getText().toString().toUpperCase()), String.valueOf(descriptionEditText.getText()),
-//                            DATE_FORMAT.parse(String.valueOf(dateEditText.getText())));
-//                onTransactionModify.onTransactionModified();
-//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-//                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
-//                }
-//
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        String type = typeEditText.getText().toString().toUpperCase();
+
+        Date date = null;
+        if(!endDateEditText.getText().equals("")) {
+            try {
+                date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        //izmjena transakcije
+        if (saving) {
+            titleEditText.setBackgroundColor(android.R.attr.editTextColor);
+            amountEditText.setBackgroundColor(android.R.attr.editTextColor);
+            descriptionEditText.setBackgroundColor(android.R.attr.editTextColor);
+            dateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            endDateEditText.setBackgroundColor(android.R.attr.editTextColor);
+            typeEditText.setBackgroundColor(android.R.attr.editTextColor);
+            intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
+
+
+            presenter.save(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+                    typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
+                    intervalEditText.getText().toString(), endDateEditText.getText().toString());
+
+
+        //dodavanje transakcije
+        } else {
+            presenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+                    typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
+                    intervalEditText.getText().toString(), endDateEditText.getText().toString());
+
+            onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+        }
     }
 
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
@@ -356,7 +333,10 @@ public class TransactionDetailFragment extends Fragment {
                         });
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
-            } else if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+            }
+            //ako su unosi validni idi na spasavanje
+            //ako je placanje treba provjeriti da li ce se sa njim premasiti limit
+            else if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
                     || type.equals("REGULARPAYMENT")){
                 double totalPayments = presenter.getTotalPayments();
                 if (presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
@@ -386,7 +366,7 @@ public class TransactionDetailFragment extends Fragment {
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 } else saveAction();
-            }
+            }else saveAction();
         }
     };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {

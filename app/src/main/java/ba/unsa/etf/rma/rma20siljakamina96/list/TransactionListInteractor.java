@@ -30,8 +30,8 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
     private OnTransactionGetDone caller;
-    ArrayList<Transaction> transactions;
-    Map<Integer,String> transactionTypes;
+    public static ArrayList<Transaction> transactions;
+    static Map<Integer,String> transactionTypes;
 
     @Override
     public ArrayList<Transaction> getTransactions() {
@@ -198,7 +198,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                             break;
                         }
                     }
-                    transactions.add(new Transaction(date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
+                    transactions.add(new Transaction(id, date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -249,6 +249,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         }
         return null;
     }
+
 
     public interface OnTransactionGetDone{
         public void onTransactionGetDone(ArrayList<Transaction> results);
