@@ -48,12 +48,12 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     private TextView dateView;
     private ImageButton leftImageButton;
     private ImageButton rightImageButton;
-    private Calendar cal;
-    private String type;
+    private static Calendar cal;
+    private static String type;
     private ArrayList<String> filterList;
     private ArrayList<String> sortList;
     private Button addTransactionButton;
-    private String sort = "Price - Ascending";
+    private static String sort = "Price - Ascending";
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;

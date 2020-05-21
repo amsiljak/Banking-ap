@@ -372,30 +372,30 @@ public class TransactionDetailFragment extends Fragment {
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            new AlertDialog.Builder(getActivity())
-//                    .setTitle("Delete transaction")
-//                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
-//
-//                    // Specifying a listener allows you to take an action before dismissing the dialog.
-//                    // The dialog is automatically dismissed when a dialog button is clicked.
-//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // Continue with delete operation
-//                            presenter.delete();
-//                            onTransactionModify.onTransactionModified();
-//                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-//                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
-//                            }
-//                            else {
-//                                onTransactionModify.onTransactionModified();
-//                                onAddButtonClick.onAddButtonClicked();
-//                            }
-//                        }
-//                    })
-//                    // A null listener allows the button to dismiss the dialog and take no further action.
-//                    .setNegativeButton(android.R.string.no, null)
-//                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                    .show();
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Delete transaction")
+                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                            presenter.delete();
+                            onTransactionModify.onTransactionModified();
+                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                            }
+                            else {
+                                onTransactionModify.onTransactionModified();
+                                onAddButtonClick.onAddButtonClicked();
+                            }
+                        }
+                    })
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     };
 

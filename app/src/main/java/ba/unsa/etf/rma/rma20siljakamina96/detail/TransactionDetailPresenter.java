@@ -16,13 +16,13 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListChange;
 import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListDelete;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone {
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone {
     private Transaction transaction;
     private Context context;
-    private ITransactionInteractor transactionInteractor;
     private IAccountInteractor accountInteractor;
 
 
@@ -50,12 +50,12 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         String id = this.transaction.getId().toString();
         new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
     }
-//
-//    @Override
-//    public void delete() {
-//        transactionInteractor.delete(transaction);
-//    }
-//
+
+    @Override
+    public void delete() {
+        new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
+    }
+
     @Override
     public void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
@@ -130,6 +130,11 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void onTransactionPosted() {
+
+    }
+
+    @Override
+    public void onTransactionDeleted() {
 
     }
 }
