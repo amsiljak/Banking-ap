@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,9 @@ import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
 
 public class BudgetFragment extends Fragment implements IAccountView{
-    private TextView budgetText;
-    private TextView totalLimitText;
-    private TextView monthLimitText;
+    private EditText budgetText;
+    private EditText totalLimitText;
+    private EditText monthLimitText;
 
     private Button saveButton;
 
@@ -45,9 +46,9 @@ public class BudgetFragment extends Fragment implements IAccountView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_budget, container, false);
-        budgetText = (TextView)fragmentView.findViewById(R.id.budgetView);
-        totalLimitText = (TextView)fragmentView.findViewById(R.id.totalLimitView);
-        monthLimitText = (TextView)fragmentView.findViewById(R.id.monthLimitView);
+        budgetText = (EditText) fragmentView.findViewById(R.id.budgetView);
+        totalLimitText = (EditText) fragmentView.findViewById(R.id.totalLimitView);
+        monthLimitText = (EditText) fragmentView.findViewById(R.id.monthLimitView);
 
         saveButton = (Button)fragmentView.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -72,7 +73,7 @@ public class BudgetFragment extends Fragment implements IAccountView{
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            accountPresenter.modifyAccount(Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
+            accountPresenter.modifyAccount(Double.parseDouble(budgetText.getText().toString()), Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
         }
     };
     @Override
