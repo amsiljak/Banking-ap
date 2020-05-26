@@ -33,7 +33,7 @@ public class GraphsPresenter implements IGraphsPresenter,TransactionListInteract
     public void getData(String timeUnit) {
         this.timeUnit = timeUnit;
         new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
-                this).execute("transactions");
+                this).execute(null,null,null,null);
     }
 
     public GraphsPresenter(IGraphsView view, Context context) {
@@ -257,8 +257,6 @@ public class GraphsPresenter implements IGraphsPresenter,TransactionListInteract
 
     @Override
     public void onTransactionGetDone(ArrayList<Transaction> results) {
-        putEarningsDataToBarData(results);
-        putConsumptionDataToBarData(results);
         putTotalDataToBarData(results);
     }
 }

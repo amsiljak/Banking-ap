@@ -361,7 +361,7 @@ public class TransactionDetailFragment extends Fragment {
                         ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > presenter.getAccount().getTotalLimit())) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                     builder1.setTitle("Save transaction");
-                    builder1.setMessage("Iznos transakcije prelazi budžet. Da li ste sigurni da želite nastaviti?");
+                    builder1.setMessage("Iznos transakcije prelazi budžet ili limit. Da li ste sigurni da želite nastaviti?");
                     builder1.setCancelable(true);
 
                     builder1.setPositiveButton(

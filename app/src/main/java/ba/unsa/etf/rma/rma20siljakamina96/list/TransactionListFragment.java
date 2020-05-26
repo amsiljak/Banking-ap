@@ -171,7 +171,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
-        getTransactionPresenter().getTransactions(null, "title.asc",String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+        getTransactionPresenter().getTransactions(type, "title.asc",cal);
         financePresenter.setAccount();
         setDate();
         return fragmentView;
@@ -181,7 +181,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         @Override
         public void onClick(View v) {
             cal.add(Calendar.MONTH,-1);
-            financePresenter.getTransactions(null,sort, String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+            financePresenter.getTransactions(type,sort, cal);
             setDate();
 
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -195,7 +195,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         @Override
         public void onClick(View v) {
             cal.add(Calendar.MONTH,1);
-            financePresenter.getTransactions(null,sort, String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+            financePresenter.getTransactions(type,sort,cal);
             setDate();
 
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -210,7 +210,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (parent.getItemAtPosition(position) != null) {
                 sort = parent.getItemAtPosition(position).toString();
-                financePresenter.getTransactions(null, sort,String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+                financePresenter.getTransactions(type, sort,cal);
             }
         }
 
@@ -224,7 +224,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(parent.getItemAtPosition(position)!= null)
                 type = parent.getItemAtPosition(position).toString();
-            financePresenter.getTransactions(type, sort,String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
+            financePresenter.getTransactions(type, sort,cal);
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
