@@ -15,19 +15,12 @@ import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 public class AccountPresenter implements IAccountPresenter, AccountInteractor.OnAccountGetDone, AccountChange.OnAccountChange {
 
     private Context context;
-    private  IAccountInteractor accountInteractor;
-    private  ITransactionInteractor transactionInteractor;
     private IAccountView view;
     private Account account;
 
     public AccountPresenter(Context context, IAccountView view) {
         this.context = context;
         this.view = view;
-    }
-
-    @Override
-    public Account getAccount() {
-        return accountInteractor.getAccount();
     }
 
     @Override
@@ -43,9 +36,6 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
     public void setAccountData() {
         new AccountInteractor((AccountInteractor.OnAccountGetDone)
                 this).execute("account");
-//        new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
-//                this).execute("transactions");
-
     }
 
     @Override
@@ -54,19 +44,6 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
         view.setLimits(account.getTotalLimit(),account.getMonthLimit());
         view.setBudget(String.valueOf(account.getBudget()));
     }
-
-//    @Override
-//    public void onTransactionGetDone(ArrayList<Transaction> results) {
-//        DecimalFormat df = new DecimalFormat("#.##");
-//        double iznos = 0;
-//        for(Transaction t : results) {
-//            if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
-//                    || t.getType().toString().equals("REGULARPAYMENT")) iznos -= t.getAmount();
-//            else iznos += t.getAmount();
-//        }
-//        iznos = account.getBudget() + iznos;
-//        view.setBudget(df.format(iznos));
-//    }
 
     @Override
     public void onAccountChanged() {

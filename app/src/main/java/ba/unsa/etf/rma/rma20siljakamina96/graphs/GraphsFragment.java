@@ -82,21 +82,12 @@ public class GraphsFragment extends Fragment implements IGraphsView{
                 switch(i) {
                     case R.id.day:
                         presenter.getData("Day");
-//                        getPresenter().putConsumptionDataToBarData("Day");
-//                        getPresenter().putEarningsDataToBarData("Day");
-//                        getPresenter().putTotalDataToBarData("Day");
                         break;
                     case R.id.week:
                         presenter.getData("Week");
-//                        getPresenter().putConsumptionDataToBarData("Week");
-//                        getPresenter().putEarningsDataToBarData("Week");
-//                        getPresenter().putTotalDataToBarData("Week");
                         break;
                     case R.id.month:
                         presenter.getData("Month");
-//                        getPresenter().putConsumptionDataToBarData("Month");
-//                        getPresenter().putEarningsDataToBarData("Month");
-//                        getPresenter().putTotalDataToBarData("Month");
                         break;
                 }
             }

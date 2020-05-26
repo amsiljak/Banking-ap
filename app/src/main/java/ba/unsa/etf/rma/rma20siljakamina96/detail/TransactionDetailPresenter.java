@@ -25,12 +25,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     private Transaction transaction;
     private Account account;
     private Context context;
-    private IAccountInteractor accountInteractor;
 
 
     public TransactionDetailPresenter(Context context) {
         this.context = context;
-        this.accountInteractor = new AccountInteractor();
     }
     private String formatDate(String date) {
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -66,18 +64,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
     }
 
-//    @Override
-//    public void create(String title, double amount, Type type, String itemDescription, intE transactionInterval, Date date, Date endDate) {
-//        this.transaction = new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate);
-//    }
-//
-//    @Override
-//    public void create(String title, double amount, Type type, String itemDescription, Date date) {
-//        this.transaction = new Transaction(date, amount, title, type, itemDescription,null,null);
-//    }
-
-
-
     @Override
     public Transaction getTransaction() {
         return transaction;
@@ -92,7 +78,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     public void setTransaction(Parcelable transaction) {
         this.transaction = (Transaction) transaction;
     }
-
 
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");

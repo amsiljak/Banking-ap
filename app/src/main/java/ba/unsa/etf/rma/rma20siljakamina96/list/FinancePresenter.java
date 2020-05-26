@@ -21,7 +21,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     private String typeOfTransaction;
     private Calendar cal;
 
-
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
         this.view = view;
@@ -60,22 +59,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     public Account getAccount(){
         return account;
     }
-
-
-//    @Override
-//    public void setTransactions() {
-//        view.setTransactions(financeInteractor.getTransactions());
-//    }
-
-//    @Override
-//    public void refresh() {
-//        setAccount();
-//        view.setTransactions(financeInteractor.getTransactions());
-//        view.notifyTransactionListDataSetChanged();
-//        view.setDate();
-//    }
-
-
 
     @Override
     public ArrayList<Transaction> sortTransactions(ArrayList<Transaction> transakcije) {

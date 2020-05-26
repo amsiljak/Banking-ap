@@ -233,7 +233,7 @@ public class GraphsPresenter implements IGraphsPresenter,TransactionListInteract
         Map<Float, Float> consumptionsMap = putConsumptionDataToBarData(transactions);
         Map<Float, Float> earningsMap = putEarningsDataToBarData(transactions);
 
-        for(float i = 1f; i < limit; i++) {
+        for(float i = 1f; i <= limit; i++) {
             float consumption = 0f;
             float earning = 0f;
 
