@@ -2,9 +2,12 @@ package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
@@ -102,18 +105,31 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         for(Transaction t: transactions) {
             if (t.getType().toString().equals("REGULARPAYMENT") || t.getType().toString().equals("REGULARINCOME")) {
 
-                Calendar startingPoint = Calendar.getInstance();
-                startingPoint.setTime(t.getDate());
+                SimpleDateFormat MONTH_DATE_FORMAT = new SimpleDateFormat("MM");
+                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
-                Calendar endPoint = Calendar.getInstance();
-                if(t.getEndDate()!= null) endPoint.setTime(t.getEndDate());
+                Date endOfYear = null;
+                try {
+                    endOfYear = format.parse("31.12."+Calendar.getInstance().get(Calendar.YEAR));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar dateOfPayment = Calendar.getInstance();
+                Calendar endDateOfPayment = Calendar.getInstance();
+                dateOfPayment.setTime(t.getDate());
+                if(t.getEndDate() != null) endDateOfPayment.setTime(t.getEndDate());
+                else endDateOfPayment.setTime(endOfYear);
 
-                //ovo sam dodala da bi se prikazivala transakcija i u mjesecu u kojem je datum
-                Calendar temp = (Calendar) cal.clone();
-                temp.add(Calendar.MONTH,1);
+                //povecava pocetni datum za interval sve dok ne dodje do krajnjeg,
+                //i onda uzima mjesec pocetnog i na njega stavlja amount
 
-                if (startingPoint.compareTo(temp) <= 0 && (t.getEndDate()==null || cal.compareTo(endPoint) <= 0)) {
-                    lista.add(t);
+                while(dateOfPayment.compareTo(endDateOfPayment) <= 0) {
+                    if(dateOfPayment.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) && dateOfPayment.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)) {
+                        float month = Float.valueOf(MONTH_DATE_FORMAT.format(dateOfPayment.getTime()));
+                        lista.add(t);
+                    }
+                    if(t.getTransactionInterval() == 0) break;
+                    else dateOfPayment.add(Calendar.DATE, t.getTransactionInterval());
                 }
             } else {
                 Calendar calendar = Calendar.getInstance();
