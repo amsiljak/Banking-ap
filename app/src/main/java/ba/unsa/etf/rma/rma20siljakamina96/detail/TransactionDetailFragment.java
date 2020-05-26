@@ -139,7 +139,7 @@ public class TransactionDetailFragment extends Fragment {
         dateEditText.addTextChangedListener(dateTextWatcher);
         endDateEditText.addTextChangedListener(endDateTextWatcher);
 
-        presenter.setAccount(getArguments().getParcelable("account"));
+        presenter.setAccount();
         getAccountPresenter();
 
         return view;
@@ -317,6 +317,7 @@ public class TransactionDetailFragment extends Fragment {
             presenter.update(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
+            onTransactionModify.onTransactionModified();
 
 
         //dodavanje transakcije

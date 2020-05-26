@@ -21,7 +21,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListDelete;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange  {
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone  {
     private Transaction transaction;
     private Account account;
     private Context context;
@@ -140,8 +140,9 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     }
     @Override
-    public void setAccount(Parcelable account) {
-        this.account = (Account) account;
+    public void setAccount() {
+        new AccountInteractor((AccountInteractor.OnAccountGetDone)
+                this).execute("account");
     }
     @Override
     public void updateBudget(String action, String amount, String type) {
@@ -177,5 +178,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     @Override
     public void onAccountChanged() {
 
+    }
+
+    @Override
+    public void onAccountGetDone(Account account) {
+        this.account = account;
     }
 }

@@ -26,7 +26,7 @@ public interface ITransactionDetailPresenter {
     double getTotalPayments();
     boolean isOverLimit(double amount, String date);
 
-    void setAccount(Parcelable account);
+    void setAccount();
 
     void updateBudget(String action, String amount, String type);
 }

@@ -94,7 +94,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         void onAddButtonClicked(Account account);
     }
     public interface OnItemClick {
-        void onItemClicked(Transaction transaction, Account account);
+        void onItemClicked(Transaction transaction);
     }
     public interface OnSwipeLeft {
         void openBudgetFragmentFromList();
@@ -266,13 +266,13 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
                 } else {
                     pozi = position;
                     addTransactionButton.setEnabled(false);
-                    onItemClick.onItemClicked(transaction, financePresenter.getAccount());
+                    onItemClick.onItemClicked(transaction);
                 }
             }
             else {
                 transactionListView.setItemChecked(position, false);
                 addTransactionButton.setEnabled(false);
-                onItemClick.onItemClicked(transaction, financePresenter.getAccount());
+                onItemClick.onItemClicked(transaction);
             }
         }
     };

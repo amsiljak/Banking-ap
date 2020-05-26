@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import java.util.Calendar;
+
 import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -84,11 +86,10 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     }
 
     @Override
-    public void onItemClicked(Transaction transaction, Account account) {
+    public void onItemClicked(Transaction transaction) {
         //Priprema novog fragmenta FragmentDetalji
         Bundle arguments = new Bundle();
         arguments.putParcelable("transaction", transaction);
-        arguments.putParcelable("account", account);
         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){
@@ -130,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
 
     @Override
     public void onTransactionModified() {
-//        listFragment.getTransactionPresenter().setTransactions();
-//        listFragment.getTransactionPresenter().setAccount();
+        listFragment.getTransactionPresenter().getTransactions("All","Price - Ascending", Calendar.getInstance());
+        listFragment.getTransactionPresenter().setAccount();
     }
 
 

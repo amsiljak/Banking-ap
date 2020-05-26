@@ -41,6 +41,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void getTransactions(String type, String sort, Calendar cal){
+
         this.typeOfSort = sort;
         this.typeOfTransaction = type;
         this.cal = cal;
