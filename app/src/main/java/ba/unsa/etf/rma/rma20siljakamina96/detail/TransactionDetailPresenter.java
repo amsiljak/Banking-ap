@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountChange;
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
@@ -20,8 +21,9 @@ import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListDelete;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone {
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange  {
     private Transaction transaction;
+    private Account account;
     private Context context;
     private IAccountInteractor accountInteractor;
 
@@ -43,7 +45,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         return dateString;
     }
     @Override
-    public void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
+    public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
 
         if(!endDate.equals("")) endDate = formatDate(endDate);
@@ -65,7 +67,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     }
 
 //    @Override
-//    public void create(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
+//    public void create(String title, double amount, Type type, String itemDescription, intE transactionInterval, Date date, Date endDate) {
 //        this.transaction = new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate);
 //    }
 //
@@ -83,7 +85,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public Account getAccount() {
-        return accountInteractor.getAccount();
+        return account;
     }
 
     @Override
@@ -119,12 +121,12 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         //trazi zbir postrosnji u određenom mjesecu i vraca true ako je proslo mjesecni limit
         for(Map.Entry <String,Double> el : getMonthlyPayments().entrySet()) {
             if(el.getKey().equals(date)) {
-                if(el.getValue() + amount > getAccount().getMonthLimit()) return true;
+                if(el.getValue() + amount > account.getMonthLimit()) return true;
                 else return false;
             }
         }
         //ako je ovo prva potrosnja za taj mjesec provjerava samo nju
-        if(amount > getAccount().getMonthLimit()) return true;
+        if(amount > account.getMonthLimit()) return true;
         else return false;
     }
 
@@ -135,6 +137,45 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void onTransactionDeleted() {
+
+    }
+    @Override
+    public void setAccount(Parcelable account) {
+        this.account = (Account) account;
+    }
+    @Override
+    public void updateBudget(String action, String amount, String type) {
+        double amountValue = Double.parseDouble(amount);
+        double budget = account.getBudget();
+
+
+        if (action.equals("delete")) {
+            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                    || type.equals("REGULARPAYMENT")) budget += amountValue;
+            else budget -= amountValue;
+        }
+        else if(action.equals("add")) {
+            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                    || type.equals("REGULARPAYMENT")) budget -= amountValue;
+            else budget += amountValue;
+        }
+        else {
+            double oldAmount = transaction.getAmount();
+            double difference = amountValue - oldAmount;
+            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                    || type.equals("REGULARPAYMENT")) {
+                budget -= difference;
+            }
+            else {
+                budget += amountValue;
+            }
+        }
+        new AccountChange((AccountChange.OnAccountChange)
+                this).execute(String.valueOf(budget),String.valueOf(account.getTotalLimit()),String.valueOf(account.getMonthLimit()));
+    }
+
+    @Override
+    public void onAccountChanged() {
 
     }
 }

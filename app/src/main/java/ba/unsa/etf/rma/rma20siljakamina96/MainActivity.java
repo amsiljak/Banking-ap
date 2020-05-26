@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.graphs.GraphsFragment;
@@ -83,10 +84,11 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     }
 
     @Override
-    public void onItemClicked(Transaction transaction) {
+    public void onItemClicked(Transaction transaction, Account account) {
         //Priprema novog fragmenta FragmentDetalji
         Bundle arguments = new Bundle();
         arguments.putParcelable("transaction", transaction);
+        arguments.putParcelable("account", account);
         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){
@@ -105,8 +107,9 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         }
     }
     @Override
-    public void onAddButtonClicked() {
+    public void onAddButtonClicked(Account account) {
         Bundle arguments = new Bundle();
+        arguments.putParcelable("account", account);
         detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){
@@ -224,4 +227,5 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     public void onTransactionAddedOrDeleted() {
         openList();
     }
+
 }

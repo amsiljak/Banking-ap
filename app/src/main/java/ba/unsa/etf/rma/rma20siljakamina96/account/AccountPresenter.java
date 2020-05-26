@@ -73,4 +73,5 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
         view.setLimits(account.getTotalLimit(),account.getMonthLimit());
         view.setBudget(String.valueOf(account.getBudget()));
     }
+
 }

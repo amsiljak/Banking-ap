@@ -25,9 +25,6 @@ import java.util.Calendar;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
-import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
-import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
-import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountView;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
@@ -94,10 +91,10 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     }
 
     public interface OnAddButtonClick {
-        void onAddButtonClicked();
+        void onAddButtonClicked(Account account);
     }
     public interface OnItemClick {
-        void onItemClicked(Transaction transaction);
+        void onItemClicked(Transaction transaction, Account account);
     }
     public interface OnSwipeLeft {
         void openBudgetFragmentFromList();
@@ -175,7 +172,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
         getTransactionPresenter().getTransactions(null, "title.asc",String.valueOf(cal.get(Calendar.MONTH)+1),String.valueOf(cal.get(Calendar.YEAR)));
-        financePresenter.getAccount();
+        financePresenter.setAccount();
         setDate();
         return fragmentView;
     }
@@ -190,7 +187,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 transactionListView.setItemChecked(pozi,false);
                 addTransactionButton.setEnabled(true);
-                onAddButtonClick.onAddButtonClicked();
+                onAddButtonClick.onAddButtonClicked(financePresenter.getAccount());
             }
         }
     };
@@ -204,7 +201,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 transactionListView.setItemChecked(pozi,false);
                 addTransactionButton.setEnabled(true);
-                onAddButtonClick.onAddButtonClicked();
+                onAddButtonClick.onAddButtonClicked(financePresenter.getAccount());
             }
         }
     };
@@ -264,25 +261,25 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
                 if (pozi == position) {
                     transactionListView.setItemChecked(position, false);
                     addTransactionButton.setEnabled(true);
-                    onAddButtonClick.onAddButtonClicked();
+                    onAddButtonClick.onAddButtonClicked(financePresenter.getAccount());
                     pozi = -1;
                 } else {
                     pozi = position;
                     addTransactionButton.setEnabled(false);
-                    onItemClick.onItemClicked(transaction);
+                    onItemClick.onItemClicked(transaction, financePresenter.getAccount());
                 }
             }
             else {
                 transactionListView.setItemChecked(position, false);
                 addTransactionButton.setEnabled(false);
-                onItemClick.onItemClicked(transaction);
+                onItemClick.onItemClicked(transaction, financePresenter.getAccount());
             }
         }
     };
     private AdapterView.OnClickListener addTransactionClickListenr = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            onAddButtonClick.onAddButtonClicked();
+            onAddButtonClick.onAddButtonClicked(financePresenter.getAccount());
         }
     };
 }

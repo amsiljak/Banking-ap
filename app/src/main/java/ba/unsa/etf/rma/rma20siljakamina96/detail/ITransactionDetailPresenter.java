@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public interface ITransactionDetailPresenter {
-    void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
+    void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
 
     void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
 
@@ -24,4 +25,8 @@ public interface ITransactionDetailPresenter {
     Account getAccount();
     double getTotalPayments();
     boolean isOverLimit(double amount, String date);
+
+    void setAccount(Parcelable account);
+
+    void updateBudget(String action, String amount, String type);
 }

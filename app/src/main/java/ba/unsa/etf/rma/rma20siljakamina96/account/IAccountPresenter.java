@@ -9,4 +9,5 @@ public interface IAccountPresenter {
     void modifyAccount(double budget, double totalLimit, double monthLimit);
 
     void setAccountData();
+
 }

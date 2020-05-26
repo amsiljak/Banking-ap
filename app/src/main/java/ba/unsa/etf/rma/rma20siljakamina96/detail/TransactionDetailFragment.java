@@ -24,11 +24,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public class TransactionDetailFragment extends Fragment {
     private ITransactionDetailPresenter presenter;
+    private IAccountPresenter accountPresenter;
 
     private EditText titleEditText;
     private EditText amountEditText;
@@ -58,13 +62,19 @@ public class TransactionDetailFragment extends Fragment {
         void onTransactionAddedOrDeleted();
     }
     public interface OnAddButtonClick {
-        void onAddButtonClicked();
+        void onAddButtonClicked(Account account);
     }
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
             presenter = new TransactionDetailPresenter(getActivity());
         }
         return presenter;
+    }
+    public IAccountPresenter getAccountPresenter() {
+        if (accountPresenter == null) {
+            accountPresenter = new AccountPresenter(getActivity(),null);
+        }
+        return accountPresenter;
     }
     @Nullable
     @Override
@@ -128,6 +138,9 @@ public class TransactionDetailFragment extends Fragment {
         intervalEditText.addTextChangedListener(intervalTextWatcher);
         dateEditText.addTextChangedListener(dateTextWatcher);
         endDateEditText.addTextChangedListener(endDateTextWatcher);
+
+        presenter.setAccount(getArguments().getParcelable("account"));
+        getAccountPresenter();
 
         return view;
     }
@@ -284,6 +297,7 @@ public class TransactionDetailFragment extends Fragment {
         if(!endDateEditText.getText().equals("")) {
             try {
                 date = DATE_FORMAT.parse(String.valueOf(dateEditText.getText()));
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -298,17 +312,20 @@ public class TransactionDetailFragment extends Fragment {
             typeEditText.setBackgroundColor(android.R.attr.editTextColor);
             intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
-
-            presenter.save(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+            //salje se stari iznos transakcije zabiljezen u presenteru
+            presenter.updateBudget("update", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+            presenter.update(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
 
 
         //dodavanje transakcije
         } else {
+            presenter.updateBudget("add", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
             presenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
+
 
             onTransactionAddOrDelete.onTransactionAddedOrDeleted();
         }
@@ -333,6 +350,7 @@ public class TransactionDetailFragment extends Fragment {
                         });
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
+
             }
             //ako su unosi validni idi na spasavanje
             //ako je placanje treba provjeriti da li ce se sa njim premasiti limit
@@ -381,14 +399,16 @@ public class TransactionDetailFragment extends Fragment {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // Continue with delete operation
+                            presenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
                             presenter.delete();
+
                             onTransactionModify.onTransactionModified();
                             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                                 onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                             }
                             else {
                                 onTransactionModify.onTransactionModified();
-                                onAddButtonClick.onAddButtonClicked();
+                                onAddButtonClick.onAddButtonClicked(presenter.getAccount());
                             }
                         }
                     })

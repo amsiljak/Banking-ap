@@ -19,6 +19,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone{
     private Context context;
     private IFinanceView view;
+    private Account account;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
@@ -32,6 +33,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void onAccountGetDone(Account account) {
+        this.account = account;
         view.setAccountData(account);
     }
 
@@ -41,9 +43,13 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
                 this).execute(type,sort,month,year);
     }
     @Override
-    public void getAccount(){
+    public void setAccount(){
         new AccountInteractor((AccountInteractor.OnAccountGetDone)
                 this).execute("account");
+    }
+    @Override
+    public Account getAccount(){
+        return account;
     }
 
 

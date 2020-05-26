@@ -3,6 +3,7 @@ package ba.unsa.etf.rma.rma20siljakamina96.list;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 
 public interface IFinancePresenter {
@@ -14,7 +15,9 @@ public interface IFinancePresenter {
 
     void getTransactions(String typeId, String sort, String month, String year);
 
-    void getAccount();
+    void setAccount();
+
+    Account getAccount();
 
     //    void setTransactions();
 //    void setAccount();
