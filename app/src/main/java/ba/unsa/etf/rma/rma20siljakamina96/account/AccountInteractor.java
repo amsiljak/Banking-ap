@@ -19,13 +19,28 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 
 public class AccountInteractor extends AsyncTask<String, Integer, Void> implements IAccountInteractor {
 
+    private String tmdb_api_key = "";
     private OnAccountGetDone caller;
     Account account;
 
     public AccountInteractor(OnAccountGetDone p) {
         caller = p;
     };
+    public AccountInteractor() {}
+    @Override
+    public Account getAccount() {
+        return FinanceModel.account;
+    }
 
+    @Override
+    public void modifyAccount(double totalLimit, double monthLimit) {
+        FinanceModel.account.setTotalLimit(totalLimit);
+        FinanceModel.account.setMonthLimit(monthLimit);
+    }
+    @Override
+    public void setAccountBudget(double budget) {
+        FinanceModel.account.setBudget(budget);
+    }
 
     public String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new

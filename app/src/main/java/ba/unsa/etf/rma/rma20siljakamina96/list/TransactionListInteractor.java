@@ -41,6 +41,50 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     public TransactionListInteractor(OnTransactionGetDone p) {
         caller = p;
     };
+//    @Override
+//    public void delete(Transaction transaction) {
+//        Iterator itr = FinanceModel.transactions.iterator();
+//        while (itr.hasNext())
+//        {
+//            Transaction t = (Transaction)itr.next();
+//            if (t.equals(transaction))
+//                itr.remove();
+//        }
+//    }
+//    @Override
+//    public void save(Transaction transaction, String title, double amount, Type type, String itemDescription, Date date) {
+//        for(Transaction t: FinanceModel.transactions) {
+//            if (t.getTitle().equals(transaction.getTitle())) {
+//                t.setTitle(title);
+//                t.setAmount(amount);
+//                t.setItemDescription(itemDescription);
+//                t.setType(type);
+//                t.setDate(date);
+//            }
+//        }
+//    }
+//    @Override
+//    public void save(Transaction transaction, String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
+//        for(Transaction t: FinanceModel.transactions) {
+//            if (t.getTitle().equals(transaction.getTitle())) {
+//                t.setTitle(title);
+//                t.setAmount(amount);
+//                t.setItemDescription(itemDescription);
+//                t.setTransactionInterval(transactionInterval);
+//                t.setType(type);
+//                t.setDate(date);
+//                t.setEndDate(endDate);
+//            }
+//        }
+//    }
+//    @Override
+//    public void add(String title, double amount, Type type, String itemDescription, int transactionInterval, Date date, Date endDate) {
+//        FinanceModel.transactions.add(new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate));
+//    }
+//    @Override
+//    public void add(String title, double amount, Type type, String itemDescription, Date date) {
+//        FinanceModel.transactions.add(new Transaction(date, amount, title, type, itemDescription));
+//    }
 
     public String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new

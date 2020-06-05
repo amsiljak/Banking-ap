@@ -67,6 +67,8 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> {
         SimpleDateFormat DATE_FORMAT_SET= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         SimpleDateFormat DATE_FORMAT_GET= new SimpleDateFormat("dd-MM-yyyy");
         String body = "{";
+//        "{"name": "Upendra", "job": "Programmer"}"
+//        ”date”, ”title”, ”amount”, ”endDate”, ”itemDescription”, ”transactionInterval”, ”typeId”
         body += "\"date\": \""+strings[0]+"\", ";
         body += "\"title\": \""+strings[1]+"\", ";
         body += "\"amount\": "+strings[2];
