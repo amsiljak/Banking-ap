@@ -19,7 +19,7 @@ public interface ITransactionDetailPresenter {
 
 //    void create(String title, double amount, Type type, String itemDescription, Date date);
 
-    void delete();
+    void delete(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate);
     void setTransaction(Parcelable movie);
     Transaction getTransaction();
     Account getAccount();

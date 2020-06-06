@@ -96,7 +96,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         void onAddButtonClicked(Account account);
     }
     public interface OnItemClick {
-        void onItemClicked(Transaction transaction);
+        void onItemClicked(Transaction transaction, String action);
     }
     public interface OnSwipeLeft {
         void openBudgetFragmentFromList();
@@ -258,7 +258,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Transaction transaction = transactionListAdapter.getTransaction(position);
             //drugi klik na stavku
-
+            String action = financePresenter.getAction(transaction);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 if (pozi == position) {
                     transactionListView.setItemChecked(position, false);
@@ -268,13 +268,14 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
                 } else {
                     pozi = position;
                     addTransactionButton.setEnabled(false);
-                    onItemClick.onItemClicked(transaction);
+
+                    onItemClick.onItemClicked(transaction, action);
                 }
             }
             else {
                 transactionListView.setItemChecked(position, false);
                 addTransactionButton.setEnabled(false);
-                onItemClick.onItemClicked(transaction);
+                onItemClick.onItemClicked(transaction, action);
             }
         }
     };

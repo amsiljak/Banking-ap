@@ -21,6 +21,14 @@ public interface IFinancePresenter {
 
     void uploadToServis();
 
+    String getAction(Transaction transaction);
+
+    void addToDeletedTransactions(Transaction t);
+
+    void removeFromDeletedTransactions(Transaction t);
+
+    boolean isDeletedTransaction(Transaction transaction);
+
     //    void setTransactions();
 //    void setAccount();
 

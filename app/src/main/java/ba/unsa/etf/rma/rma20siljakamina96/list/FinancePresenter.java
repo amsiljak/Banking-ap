@@ -12,10 +12,10 @@ import java.util.Date;
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.ITransactionDetailView;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListDelete;
 import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
-import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
 public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone {
@@ -25,12 +25,16 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     private String typeOfSort;
     private String typeOfTransaction;
     private Calendar cal;
-
-
+    private TransactionListInteractor transactionListInteractor;
 
     public FinancePresenter(IFinanceView view, Context context) {
         this.context = context;
         this.view = view;
+        transactionListInteractor = new TransactionListInteractor();
+    }
+    public FinancePresenter(Context context) {
+        this.context = context;
+        transactionListInteractor = new TransactionListInteractor();
     }
     @Override
     public void onTransactionGetDone(ArrayList<Transaction> results) {
@@ -57,7 +61,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
         if(!connected) {
             ArrayList<Transaction> lista = new ArrayList<>();
-            lista.addAll(transactions);
+            lista.addAll(transactionListInteractor.getTransactions());
             lista =sortTransactions(lista);
             lista =filterTransactionsByType(lista);
             lista = filterTransactionsByDate(lista);
@@ -145,7 +149,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     }
     @Override
     public void uploadToServis() {
-        for(Transaction t: transactions) {
+        for(Transaction t: transactionListInteractor.getTransactions()) {
             if(t.isDeleted()) {
                 new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
             }
@@ -157,14 +161,27 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         getTransactions(typeOfTransaction,typeOfSort,cal);
     }
 
-//    @Override
-//    public void onConnected() {
-//        for(Transaction t: transactions) {
-//            if(t.isDeleted()) {
-//                new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
-//                t.setDeleted(false);
-//            }
-//        }
-//    }
+    @Override
+    public String getAction(Transaction transaction) {
+        for(Transaction t: transactionListInteractor.getDeletedTransactions()) {
+            if(t.getId().equals(transaction.getId())) {
+                return "delete";
+            }
+        }
+        return null;
+    }
+    @Override
+    public void addToDeletedTransactions(Transaction t) {
+        transactionListInteractor.addToDeletedTransactions(t);
+    }
+    @Override
+    public void removeFromDeletedTransactions(Transaction t) {
+        transactionListInteractor.removeFromDeletedTransactions(t);
+    }
+
+    @Override
+    public boolean isDeletedTransaction(Transaction transaction) {
+        return false;
+    }
 }
 

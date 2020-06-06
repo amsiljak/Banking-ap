@@ -60,7 +60,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
 
         titleView.setText(transaction.getTitle());
         amountView.setText(String.valueOf(transaction.getAmount()));
-        if(transaction.isDeleted()) offlineView.setText("Offline brisanje");
+//        if(transaction.isDeleted()) offlineView.setText("Offline brisanje");
 
         String type = transaction.getType().toString();
         try {

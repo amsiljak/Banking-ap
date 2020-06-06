@@ -30,11 +30,15 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
-import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
+import ba.unsa.etf.rma.rma20siljakamina96.list.FinancePresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.list.IFinancePresenter;
+
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
 public class TransactionDetailFragment extends Fragment implements ITransactionDetailView{
-    private ITransactionDetailPresenter presenter;
+    private ITransactionDetailPresenter detailPresenter;
     private IAccountPresenter accountPresenter;
+    private IFinancePresenter financePresenter;
 
     private EditText titleEditText;
     private EditText amountEditText;
@@ -60,12 +64,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
 
     private Transaction transaction;
 
-//    @Override
-//    public void onConnected() {
-//        if(saving) offlineText.setText("Offline izmjena");
-//        else offlineText.setText("Offline dodavanje");
-//    }
-
     public interface OnTransactionModify {
         void onTransactionModified();
     }
@@ -75,11 +73,17 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     public interface OnAddButtonClick {
         void onAddButtonClicked(Account account);
     }
-    public ITransactionDetailPresenter getPresenter() {
-        if (presenter == null) {
-            presenter = new TransactionDetailPresenter(this, getActivity());
+    public ITransactionDetailPresenter getDetailPresenter() {
+        if (detailPresenter == null) {
+            detailPresenter = new TransactionDetailPresenter(this, getActivity());
         }
-        return presenter;
+        return detailPresenter;
+    }
+    public IFinancePresenter getFinancePresenter() {
+        if (financePresenter == null) {
+            financePresenter = new FinancePresenter(getActivity());
+        }
+        return financePresenter;
     }
     public IAccountPresenter getAccountPresenter() {
         if (accountPresenter == null) {
@@ -111,13 +115,14 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         onTransactionAddOrDelete = (OnTransactionAddOrDelete) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
-        getPresenter();
+        getDetailPresenter();
+        getFinancePresenter();
         DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
         if (getArguments() != null && getArguments().containsKey("transaction")) {
             saving = true;
-            presenter.setTransaction(getArguments().getParcelable("transaction"));
-            transaction = getPresenter().getTransaction();
+            detailPresenter.setTransaction(getArguments().getParcelable("transaction"));
+            transaction = getDetailPresenter().getTransaction();
 
             deleteButton.setOnClickListener(deleteClickListener);
             if(transaction.isDeleted()) deleteButton.setText("undo");
@@ -153,8 +158,19 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         dateEditText.addTextChangedListener(dateTextWatcher);
         endDateEditText.addTextChangedListener(endDateTextWatcher);
 
-        presenter.setAccount();
+        detailPresenter.setAccount();
         getAccountPresenter();
+
+        if(getArguments().getString("change") != null) {
+            if (getArguments().getString("change").equals("delete")) {
+                offlineText.setText("Offline brisanje");
+                deleteButton.setText("Undo");
+            }
+            else if (getArguments().getString("change").equals("modify"))
+                offlineText.setText("Offline izmjena");
+            else if (getArguments().getString("change").equals("add"))
+                offlineText.setText("Offline dodavanje");
+        }
 
         return view;
     }
@@ -327,8 +343,8 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             intervalEditText.setBackgroundColor(android.R.attr.editTextColor);
 
             //salje se stari iznos transakcije zabiljezen u presenteru
-            presenter.updateBudget("update", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
-            presenter.update(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+            //detailPresenter.updateBudget("update", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+            detailPresenter.update(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
             onTransactionModify.onTransactionModified();
@@ -336,8 +352,8 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
 
         //dodavanje transakcije
         } else {
-            presenter.updateBudget("add", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
-            presenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+            //detailPresenter.updateBudget("add", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+            detailPresenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
 
@@ -371,9 +387,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             //ako je placanje treba provjeriti da li ce se sa njim premasiti limit
             else if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
                     || type.equals("REGULARPAYMENT")){
-                double totalPayments = presenter.getTotalPayments();
-                if (presenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
-                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > presenter.getAccount().getTotalLimit())) {
+                double totalPayments = detailPresenter.getTotalPayments();
+                if (detailPresenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
+                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > detailPresenter.getAccount().getTotalLimit())) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
                     builder1.setTitle("Save transaction");
                     builder1.setMessage("Iznos transakcije prelazi budžet ili limit. Da li ste sigurni da želite nastaviti?");
@@ -405,14 +421,16 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(transaction.isDeleted()) {
+            if(deleteButton.getText().toString().equals("Undo")) {
                 transaction.setDeleted(false);
                 onTransactionModify.onTransactionModified();
+                financePresenter.removeFromDeletedTransactions(transaction);
+
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                 } else {
                     onTransactionModify.onTransactionModified();
-                    onAddButtonClick.onAddButtonClicked(presenter.getAccount());
+                    onAddButtonClick.onAddButtonClicked(detailPresenter.getAccount());
                 }
             }
             else {
@@ -425,15 +443,22 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with delete operation
-                                presenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
-                                presenter.delete();
+                                detailPresenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+                                detailPresenter.delete(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
+                                        typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
+                                        intervalEditText.getText().toString(), endDateEditText.getText().toString());
+//                                financePresenter.addToDeletedTransactions(transaction);
+                                if(!connected) {
+                                    offlineText.setText("Offline brisanje");
+                                    deleteButton.setText("Undo");
+                                }
 
-                                onTransactionModify.onTransactionModified();
                                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                                    if(!connected) onTransactionModify.onTransactionModified();
+                                    else onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                                 } else {
                                     onTransactionModify.onTransactionModified();
-                                    onAddButtonClick.onAddButtonClicked(presenter.getAccount());
+                                    onAddButtonClick.onAddButtonClicked(detailPresenter.getAccount());
                                 }
                             }
                         })

@@ -34,17 +34,32 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     private OnTransactionGetDone caller;
     public static ArrayList<Transaction> transactions = new ArrayList<>();
+    private static ArrayList<Transaction> deletedTransactions = new ArrayList<>();
     public static Map<Integer,String> transactionTypes;
 
-    @Override
-    public ArrayList<Transaction> getTransactions() {
+    public static ArrayList<Transaction> getTransactions() {
         return transactions;
     }
 
     public TransactionListInteractor(OnTransactionGetDone p) {
-
         caller = p;
     };
+    public TransactionListInteractor() {};
+
+    public void addToDeletedTransactions(Transaction t) {
+        deletedTransactions.add(t);
+    }
+    public ArrayList<Transaction> getDeletedTransactions() {
+        return deletedTransactions;
+    }
+    public void removeFromDeletedTransactions(Transaction t) {
+        for(Transaction transaction: deletedTransactions) {
+            if(t.getId() == transaction.getId()) {
+                deletedTransactions.remove(transaction);
+                break;
+            }
+        }
+    }
 
     public String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new

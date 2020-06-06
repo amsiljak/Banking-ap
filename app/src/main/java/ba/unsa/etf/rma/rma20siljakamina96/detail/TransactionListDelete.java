@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
     public TransactionListDelete(OnTransactionDeleteDone p) {
         caller = p;
     }
+    public TransactionListDelete() {}
 
     @Override
     protected Void doInBackground(String... strings) {
@@ -58,13 +60,25 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
         super.onPostExecute(aVoid);
         caller.onTransactionDeleted();
     }
-//    @Override
-//    public void delete(String id, Context context) {
-//        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-//        database = transactionDBOpenHelper.getWritableDatabase();
-//
-//        String where = TRANSACTION_ID + "=" + id;
-//        String whereArgs[] = null;
-//        database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);
-//    }
+    @Override
+    public void delete(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TRANSACTION_ID, id);
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
+        values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "delete");
+
+        database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
+
+        database.close();
+    }
+
 }

@@ -41,10 +41,11 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
 
 
     public TransactionListChange(OnTransactionPostDone p) {
-
         caller = p;
     }
+    public TransactionListChange() {
 
+    }
     @Override
     protected Void doInBackground(String... strings) {
         String body = getParametersInJSON(strings);
@@ -125,7 +126,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
     }
 
     @Override
-    public void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate, Context context) {
+    public void save(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -137,13 +138,13 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
-        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "dodavanje");
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "add");
         database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
 
         database.close();
     }
     @Override
-    public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate, String id, Context context) {
+    public void update(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -156,11 +157,9 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
-        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "izmjena");
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "modify");
 
-        String where = TRANSACTION_ID + "=" + id;
-        String whereArgs[] = null;
-        database.update(transactionDBOpenHelper.TRANSACTION_TABLE, values, where, whereArgs);
+        database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
 
         database.close();
     }

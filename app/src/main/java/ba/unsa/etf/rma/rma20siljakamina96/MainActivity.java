@@ -98,10 +98,11 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     }
 
     @Override
-    public void onItemClicked(Transaction transaction) {
+    public void onItemClicked(Transaction transaction, String change) {
         //Priprema novog fragmenta FragmentDetalji
         Bundle arguments = new Bundle();
         arguments.putParcelable("transaction", transaction);
+        arguments.putString("change", change);
         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){
