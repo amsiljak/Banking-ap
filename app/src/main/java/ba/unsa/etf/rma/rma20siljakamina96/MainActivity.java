@@ -2,6 +2,8 @@ package ba.unsa.etf.rma.rma20siljakamina96;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -13,12 +15,16 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.graphs.GraphsFragment;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListFragment;
+import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity implements TransactionListFragment.OnItemClick, TransactionListFragment.OnAddButtonClick,
         TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete,
         TransactionListFragment.OnSwipeLeft, TransactionListFragment.OnSwipeRight,
         BudgetFragment.OnSwipeLeft, BudgetFragment.OnSwipeRight,
         GraphsFragment.OnSwipeRight, GraphsFragment.OnSwipeLeft, TransactionDetailFragment.OnAddButtonClick {
+
+    private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver();
+    private IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 
     private boolean twoPaneMode=false;
     private TransactionListFragment listFragment;
@@ -74,14 +80,19 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         }
 
     }
+
     @Override
     public void onResume() {
+
         super.onResume();
+        registerReceiver(receiver, filter);
+
     }
 
 
     @Override
     public void onPause() {
+        unregisterReceiver(receiver);
         super.onPause();
     }
 

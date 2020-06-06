@@ -1,6 +1,14 @@
-package ba.unsa.etf.rma.rma20siljakamina96.list;
+package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.ResultReceiver;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,12 +24,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactionTypes;
+import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
-public class TransactionListChange extends AsyncTask<String, Integer, Void> {
+import static ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresenter.transactionDetailResultReceiver;
+import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactionTypes;
+import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_ID;
+
+public class TransactionListChange extends AsyncTask<String, Integer, Void> implements ITransactionListChange{
+    final public static int STATUS_RUNNING=0;
+    final public static int STATUS_FINISHED=1;
+    final public static int STATUS_ERROR=2;
+    private TransactionDBOpenHelper transactionDBOpenHelper;
+    SQLiteDatabase database;
     private OnTransactionPostDone caller;
 
+
+
     public TransactionListChange(OnTransactionPostDone p) {
+
         caller = p;
     }
 
@@ -55,10 +75,12 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> {
                     response.append(responseLine.trim());
                 }
             }
+        } catch (ClassCastException e) {
+            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         }
         return null;
     }
@@ -100,5 +122,44 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> {
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
         caller.onTransactionPosted();
+    }
+
+    @Override
+    public void save(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate, Context context) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
+        values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
+        database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
+
+        database.close();
+    }
+    @Override
+    public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate, String id, Context context) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TRANSACTION_ID, id);
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
+        values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
+
+        String where = TRANSACTION_ID + "=" + id;
+        String whereArgs[] = null;
+        database.update(transactionDBOpenHelper.TRANSACTION_TABLE, values, where, whereArgs);
+
+        database.close();
     }
 }

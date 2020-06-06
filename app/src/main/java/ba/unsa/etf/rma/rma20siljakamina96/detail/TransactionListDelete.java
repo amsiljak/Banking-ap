@@ -1,5 +1,7 @@
-package ba.unsa.etf.rma.rma20siljakamina96.list;
+package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
@@ -10,8 +12,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class TransactionListDelete extends AsyncTask<String, Integer, Void> {
+import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
+
+import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_ID;
+
+public class TransactionListDelete extends AsyncTask<String, Integer, Void> implements ITransactionListDelete{
     private OnTransactionDeleteDone caller;
+
+    private TransactionDBOpenHelper transactionDBOpenHelper;
+    SQLiteDatabase database;
 
     public TransactionListDelete(OnTransactionDeleteDone p) {
         caller = p;
@@ -48,5 +57,14 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> {
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
         caller.onTransactionDeleted();
+    }
+    @Override
+    public void delete(String id, Context context) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+
+        String where = TRANSACTION_ID + "=" + id;
+        String whereArgs[] = null;
+        database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);
     }
 }

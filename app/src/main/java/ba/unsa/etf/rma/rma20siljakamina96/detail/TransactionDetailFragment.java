@@ -30,7 +30,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
-public class TransactionDetailFragment extends Fragment {
+public class TransactionDetailFragment extends Fragment implements ITransactionDetailView {
     private ITransactionDetailPresenter presenter;
     private IAccountPresenter accountPresenter;
 

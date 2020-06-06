@@ -1,10 +1,13 @@
 package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,23 +17,25 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
-import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
-import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListChange;
-import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
-import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListDelete;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone  {
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone, TransactionDetailResultReceiver.Receiver  {
     private Transaction transaction;
     private Account account;
     private Context context;
     private IAccountInteractor accountInteractor;
+    private ITransactionListChange transactionListChange;
+    private ITransactionListDelete transactionListDelete;
+    public static TransactionDetailResultReceiver transactionDetailResultReceiver;
 
 
     public TransactionDetailPresenter(Context context) {
         this.context = context;
         this.accountInteractor = new AccountInteractor();
+        transactionDetailResultReceiver = new TransactionDetailResultReceiver(new Handler());
+        transactionDetailResultReceiver.setReceiver(TransactionDetailPresenter.this);
     }
     private String formatDate(String date) {
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -47,23 +52,26 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     @Override
     public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
-
         if(!endDate.equals("")) endDate = formatDate(endDate);
         String id = this.transaction.getId().toString();
-        new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
+
+        if(!connected) transactionListChange.update(date, title, amount, endDate, itemDescription, transactionInterval, type, id, context.getApplicationContext());
+        else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
     }
 
     @Override
     public void delete() {
+        if(!connected) transactionListDelete.delete(transaction.getId().toString(), context.getApplicationContext());
         new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
     }
 
     @Override
     public void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
-
         if(!endDate.equals("")) endDate = formatDate(endDate);
-        new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
+
+        if(!connected) transactionListChange.save(date, title, amount, endDate, itemDescription, transactionInterval, type, context.getApplicationContext());
+        else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
     }
 
 //    @Override
@@ -183,5 +191,13 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     @Override
     public void onAccountGetDone(Account account) {
         this.account = account;
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        switch (resultCode) {
+            case TransactionListChange.STATUS_ERROR:
+                break;
+        }
     }
 }

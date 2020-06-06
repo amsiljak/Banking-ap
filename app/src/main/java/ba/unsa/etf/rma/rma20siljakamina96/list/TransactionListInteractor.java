@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.database.Cursor;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -26,12 +27,13 @@ import java.util.Map;
 import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
     private OnTransactionGetDone caller;
     public static ArrayList<Transaction> transactions;
-    static Map<Integer,String> transactionTypes;
+    public static Map<Integer,String> transactionTypes;
 
     @Override
     public ArrayList<Transaction> getTransactions() {
@@ -259,4 +261,26 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         super.onPostExecute(aVoid);
         caller.onTransactionGetDone(transactions);
     }
+
+//    public void Details(){
+//
+//        String query;
+//        query = "SELECT " + TransactionDBOpenHelper.CAST_NAME + " FROM " +
+//                TransactionDBOpenHelper.CAST_TABLE + " WHERE "+
+//                TransactionDBOpenHelper.CAST_MOVIE_ID + " = ?";
+//
+//        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(movie.getId())});
+//        ArrayList<String> cast = new ArrayList<String>();
+//
+//        cursor.close();
+//
+//        query = "SELECT " + TransactionDBOpenHelper.SMOVIE_TITLE + " FROM "
+//                + TransactionDBOpenHelper.SIMILIAR_MOVIES + " WHERE "
+//                + TransactionDBOpenHelper.SMOVIES_MOVIE_ID + " = ?";
+//
+//        Cursor cursor1 = database.rawQuery(query, new String[]{Integer.toString(movie.getId())});
+//        ArrayList<String> similar = new ArrayList<String>();
+//
+//        cursor1.close();
+//    }
 }
