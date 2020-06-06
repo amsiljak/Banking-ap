@@ -7,7 +7,20 @@ import android.net.ConnectivityManager;
 import android.widget.Toast;
 
 public class ConnectivityBroadcastReceiver extends BroadcastReceiver {
+
+    public interface MyBroadcastListener{
+        public void doSomething();
+    }
+
     public static boolean connected = true;
+
+    private MyBroadcastListener listener;
+
+
+    public ConnectivityBroadcastReceiver(MyBroadcastListener listener){
+        this.listener = listener;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -19,10 +32,12 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver {
         else {
             Toast toast = Toast.makeText(context, "Connected", Toast.LENGTH_SHORT);
             toast.show();
-            connected = true;
+            if(connected == false) {
+                connected = true;
+                listener.doSomething();
+            }
+            else connected = true;
+
         }
-    }
-    public interface onConnectionChanged{
-        public void onConnectionChanged();
     }
 }

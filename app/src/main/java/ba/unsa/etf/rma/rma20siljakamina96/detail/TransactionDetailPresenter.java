@@ -64,8 +64,11 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void delete() {
-        if(!connected) transaction.setDeleted(true);
-        else new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
+        if (!connected) {
+            transaction.setDeleted(true);
+        } else {
+            new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
+        }
     }
 
     @Override

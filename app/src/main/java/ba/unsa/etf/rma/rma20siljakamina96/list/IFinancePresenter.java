@@ -19,6 +19,8 @@ public interface IFinancePresenter {
 
     Account getAccount();
 
+    void uploadToServis();
+
     //    void setTransactions();
 //    void setAccount();
 

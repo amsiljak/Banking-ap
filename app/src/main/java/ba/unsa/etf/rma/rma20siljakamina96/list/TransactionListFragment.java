@@ -284,4 +284,8 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
             onAddButtonClick.onAddButtonClicked(financePresenter.getAccount());
         }
     };
+    @Override
+    public void uploadToServis() {
+        financePresenter.uploadToServis();
+    }
 }

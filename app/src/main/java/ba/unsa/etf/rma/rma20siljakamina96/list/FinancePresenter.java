@@ -8,16 +8,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListDelete;
+import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
-public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone{
+public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone {
     private Context context;
     private IFinanceView view;
     private Account account;
@@ -142,5 +143,28 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         }
         return lista;
     }
+    @Override
+    public void uploadToServis() {
+        for(Transaction t: transactions) {
+            if(t.isDeleted()) {
+                new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
+            }
+        }
+    }
+
+    @Override
+    public void onTransactionDeleted() {
+        getTransactions(typeOfTransaction,typeOfSort,cal);
+    }
+
+//    @Override
+//    public void onConnected() {
+//        for(Transaction t: transactions) {
+//            if(t.isDeleted()) {
+//                new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
+//                t.setDeleted(false);
+//            }
+//        }
+//    }
 }
 

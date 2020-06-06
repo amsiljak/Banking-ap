@@ -32,9 +32,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
-import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
-
-public class TransactionDetailFragment extends Fragment implements ITransactionDetailView, ConnectivityBroadcastReceiver.onConnectionChanged {
+public class TransactionDetailFragment extends Fragment implements ITransactionDetailView{
     private ITransactionDetailPresenter presenter;
     private IAccountPresenter accountPresenter;
 
@@ -62,11 +60,11 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
 
     private Transaction transaction;
 
-    @Override
-    public void onConnectionChanged() {
-        if(saving) offlineText.setText("Offline izmjena");
-        else offlineText.setText("Offline dodavanje");
-    }
+//    @Override
+//    public void onConnected() {
+//        if(saving) offlineText.setText("Offline izmjena");
+//        else offlineText.setText("Offline dodavanje");
+//    }
 
     public interface OnTransactionModify {
         void onTransactionModified();

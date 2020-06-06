@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -21,9 +22,9 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         TransactionDetailFragment.OnTransactionModify, TransactionDetailFragment.OnTransactionAddOrDelete,
         TransactionListFragment.OnSwipeLeft, TransactionListFragment.OnSwipeRight,
         BudgetFragment.OnSwipeLeft, BudgetFragment.OnSwipeRight,
-        GraphsFragment.OnSwipeRight, GraphsFragment.OnSwipeLeft, TransactionDetailFragment.OnAddButtonClick {
+        GraphsFragment.OnSwipeRight, GraphsFragment.OnSwipeLeft, TransactionDetailFragment.OnAddButtonClick, ConnectivityBroadcastReceiver.MyBroadcastListener {
 
-    private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver();
+    private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver(this);
     private IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 
     private boolean twoPaneMode=false;
@@ -240,4 +241,8 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         openList();
     }
 
+    @Override
+    public void doSomething() {
+        listFragment.uploadToServis();
+    }
 }
