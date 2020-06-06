@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,8 +30,11 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
-public class TransactionDetailFragment extends Fragment implements ITransactionDetailView {
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
+
+public class TransactionDetailFragment extends Fragment implements ITransactionDetailView, ConnectivityBroadcastReceiver.onConnectionChanged {
     private ITransactionDetailPresenter presenter;
     private IAccountPresenter accountPresenter;
 
@@ -41,6 +45,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     private EditText descriptionEditText;
     private EditText intervalEditText;
     private EditText typeEditText;
+    private TextView offlineText;
 
     private Button saveButton;
     private Button deleteButton;
@@ -55,6 +60,14 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
 
     private boolean saving;
 
+    private Transaction transaction;
+
+    @Override
+    public void onConnectionChanged() {
+        if(saving) offlineText.setText("Offline izmjena");
+        else offlineText.setText("Offline dodavanje");
+    }
+
     public interface OnTransactionModify {
         void onTransactionModified();
     }
@@ -66,7 +79,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     }
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
-            presenter = new TransactionDetailPresenter(getActivity());
+            presenter = new TransactionDetailPresenter(this, getActivity());
         }
         return presenter;
     }
@@ -89,6 +102,8 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         dateEditText = (EditText) view.findViewById(R.id.transactionDate);
         endDateEditText = (EditText) view.findViewById(R.id.transactionEndDate);
 
+        offlineText = (TextView) view.findViewById(R.id.offlineTextView);
+
         saveButton = (Button) view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
 
@@ -104,9 +119,10 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         if (getArguments() != null && getArguments().containsKey("transaction")) {
             saving = true;
             presenter.setTransaction(getArguments().getParcelable("transaction"));
-            Transaction transaction = getPresenter().getTransaction();
+            transaction = getPresenter().getTransaction();
 
             deleteButton.setOnClickListener(deleteClickListener);
+            if(transaction.isDeleted()) deleteButton.setText("undo");
 
             titleEditText.setText(transaction.getTitle());
             amountEditText.setText(String.valueOf(transaction.getAmount()));
@@ -391,32 +407,43 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Delete transaction")
-                    .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
+            if(transaction.isDeleted()) {
+                transaction.setDeleted(false);
+                onTransactionModify.onTransactionModified();
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                } else {
+                    onTransactionModify.onTransactionModified();
+                    onAddButtonClick.onAddButtonClicked(presenter.getAccount());
+                }
+            }
+            else {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Delete transaction")
+                        .setMessage("Da li ste sigurni da želite obrisati ovu transakciju?")
 
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue with delete operation
-                            presenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
-                            presenter.delete();
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Continue with delete operation
+                                presenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+                                presenter.delete();
 
-                            onTransactionModify.onTransactionModified();
-                            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                                onTransactionAddOrDelete.onTransactionAddedOrDeleted();
-                            }
-                            else {
                                 onTransactionModify.onTransactionModified();
-                                onAddButtonClick.onAddButtonClicked(presenter.getAccount());
+                                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                                } else {
+                                    onTransactionModify.onTransactionModified();
+                                    onAddButtonClick.onAddButtonClicked(presenter.getAccount());
+                                }
                             }
-                        }
-                    })
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+                        })
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
         }
     };
 

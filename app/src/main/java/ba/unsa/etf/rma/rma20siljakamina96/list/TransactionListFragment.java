@@ -29,6 +29,8 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
+
 public class TransactionListFragment extends Fragment implements IFinanceView {
 
     private ListView transactionListView;

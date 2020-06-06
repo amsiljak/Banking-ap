@@ -27,6 +27,7 @@ public class TransactionDBOpenHelper extends SQLiteOpenHelper {
     public static final String TRANSACTION_ENDDATE = "enddate";
     public static final String TRANSACTION_INTERVAL = "interval";
     public static final String TRANSACTION_DESCRIPTION = "description";
+    public static final String TRANSACTION_CHANGE = "change";
 
     private static final String TRANSACTION_TABLE_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TRANSACTION_TABLE + " ("  + TRANSACTION_INTERNAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -37,7 +38,8 @@ public class TransactionDBOpenHelper extends SQLiteOpenHelper {
                     + TRANSACTION_AMOUNT + " DOUBLE, "
                     + TRANSACTION_DESCRIPTION + " TEXT, "
                     + TRANSACTION_TYPE + " TEXT, "
-                    + TRANSACTION_ENDDATE + " TEXT);";
+                    + TRANSACTION_ENDDATE + " TEXT, "
+                    + TRANSACTION_CHANGE + " TEXT);";
 
     private static final String TRANSACTION_DROP = "DROP TABLE IF EXISTS " + TRANSACTION_TABLE;
 

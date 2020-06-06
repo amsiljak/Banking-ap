@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+
+import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
 public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone{
     private Context context;
@@ -20,6 +24,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     private String typeOfSort;
     private String typeOfTransaction;
     private Calendar cal;
+
 
 
     public FinancePresenter(IFinanceView view, Context context) {
@@ -48,6 +53,16 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         this.typeOfSort = sort;
         this.typeOfTransaction = type;
         this.cal = cal;
+
+        if(!connected) {
+            ArrayList<Transaction> lista = new ArrayList<>();
+            lista.addAll(transactions);
+            lista =sortTransactions(lista);
+            lista =filterTransactionsByType(lista);
+            lista = filterTransactionsByDate(lista);
+            view.setTransactions(lista);
+        }
+        //pokupi sve transakcije i onda ih starim metodama filtrira
         new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
                 this).execute(null,null,null,null);
     }
@@ -60,20 +75,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     public Account getAccount(){
         return account;
     }
-
-
-//    @Override
-//    public void setTransactions() {
-//        view.setTransactions(financeInteractor.getTransactions());
-//    }
-
-//    @Override
-//    public void refresh() {
-//        setAccount();
-//        view.setTransactions(financeInteractor.getTransactions());
-//        view.notifyTransactionListDataSetChanged();
-//        view.setDate();
-//    }
 
 
 

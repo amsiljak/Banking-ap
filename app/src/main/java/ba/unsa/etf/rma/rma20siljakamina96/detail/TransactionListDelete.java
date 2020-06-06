@@ -58,13 +58,13 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
         super.onPostExecute(aVoid);
         caller.onTransactionDeleted();
     }
-    @Override
-    public void delete(String id, Context context) {
-        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
-
-        String where = TRANSACTION_ID + "=" + id;
-        String whereArgs[] = null;
-        database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);
-    }
+//    @Override
+//    public void delete(String id, Context context) {
+//        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+//        database = transactionDBOpenHelper.getWritableDatabase();
+//
+//        String where = TRANSACTION_ID + "=" + id;
+//        String whereArgs[] = null;
+//        database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);
+//    }
 }

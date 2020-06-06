@@ -137,6 +137,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "dodavanje");
         database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
 
         database.close();
@@ -155,6 +156,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "izmjena");
 
         String where = TRANSACTION_ID + "=" + id;
         String whereArgs[] = null;

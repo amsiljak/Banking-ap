@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountChange;
@@ -17,21 +18,23 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
-public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone, TransactionDetailResultReceiver.Receiver  {
+public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionPostDone, TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone, TransactionDetailResultReceiver.Receiver{
     private Transaction transaction;
-    private Account account;
+    private static Account account;
     private Context context;
+    private ITransactionDetailView view;
     private IAccountInteractor accountInteractor;
     private ITransactionListChange transactionListChange;
     private ITransactionListDelete transactionListDelete;
     public static TransactionDetailResultReceiver transactionDetailResultReceiver;
 
-
-    public TransactionDetailPresenter(Context context) {
+    public TransactionDetailPresenter(ITransactionDetailView view, Context context) {
+        this.view = view;
         this.context = context;
         this.accountInteractor = new AccountInteractor();
         transactionDetailResultReceiver = new TransactionDetailResultReceiver(new Handler());
@@ -61,8 +64,8 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void delete() {
-        if(!connected) transactionListDelete.delete(transaction.getId().toString(), context.getApplicationContext());
-        new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
+        if(!connected) transaction.setDeleted(true);
+        else new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
     }
 
     @Override
@@ -73,18 +76,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         if(!connected) transactionListChange.save(date, title, amount, endDate, itemDescription, transactionInterval, type, context.getApplicationContext());
         else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
     }
-
-//    @Override
-//    public void create(String title, double amount, Type type, String itemDescription, intE transactionInterval, Date date, Date endDate) {
-//        this.transaction = new Transaction(date, amount, title, type, itemDescription, transactionInterval, endDate);
-//    }
-//
-//    @Override
-//    public void create(String title, double amount, Type type, String itemDescription, Date date) {
-//        this.transaction = new Transaction(date, amount, title, type, itemDescription,null,null);
-//    }
-
-
 
     @Override
     public Transaction getTransaction() {
@@ -179,7 +170,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
                 budget += amountValue;
             }
         }
-        new AccountChange((AccountChange.OnAccountChange)
+        if(connected) new AccountChange((AccountChange.OnAccountChange)
                 this).execute(String.valueOf(budget),String.valueOf(account.getTotalLimit()),String.valueOf(account.getMonthLimit()));
     }
 
@@ -200,4 +191,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
                 break;
         }
     }
+
+
 }

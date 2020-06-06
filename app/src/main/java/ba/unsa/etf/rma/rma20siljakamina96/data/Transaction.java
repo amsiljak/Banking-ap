@@ -17,6 +17,7 @@ public class Transaction implements Parcelable{
     private Integer transactionInterval;
     private Date endDate;
     private Integer id;
+    private boolean deleted;
 
     private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -28,6 +29,7 @@ public class Transaction implements Parcelable{
         this.itemDescription = itemDescription;
         this.transactionInterval = transactionInterval;
         this.endDate = endDate;
+        deleted = false;
     }
     public Transaction(int id, Date date, double amount, String title, Type type, String itemDescription, Integer transactionInterval, Date endDate) {
         this.id = id;
@@ -223,5 +225,13 @@ public class Transaction implements Parcelable{
                 ", id=" + id +
                 ", DATE_FORMAT=" + DATE_FORMAT +
                 '}';
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -8,6 +8,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public interface ITransactionInteractor {
+
     ArrayList<Transaction> getTransactions();
 //
 //    void delete(Transaction transaction);

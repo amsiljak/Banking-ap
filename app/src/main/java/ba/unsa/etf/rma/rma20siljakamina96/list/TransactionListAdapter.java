@@ -21,6 +21,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
     public int resource;
     public TextView titleView;
     public TextView amountView;
+    public TextView offlineView;
     public ImageView imageView;
 
     public TransactionListAdapter(@NonNull Context context, int _resource, ArrayList<Transaction> items) {
@@ -55,9 +56,11 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
         titleView = newView.findViewById(R.id.title);
         amountView = newView.findViewById(R.id.iznos);
         imageView = newView.findViewById(R.id.ikonica);
+        offlineView = newView.findViewById(R.id.offlineText);
 
         titleView.setText(transaction.getTitle());
         amountView.setText(String.valueOf(transaction.getAmount()));
+        if(transaction.isDeleted()) offlineView.setText("Offline brisanje");
 
         String type = transaction.getType().toString();
         try {

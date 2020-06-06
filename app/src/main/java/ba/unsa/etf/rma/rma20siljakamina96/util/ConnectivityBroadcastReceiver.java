@@ -22,4 +22,7 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver {
             connected = true;
         }
     }
+    public interface onConnectionChanged{
+        public void onConnectionChanged();
+    }
 }
