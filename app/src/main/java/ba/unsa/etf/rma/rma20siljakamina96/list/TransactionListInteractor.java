@@ -1,6 +1,11 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -34,8 +39,10 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     private OnTransactionGetDone caller;
     public static ArrayList<Transaction> transactions = new ArrayList<>();
-    private static ArrayList<Transaction> deletedTransactions = new ArrayList<>();
     public static Map<Integer,String> transactionTypes;
+    public static ArrayList<Transaction> databaseTransactions = new ArrayList<>();
+    private TransactionDBOpenHelper transactionDBOpenHelper;
+    SQLiteDatabase database;
 
     public static ArrayList<Transaction> getTransactions() {
         return transactions;
@@ -46,16 +53,10 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     };
     public TransactionListInteractor() {};
 
-    public void addToDeletedTransactions(Transaction t) {
-        deletedTransactions.add(t);
-    }
-    public ArrayList<Transaction> getDeletedTransactions() {
-        return deletedTransactions;
-    }
-    public void removeFromDeletedTransactions(Transaction t) {
-        for(Transaction transaction: deletedTransactions) {
-            if(t.getId() == transaction.getId()) {
-                deletedTransactions.remove(transaction);
+    public static void removeFromListOfTransactions(int id) {
+        for(Transaction t:transactions) {
+            if(t.getId() == id) {
+                transactions.remove(t);
                 break;
             }
         }
@@ -237,25 +238,63 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         caller.onTransactionGetDone(transactions);
     }
 
-//    public void Details(){
-//
-//        String query;
-//        query = "SELECT " + TransactionDBOpenHelper.CAST_NAME + " FROM " +
-//                TransactionDBOpenHelper.CAST_TABLE + " WHERE "+
-//                TransactionDBOpenHelper.CAST_MOVIE_ID + " = ?";
-//
-//        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(movie.getId())});
-//        ArrayList<String> cast = new ArrayList<String>();
-//
-//        cursor.close();
-//
-//        query = "SELECT " + TransactionDBOpenHelper.SMOVIE_TITLE + " FROM "
-//                + TransactionDBOpenHelper.SIMILIAR_MOVIES + " WHERE "
-//                + TransactionDBOpenHelper.SMOVIES_MOVIE_ID + " = ?";
-//
-//        Cursor cursor1 = database.rawQuery(query, new String[]{Integer.toString(movie.getId())});
-//        ArrayList<String> similar = new ArrayList<String>();
-//
-//        cursor1.close();
-//    }
+    private String getQuery(String change) {
+        String query = "SELECT *"  + " FROM "
+                + TransactionDBOpenHelper.TRANSACTION_TABLE + " WHERE " + TransactionDBOpenHelper.TRANSACTION_CHANGE + " = '"+change+"'";
+
+        return query;
+    }
+    @Override
+    public ArrayList<Transaction> getDeletedTransactions(Context context) {
+        return getTransactions("delete",context);
+    }
+    @Override
+    public ArrayList<Transaction> getModifiedTransactions(Context context) {
+        return getTransactions("modify", context);
+    }
+    @Override
+    public ArrayList<Transaction> getAddedTransactions(Context context) {
+        return getTransactions("add", context);
+    }
+
+
+    private ArrayList<Transaction> getTransactions(String change, Context context) {
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        databaseTransactions = new ArrayList<>();
+//        ContentResolver cr = context.getApplicationContext().getContentResolver();
+//        String[] kolone = null;
+//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id);
+
+
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+        String query = getQuery(change);
+        Cursor cursor = database.rawQuery(query,null);
+        if(cursor.moveToFirst()) {
+            do{
+                int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
+                int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
+                int datePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DATE);
+                int intervalPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERVAL);
+                int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_AMOUNT);
+                int descriptionPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DESCRIPTION);
+                int typePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TYPE);
+                int endDatePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ENDDATE);
+
+                try {
+                    databaseTransactions.add(new Transaction(cursor.getInt(idPos),DATE_FORMAT.parse(cursor.getString(datePos)),cursor.getDouble(amountPos)
+                            ,cursor.getString(titlePos),null,cursor.getString(descriptionPos),cursor.getInt(intervalPos),DATE_FORMAT.parse(cursor.getString(endDatePos))));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return databaseTransactions;
+    }
+    @Override
+    public ArrayList<Transaction> getDatabaseTransactions() {
+        return databaseTransactions;
+    }
 }

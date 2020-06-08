@@ -18,6 +18,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactions;
@@ -63,7 +64,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         Integer transactionInt = null;
         if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
-        if(!connected) transactionListChange.update(date, title, amount, endDate, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+        if(!connected) {
+            transactionListChange.update(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+            TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
+        }
         else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
     }
 
@@ -77,7 +81,8 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             Integer transactionInt = null;
             if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
-            transactionListDelete.delete(date, title, amount, endDate, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+            transactionListDelete.delete(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+            TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
         } else {
             new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
         }
@@ -91,7 +96,9 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         Integer transactionInt = null;
         if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
-        if(!connected) transactionListChange.save(date, title, amount, endDate, itemDescription, transactionInt, type, context.getApplicationContext());
+        if(!connected) {
+            transactionListChange.save(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, context.getApplicationContext());
+        }
         else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
     }
 

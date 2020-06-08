@@ -125,7 +125,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             transaction = getDetailPresenter().getTransaction();
 
             deleteButton.setOnClickListener(deleteClickListener);
-            if(transaction.isDeleted()) deleteButton.setText("undo");
+//            if(transaction.isDeleted()) deleteButton.setText("undo");
 
             titleEditText.setText(transaction.getTitle());
             amountEditText.setText(String.valueOf(transaction.getAmount()));
@@ -348,6 +348,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
             onTransactionModify.onTransactionModified();
+            offlineText.setText("Offline izmjena");
 
 
         //dodavanje transakcije
@@ -356,7 +357,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             detailPresenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
-
+            offlineText.setText("Offline dodavanje");
 
             onTransactionAddOrDelete.onTransactionAddedOrDeleted();
         }
@@ -422,9 +423,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         @Override
         public void onClick(View v) {
             if(deleteButton.getText().toString().equals("Undo")) {
-                transaction.setDeleted(false);
+//                transaction.setDeleted(false);
                 onTransactionModify.onTransactionModified();
-                financePresenter.removeFromDeletedTransactions(transaction);
+                financePresenter.undoAction(transaction);
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     onTransactionAddOrDelete.onTransactionAddedOrDeleted();

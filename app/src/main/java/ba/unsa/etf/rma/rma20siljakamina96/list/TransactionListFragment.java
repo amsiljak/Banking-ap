@@ -159,7 +159,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         sortSpinner.setAdapter(new NothingSelectedSpinnerAdapter(sortSpinnerAdapter, R.layout.sort_spinner_row_nothing_selected, getActivity()));
         sortSpinner.setOnItemSelectedListener(sortSpinnerItemSelectedListener);
 
-        cal = Calendar.getInstance();
+        if(cal == null) cal = Calendar.getInstance();
         dateView = (TextView)fragmentView.findViewById(R.id.date);
 
         leftImageButton = (ImageButton)fragmentView.findViewById(R.id.leftButton);

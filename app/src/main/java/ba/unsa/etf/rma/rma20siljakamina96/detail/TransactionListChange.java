@@ -38,14 +38,11 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
     SQLiteDatabase database;
     private OnTransactionPostDone caller;
 
-
-
     public TransactionListChange(OnTransactionPostDone p) {
         caller = p;
     }
-    public TransactionListChange() {
+    public TransactionListChange() {}
 
-    }
     @Override
     protected Void doInBackground(String... strings) {
         String body = getParametersInJSON(strings);
@@ -126,17 +123,16 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
     }
 
     @Override
-    public void save(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Context context) {
+    public void save(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
-        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
-        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
-        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
         values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "add");
         database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
@@ -144,18 +140,17 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         database.close();
     }
     @Override
-    public void update(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
+    public void update(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TRANSACTION_ID, id);
-        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
-        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
-        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
-        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
         values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "modify");
 

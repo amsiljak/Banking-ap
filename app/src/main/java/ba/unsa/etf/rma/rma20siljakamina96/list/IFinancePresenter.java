@@ -23,11 +23,8 @@ public interface IFinancePresenter {
 
     String getAction(Transaction transaction);
 
-    void addToDeletedTransactions(Transaction t);
+    void undoAction(Transaction transaction);
 
-    void removeFromDeletedTransactions(Transaction t);
-
-    boolean isDeletedTransaction(Transaction transaction);
 
     //    void setTransactions();
 //    void setAccount();

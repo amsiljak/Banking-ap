@@ -13,12 +13,14 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.ITransactionDetailView;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListChange;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListDelete;
 import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
-public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone, AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone {
+public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone,
+        AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone, TransactionListChange.OnTransactionPostDone {
     private Context context;
     private IFinanceView view;
     private Account account;
@@ -149,10 +151,15 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     }
     @Override
     public void uploadToServis() {
-        for(Transaction t: transactionListInteractor.getTransactions()) {
-            if(t.isDeleted()) {
-                new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
-            }
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
+            new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
+        }
+        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
+            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), DATE_FORMAT.format(t.getEndDate()), t.getItemDescription(), String.valueOf(t.getTransactionInterval()), t.getType().toString(), String.valueOf(t.getId()));
+        }
+        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), DATE_FORMAT.format(t.getEndDate()), t.getItemDescription(), String.valueOf(t.getTransactionInterval()), t.getType().toString(), null);
         }
     }
 
@@ -163,25 +170,32 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public String getAction(Transaction transaction) {
-        for(Transaction t: transactionListInteractor.getDeletedTransactions()) {
+        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
             if(t.getId().equals(transaction.getId())) {
                 return "delete";
             }
         }
+        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+            if(t.getId().equals(transaction.getId())) {
+                return "add";
+            }
+        }
+        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
+            if(t.getId().equals(transaction.getId())) {
+                return "modify";
+            }
+        }
         return null;
-    }
-    @Override
-    public void addToDeletedTransactions(Transaction t) {
-        transactionListInteractor.addToDeletedTransactions(t);
-    }
-    @Override
-    public void removeFromDeletedTransactions(Transaction t) {
-        transactionListInteractor.removeFromDeletedTransactions(t);
     }
 
     @Override
-    public boolean isDeletedTransaction(Transaction transaction) {
-        return false;
+    public void undoAction(Transaction transaction) {
+//        TransactionListInteractor.undo(transaction.getId());
+    }
+
+    @Override
+    public void onTransactionPosted() {
+
     }
 }
 

@@ -61,18 +61,17 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
         caller.onTransactionDeleted();
     }
     @Override
-    public void delete(String date, String amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
+    public void delete(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TRANSACTION_ID, id);
-        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
-        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
-        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
-        values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
+        values.put(transactionDBOpenHelper.TRANSACTION_AMOUNT, amount);
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
+        values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
         values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "delete");
 

@@ -1,5 +1,7 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,6 +10,13 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public interface ITransactionInteractor {
+    ArrayList<Transaction> getDeletedTransactions(Context context);
+
+    ArrayList<Transaction> getModifiedTransactions(Context context);
+
+    ArrayList<Transaction> getAddedTransactions(Context context);
+
+    ArrayList<Transaction> getDatabaseTransactions();
 
 //    ArrayList<Transaction> getTransactions();
 //
