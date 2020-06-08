@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
@@ -38,9 +40,9 @@ import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
     private OnTransactionGetDone caller;
-    public static ArrayList<Transaction> transactions = new ArrayList<>();
+    private static ArrayList<Transaction> transactions = new ArrayList<>();
     public static Map<Integer,String> transactionTypes;
-    public static ArrayList<Transaction> databaseTransactions = new ArrayList<>();
+
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
 
@@ -176,15 +178,16 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     }
                     temp.add(new Transaction(id, date, amount, title, Type.valueOf(type), itemDescription, transactionInterval, endDate));
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
             page++;
         }
         transactions = new ArrayList<>();
@@ -218,13 +221,14 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     transactionTypes.put(id, name.replaceAll("\\s","").toUpperCase());
                 }
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 
@@ -259,12 +263,11 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
 
     private ArrayList<Transaction> getTransactions(String change, Context context) {
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-        databaseTransactions = new ArrayList<>();
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        ArrayList<Transaction> transactions= new ArrayList<>();
 //        ContentResolver cr = context.getApplicationContext().getContentResolver();
 //        String[] kolone = null;
 //        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id);
-
 
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
@@ -281,9 +284,20 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                 int typePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TYPE);
                 int endDatePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ENDDATE);
 
+                String typeString = cursor.getString(typePos);
+                Type type = null;
+                if(typeString!= null) type = Type.valueOf(typeString);
+                Date endDate = null;
+                if(cursor.getString(endDatePos) != null) {
+                    try {
+                        endDate = DATE_FORMAT.parse(cursor.getString(endDatePos));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
                 try {
-                    databaseTransactions.add(new Transaction(cursor.getInt(idPos),DATE_FORMAT.parse(cursor.getString(datePos)),cursor.getDouble(amountPos)
-                            ,cursor.getString(titlePos),null,cursor.getString(descriptionPos),cursor.getInt(intervalPos),DATE_FORMAT.parse(cursor.getString(endDatePos))));
+                    transactions.add(new Transaction(cursor.getInt(idPos),DATE_FORMAT.parse(cursor.getString(datePos)),cursor.getDouble(amountPos)
+                            ,cursor.getString(titlePos),type,cursor.getString(descriptionPos),cursor.getInt(intervalPos),endDate));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -291,10 +305,6 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         }
         cursor.close();
         database.close();
-        return databaseTransactions;
-    }
-    @Override
-    public ArrayList<Transaction> getDatabaseTransactions() {
-        return databaseTransactions;
+        return transactions;
     }
 }

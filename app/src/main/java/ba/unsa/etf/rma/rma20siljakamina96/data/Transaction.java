@@ -80,7 +80,7 @@ public class Transaction implements Parcelable{
         this.itemDescription = itemDescription;
     }
 
-    public int getTransactionInterval() {
+    public Integer getTransactionInterval() {
         return transactionInterval;
     }
 

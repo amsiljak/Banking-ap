@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         //Priprema novog fragmenta FragmentDetalji
         Bundle arguments = new Bundle();
         arguments.putParcelable("transaction", transaction);
-        arguments.putString("change", change);
+        if(change != null) arguments.putString("change", change);
         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
         detailFragment.setArguments(arguments);
         if (twoPaneMode){

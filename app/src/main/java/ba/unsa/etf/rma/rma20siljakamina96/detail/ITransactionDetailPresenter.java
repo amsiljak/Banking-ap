@@ -29,4 +29,8 @@ public interface ITransactionDetailPresenter {
     void setAccount();
 
     void updateBudget(String action, String amount, String type);
+
+    void uploadToServis();
+
+    String getAction(Transaction transaction);
 }

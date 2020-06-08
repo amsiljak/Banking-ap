@@ -75,7 +75,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
     }
     public ITransactionDetailPresenter getDetailPresenter() {
         if (detailPresenter == null) {
-            detailPresenter = new TransactionDetailPresenter(this, getActivity());
+            detailPresenter = new TransactionDetailPresenter(getActivity());
         }
         return detailPresenter;
     }
@@ -161,7 +161,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         detailPresenter.setAccount();
         getAccountPresenter();
 
-        if(getArguments().getString("change") != null) {
+        if (getArguments() != null && getArguments().containsKey("change")) {
             if (getArguments().getString("change").equals("delete")) {
                 offlineText.setText("Offline brisanje");
                 deleteButton.setText("Undo");
@@ -387,36 +387,38 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             //ako su unosi validni idi na spasavanje
             //ako je placanje treba provjeriti da li ce se sa njim premasiti limit
             else if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
-                    || type.equals("REGULARPAYMENT")){
+                    || type.equals("REGULARPAYMENT")) {
                 double totalPayments = detailPresenter.getTotalPayments();
-                if (detailPresenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
-                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > detailPresenter.getAccount().getTotalLimit())) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                    builder1.setTitle("Save transaction");
-                    builder1.setMessage("Iznos transakcije prelazi budžet ili limit. Da li ste sigurni da želite nastaviti?");
-                    builder1.setCancelable(true);
-
-                    builder1.setPositiveButton(
-                            "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    saveAction();
-                                    dialog.cancel();
-                                }
-                            });
-
-                    builder1.setNegativeButton(
-                            "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
-                } else saveAction();
-            }else saveAction();
+//                if (detailPresenter.isOverLimit(Double.parseDouble(amountEditText.getText().toString()), String.valueOf(dateEditText.getText()).substring(3)) ||
+//                        ((totalPayments + Double.parseDouble(amountEditText.getText().toString())) > detailPresenter.getAccount().getTotalLimit())) {
+//                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+//                    builder1.setTitle("Save transaction");
+//                    builder1.setMessage("Iznos transakcije prelazi budžet ili limit. Da li ste sigurni da želite nastaviti?");
+//                    builder1.setCancelable(true);
+//
+//                    builder1.setPositiveButton(
+//                            "Yes",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    saveAction();
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                    builder1.setNegativeButton(
+//                            "No",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                    AlertDialog alert11 = builder1.create();
+//                    alert11.show();
+//                } else saveAction();
+//            }else
+                saveAction();
+            } else saveAction();
         }
     };
     private AdapterView.OnClickListener deleteClickListener = new AdapterView.OnClickListener() {
@@ -444,7 +446,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with delete operation
-                                detailPresenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
+//                                detailPresenter.updateBudget("delete", amountEditText.getText().toString(), typeEditText.getText().toString().toUpperCase());
                                 detailPresenter.delete(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                                         typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                                         intervalEditText.getText().toString(), endDateEditText.getText().toString());

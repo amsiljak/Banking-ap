@@ -16,7 +16,7 @@ public interface ITransactionInteractor {
 
     ArrayList<Transaction> getAddedTransactions(Context context);
 
-    ArrayList<Transaction> getDatabaseTransactions();
+//    ArrayList<Transaction> getDatabaseTransactions();
 
 //    ArrayList<Transaction> getTransactions();
 //

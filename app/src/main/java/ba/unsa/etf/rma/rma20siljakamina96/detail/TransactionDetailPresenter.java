@@ -18,6 +18,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
+import ba.unsa.etf.rma.rma20siljakamina96.list.ITransactionInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
@@ -28,20 +29,22 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     private Transaction transaction;
     private static Account account;
     private Context context;
-    private ITransactionDetailView view;
+//    private ITransactionDetailView view;
     private IAccountInteractor accountInteractor;
     private ITransactionListChange transactionListChange;
     private ITransactionListDelete transactionListDelete;
+    private ITransactionInteractor transactionListInteractor;
     public static TransactionDetailResultReceiver transactionDetailResultReceiver;
 
-    public TransactionDetailPresenter(ITransactionDetailView view, Context context) {
-        this.view = view;
+    public TransactionDetailPresenter(Context context) {
+//        this.view = view;
         this.context = context;
         this.accountInteractor = new AccountInteractor();
         transactionDetailResultReceiver = new TransactionDetailResultReceiver(new Handler());
         transactionDetailResultReceiver.setReceiver(TransactionDetailPresenter.this);
         transactionListDelete = new TransactionListDelete();
         transactionListChange = new TransactionListChange();
+        transactionListInteractor = new TransactionListInteractor();
     }
     private String formatDate(String date) {
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -59,13 +62,16 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
         if(!endDate.equals("")) endDate = formatDate(endDate);
+        else endDate = null;
         String id = this.transaction.getId().toString();
 
         Integer transactionInt = null;
         if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
+        if(itemDescription.equals("")) itemDescription = null;
+
         if(!connected) {
-            transactionListChange.update(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+            transactionListChange.update(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext());
             TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
         }
         else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
@@ -76,12 +82,15 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         if (!connected) {
             date = formatDate(date);
             if(!endDate.equals("")) endDate = formatDate(endDate);
+            else endDate = null;
             String id = this.transaction.getId().toString();
 
             Integer transactionInt = null;
             if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
-            transactionListDelete.delete(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, Integer.valueOf(id), context.getApplicationContext());
+            if(itemDescription.equals("")) itemDescription = null;
+
+            transactionListDelete.delete(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext());
             TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
         } else {
             new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
@@ -91,13 +100,17 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     @Override
     public void add(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
-        if(!endDate.equals("")) endDate = formatDate(endDate);
+        if(!endDate.equals("")) {
+            endDate = formatDate(endDate);
+        } else endDate = null;
 
         Integer transactionInt = null;
         if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
+        if(itemDescription.equals("")) itemDescription = null;
+
         if(!connected) {
-            transactionListChange.save(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, type, context.getApplicationContext());
+            transactionListChange.save(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, context.getApplicationContext());
         }
         else new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
     }
@@ -121,7 +134,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     public HashMap<String, Double> getMonthlyPayments() {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-yyyy");
         HashMap<String, Double> iznosi = new HashMap<>();
-        for(Transaction t: transactions) {
+        for(Transaction t: TransactionListInteractor.getTransactions()) {
             if(t.getType().toString().equals("PURCHASE") || t.getType().toString().equals("INDIVIDUALPAYMENT")
                     || t.getType().toString().equals("REGULARPAYMENT")) {
                 if (iznosi.containsKey(DATE_FORMAT.format(t.getDate()))) {
@@ -217,5 +230,54 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
     }
 
+    @Override
+    public String getAction(Transaction transaction) {
+        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
+            if(t.getId().equals(transaction.getId())) {
+                return "delete";
+            }
+        }
+        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+            if(t.getId().equals(transaction.getId())) {
+                return "add";
+            }
+        }
+        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
+            if(t.getId().equals(transaction.getId())) {
+                return "modify";
+            }
+        }
+
+        return null;
+    }
+    @Override
+    public void uploadToServis() {
+        SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
+            new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
+        }
+        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
+            String endDateString = "";
+            if(t.getEndDate() != null) {
+                endDateString = DATE_FORMAT_SET.format(t.getEndDate());
+            }
+
+            String transactionInt = null;
+            if(t.getTransactionInterval() == null) transactionInt = "";
+            else transactionInt = String.valueOf(t.getTransactionInterval());
+            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(), String.valueOf(t.getTransactionInterval()), t.getType().toString(), String.valueOf(t.getId()));
+        }
+        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+            String endDateString = "";
+            if(t.getEndDate() != null) {
+                endDateString = DATE_FORMAT_SET.format(t.getEndDate());
+            }
+
+            String transactionInt = null;
+            if(t.getTransactionInterval() == null) transactionInt = "";
+            else transactionInt = String.valueOf(t.getTransactionInterval());
+            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(),transactionInt, t.getType().toString(), null);
+        }
+    }
 
 }

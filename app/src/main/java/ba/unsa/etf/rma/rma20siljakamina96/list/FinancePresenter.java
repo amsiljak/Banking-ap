@@ -63,7 +63,10 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
         if(!connected) {
             ArrayList<Transaction> lista = new ArrayList<>();
-            lista.addAll(transactionListInteractor.getTransactions());
+            lista.addAll(transactionListInteractor.getAddedTransactions(context.getApplicationContext()));
+            lista.addAll(transactionListInteractor.getDeletedTransactions(context.getApplicationContext()));
+            lista.addAll(transactionListInteractor.getModifiedTransactions(context.getApplicationContext()));
+            lista.addAll(TransactionListInteractor.getTransactions());
             lista =sortTransactions(lista);
             lista =filterTransactionsByType(lista);
             lista = filterTransactionsByDate(lista);
@@ -149,44 +152,13 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         }
         return lista;
     }
-    @Override
-    public void uploadToServis() {
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
-            new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
-        }
-        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
-            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), DATE_FORMAT.format(t.getEndDate()), t.getItemDescription(), String.valueOf(t.getTransactionInterval()), t.getType().toString(), String.valueOf(t.getId()));
-        }
-        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
-            new TransactionListChange((TransactionListChange.OnTransactionPostDone) this).execute(DATE_FORMAT.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), DATE_FORMAT.format(t.getEndDate()), t.getItemDescription(), String.valueOf(t.getTransactionInterval()), t.getType().toString(), null);
-        }
-    }
 
     @Override
     public void onTransactionDeleted() {
         getTransactions(typeOfTransaction,typeOfSort,cal);
     }
 
-    @Override
-    public String getAction(Transaction transaction) {
-        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
-            if(t.getId().equals(transaction.getId())) {
-                return "delete";
-            }
-        }
-        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
-            if(t.getId().equals(transaction.getId())) {
-                return "add";
-            }
-        }
-        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
-            if(t.getId().equals(transaction.getId())) {
-                return "modify";
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public void undoAction(Transaction transaction) {

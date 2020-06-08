@@ -19,9 +19,6 @@ public interface IFinancePresenter {
 
     Account getAccount();
 
-    void uploadToServis();
-
-    String getAction(Transaction transaction);
 
     void undoAction(Transaction transaction);
 

@@ -28,6 +28,8 @@ import ba.unsa.etf.rma.rma20siljakamina96.R;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.ITransactionDetailPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresenter;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
@@ -49,21 +51,19 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     private ImageButton rightImageButton;
     private static Calendar cal;
     private static String type;
+    private static String sort = "Price - Ascending";
     private ArrayList<String> filterList;
     private ArrayList<String> sortList;
     private Button addTransactionButton;
-    private static String sort = "Price - Ascending";
 
     private FilterSpinnerAdapter filterSpinnerAdapter;
     private ArrayAdapter<String> sortSpinnerAdapter;
-
-    private IFinancePresenter financePresenter;
-
     private TransactionListAdapter transactionListAdapter;
 
-    private int pozi;
+    private IFinancePresenter financePresenter;
+    private ITransactionDetailPresenter detailPresenter;
 
-    ConstraintLayout listLayout;
+    private int pozi;
 
     public IFinancePresenter getTransactionPresenter() {
         if (financePresenter == null) {
@@ -71,20 +71,11 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         }
         return financePresenter;
     }
-    private String getMonth() {
-        int mjesec = cal.get(Calendar.MONTH);
-        String month = "wrong";
-
-        DateFormatSymbols dfs = new DateFormatSymbols();
-        String[] months = dfs.getMonths();
-        if (mjesec >= 0 && mjesec <= 11 ) {
-            month = months[mjesec];
+    public ITransactionDetailPresenter getDetailPresenter() {
+        if (detailPresenter == null) {
+            detailPresenter = new TransactionDetailPresenter(getActivity());
         }
-        return month;
-    }
-    @Override
-    public void notifyTransactionListDataSetChanged() {
-        transactionListAdapter.notifyDataSetChanged();
+        return detailPresenter;
     }
 
     @Override
@@ -174,11 +165,26 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
         getTransactionPresenter().getTransactions(type, "title.asc",cal);
+        getDetailPresenter();
         financePresenter.setAccount();
         setDate();
         return fragmentView;
     }
+    private String getMonth() {
+        int mjesec = cal.get(Calendar.MONTH);
+        String month = "wrong";
 
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (mjesec >= 0 && mjesec <= 11 ) {
+            month = months[mjesec];
+        }
+        return month;
+    }
+    @Override
+    public void notifyTransactionListDataSetChanged() {
+        transactionListAdapter.notifyDataSetChanged();
+    }
     private AdapterView.OnClickListener leftButtonClickListener = new AdapterView.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -258,7 +264,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Transaction transaction = transactionListAdapter.getTransaction(position);
             //drugi klik na stavku
-            String action = financePresenter.getAction(transaction);
+            String action = detailPresenter.getAction(transaction);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 if (pozi == position) {
                     transactionListView.setItemChecked(position, false);
@@ -287,6 +293,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     };
     @Override
     public void uploadToServis() {
-        financePresenter.uploadToServis();
+        detailPresenter.uploadToServis();
+        financePresenter.getTransactions(type,sort,cal);
     }
 }
