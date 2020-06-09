@@ -75,7 +75,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
             boolean existsInDB = false;
             for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
-                if(t.getId() == this.transaction.getId()) {
+                if(t.getId().intValue() == this.transaction.getId().intValue()) {
                     //ako transakcija postoji u bazi treba da je update a ne doda
                     transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext(), true);
                     existsInDB = true;
@@ -83,7 +83,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
                 }
             }
             for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
-                if(t.getId() == this.transaction.getId()) {
+                if(t.getId().intValue() == this.transaction.getId().intValue()) {
                     //ako transakcija postoji u bazi treba da je update a ne doda
                     transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext(), false);
                     existsInDB = true;
