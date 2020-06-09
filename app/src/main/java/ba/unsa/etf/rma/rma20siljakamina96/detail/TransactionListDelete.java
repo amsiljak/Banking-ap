@@ -19,7 +19,7 @@ import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TR
 
 public class TransactionListDelete extends AsyncTask<String, Integer, Void> implements ITransactionListDelete{
     private OnTransactionDeleteDone caller;
-    private int id;
+    private int id = -1;
 
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;

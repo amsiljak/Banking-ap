@@ -25,13 +25,13 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
         caller = p;
     }
     public TransactionListPost() {}
-    private Integer internalId = null;
+    private int internalId = -1;
     private OnTransactionPostDone caller;
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
 
     public interface OnTransactionPostDone{
-        public void onTransactionPosted(Integer id);
+        public void onTransactionPosted(int id);
     }
     @Override
     protected Void doInBackground(String... strings) {

@@ -61,17 +61,19 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     @Override
     public void update(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
         date = formatDate(date);
-        if(!endDate.equals("")) endDate = formatDate(endDate);
-        else endDate = null;
+        if(!endDate.equals("")) {
+            endDate = formatDate(endDate);
+        }
+
         String id = this.transaction.getId().toString();
 
-        Integer transactionInt = null;
-        if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
-
-        if(itemDescription.equals("")) itemDescription = null;
-
-        boolean existsInDB = false;
         if(!connected) {
+            Integer transactionInt = null;
+            if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
+
+            if(itemDescription.equals("")) itemDescription = null;
+
+            boolean existsInDB = false;
             for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
                 if(t.getId() == this.transaction.getId()) {
                     //ako transakcija postoji u bazi treba da je update a ne doda
@@ -99,17 +101,19 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void delete(String date, String amount, String title, String type, String itemDescription, String transactionInterval, String endDate) {
-        if (!connected) {
-            date = formatDate(date);
-            if(!endDate.equals("")) endDate = formatDate(endDate);
-            else endDate = null;
-            String id = this.transaction.getId().toString();
+        date = formatDate(date);
+        if(!endDate.equals("")) {
+            endDate = formatDate(endDate);
+        }
 
+        String id = this.transaction.getId().toString();
+
+        if (!connected) {
+            if(endDate.equals("")) endDate = null;
             Integer transactionInt = null;
             if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
 
             if(itemDescription.equals("")) itemDescription = null;
-
             transactionListDeleteInteractor.delete(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext());
             TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
         } else {
@@ -122,14 +126,13 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         date = formatDate(date);
         if(!endDate.equals("")) {
             endDate = formatDate(endDate);
-        } else endDate = null;
-
-        Integer transactionInt = null;
-        if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
-
-        if(itemDescription.equals("")) itemDescription = null;
-
+        }
         if(!connected) {
+            if(endDate.equals("")) endDate = null;
+            Integer transactionInt = null;
+            if(!transactionInterval.equals("")) transactionInt = Integer.valueOf(transactionInterval);
+
+            if(itemDescription.equals("")) itemDescription = null;
             transactionListPostInteractor.save(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, context.getApplicationContext());
         }
         else new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
@@ -285,15 +288,15 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     public void onTransactionModified(int id) {
         for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
             if(id == t.getId()) {
-                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),false);
+                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
             }
 
         }
     }
     @Override
-    public void onTransactionPosted(Integer id) {
+    public void onTransactionPosted(int id) {
         //ako nije null tj ako je pstovana transakcija iz baze na server a ne direktno na server
-        if(id != null) {
+        if(id != -1) {
             for (Transaction t : transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
                 if (id == t.getId()) {
                     transactionListInteractor.deleteFromDB(t.getId(), context.getApplicationContext(),false);
