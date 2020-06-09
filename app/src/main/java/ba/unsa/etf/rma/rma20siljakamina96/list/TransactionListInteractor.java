@@ -1,16 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -18,12 +14,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,9 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
-import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
@@ -43,7 +34,7 @@ import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TR
 
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
-    private OnTransactionGetDone caller;
+    private OnTransactionsGetDone caller;
     private static ArrayList<Transaction> transactions = new ArrayList<>();
     public static Map<Integer,String> transactionTypes;
 
@@ -54,7 +45,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         return transactions;
     }
 
-    public TransactionListInteractor(OnTransactionGetDone p) {
+    public TransactionListInteractor(OnTransactionsGetDone p) {
         caller = p;
     };
     public TransactionListInteractor() {};
@@ -240,13 +231,13 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     }
 
 
-    public interface OnTransactionGetDone{
-        public void onTransactionGetDone(ArrayList<Transaction> results);
+    public interface OnTransactionsGetDone {
+        public void onTransactionsGetDone(ArrayList<Transaction> results);
     }
     @Override
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
-        caller.onTransactionGetDone(transactions);
+        caller.onTransactionsGetDone(transactions);
     }
 
     private String getQuery(String change) {
@@ -344,11 +335,13 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         database.close();
     }
     @Override
-    public void deleteFromDB(int id, Context context) {
+    public void deleteFromDB(int id, Context context,boolean hasRealID) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
 
-        String where = TRANSACTION_ID + "=" + id;
+        String where;
+        if(hasRealID) where = TRANSACTION_ID + "=" + id;
+        else  where = TRANSACTION_INTERNAL_ID + "=" + id;
         String whereArgs [] = null;
 
         database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);

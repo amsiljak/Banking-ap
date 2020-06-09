@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     private BudgetFragment budgetFragment;
     private GraphsFragment graphsFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

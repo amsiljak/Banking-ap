@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -169,6 +170,11 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                 offlineText.setText("Offline izmjena");
             else if (getArguments().getString("change").equals("add"))
                 offlineText.setText("Offline dodavanje");
+        }
+        Toast toast;
+        if(!connected) {
+            toast = Toast.makeText(getActivity(), "Radite u offline mode-u", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
         return view;

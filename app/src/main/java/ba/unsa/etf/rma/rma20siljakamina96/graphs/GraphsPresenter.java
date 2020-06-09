@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
-import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor;
 
-public class GraphsPresenter implements IGraphsPresenter,TransactionListInteractor.OnTransactionGetDone{
+public class GraphsPresenter implements IGraphsPresenter, TransactionListInteractor.OnTransactionsGetDone {
     private Context context;
     private String timeUnit;
 
@@ -32,7 +31,7 @@ public class GraphsPresenter implements IGraphsPresenter,TransactionListInteract
     @Override
     public void getData(String timeUnit) {
         this.timeUnit = timeUnit;
-        new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
+        new TransactionListInteractor((TransactionListInteractor.OnTransactionsGetDone)
                 this).execute(null,null,null,null);
     }
 
@@ -256,7 +255,7 @@ public class GraphsPresenter implements IGraphsPresenter,TransactionListInteract
 
 
     @Override
-    public void onTransactionGetDone(ArrayList<Transaction> results) {
+    public void onTransactionsGetDone(ArrayList<Transaction> results) {
         putTotalDataToBarData(results);
     }
 }

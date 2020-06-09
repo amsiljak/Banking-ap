@@ -18,7 +18,7 @@ public interface ITransactionInteractor {
 
     void updateDB(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context, boolean hasRealID);
 
-    void deleteFromDB(int id, Context context);
+    void deleteFromDB(int id, Context context, boolean hasRealID);
 
 //    ArrayList<Transaction> getDatabaseTransactions();
 

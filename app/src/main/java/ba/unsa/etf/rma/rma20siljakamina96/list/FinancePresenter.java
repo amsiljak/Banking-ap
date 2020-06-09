@@ -17,7 +17,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListDelete;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
-public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone,
+public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionsGetDone,
         AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone, TransactionListChange.OnTransactionModifyDone {
     private Context context;
     private IFinanceView view;
@@ -35,21 +35,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     public FinancePresenter(Context context) {
         this.context = context;
         transactionListInteractor = new TransactionListInteractor();
-    }
-    @Override
-    public void onTransactionGetDone(ArrayList<Transaction> results) {
-        results =sortTransactions(results);
-        results =filterTransactionsByType(results);
-        results = filterTransactionsByDate(results);
-
-        view.setTransactions(results);
-        view.notifyTransactionListDataSetChanged();
-    }
-
-    @Override
-    public void onAccountGetDone(Account account) {
-        this.account = account;
-        view.setAccountData(account);
     }
 
     @Override
@@ -71,7 +56,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
             view.notifyTransactionListDataSetChanged();
         }
         //pokupi sve transakcije i onda ih starim metodama filtrira
-        new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
+        else new TransactionListInteractor((TransactionListInteractor.OnTransactionsGetDone)
                 this).execute(null,null,null,null);
     }
     @Override
@@ -156,11 +141,30 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void undoAction(Transaction transaction) {
-        transactionListInteractor.deleteFromDB(transaction.getId(),context.getApplicationContext());
+        transactionListInteractor.deleteFromDB(transaction.getId(),context.getApplicationContext(), true);
         TransactionListInteractor.addToListOfTransactions(transaction);
     }
 
     @Override
     public void onTransactionModified(int id) { }
+
+    @Override
+    public void onTransactionsGetDone(ArrayList<Transaction> results) {
+        results.addAll(transactionListInteractor.getAddedTransactions(context.getApplicationContext()));
+        results.addAll(transactionListInteractor.getDeletedTransactions(context.getApplicationContext()));
+        results.addAll(transactionListInteractor.getModifiedTransactions(context.getApplicationContext()));
+        results =sortTransactions(results);
+        results =filterTransactionsByType(results);
+        results = filterTransactionsByDate(results);
+
+        view.setTransactions(results);
+        view.notifyTransactionListDataSetChanged();
+    }
+
+    @Override
+    public void onAccountGetDone(Account account) {
+        this.account = account;
+        view.setAccountData(account);
+    }
 }
 

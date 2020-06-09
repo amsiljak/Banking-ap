@@ -13,11 +13,13 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static boolean connected = true;
+    
 
     private MyBroadcastListener listener;
 
 
     public ConnectivityBroadcastReceiver(MyBroadcastListener listener){
+
         this.listener = listener;
     }
 

@@ -1,6 +1,8 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,6 +170,12 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         getDetailPresenter();
         financePresenter.setAccount();
         setDate();
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        connected = (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+
+        if(connected) detailPresenter.uploadToServis();
+
         return fragmentView;
     }
     private String getMonth() {
