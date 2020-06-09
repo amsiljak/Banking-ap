@@ -302,10 +302,13 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
     }
     @Override
-    public void onTransactionDeleted(Integer id) {
+    public void onTransactionDeleted(int id) {
         for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
             if(id == t.getId()) {
-                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),false);
+
+
+
+                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
             }
         }
     }

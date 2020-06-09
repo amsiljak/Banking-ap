@@ -249,8 +249,10 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     };
     @Override
     public void setAccountData(Account account) {
-        globalAmount2.setText(String.valueOf(account.getBudget()));
-        limit2.setText(String.valueOf(account.getTotalLimit()));
+        if(account != null) {
+            globalAmount2.setText(String.valueOf(account.getBudget()));
+            limit2.setText(String.valueOf(account.getTotalLimit()));
+        }
     }
 
     @Override

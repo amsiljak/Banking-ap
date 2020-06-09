@@ -21,7 +21,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone, TransactionListChange.OnTransactionModifyDone {
     private Context context;
     private IFinanceView view;
-    private Account account;
+    private static Account account;
     private String typeOfSort;
     private String typeOfTransaction;
     private Calendar cal;
@@ -135,7 +135,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     }
 
     @Override
-    public void onTransactionDeleted(Integer id) {
+    public void onTransactionDeleted(int id) {
         getTransactions(typeOfTransaction,typeOfSort,cal);
     }
 
@@ -163,8 +163,9 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void onAccountGetDone(Account account) {
-        this.account = account;
-        view.setAccountData(account);
+        if(account != null) this.account = account;
+        //nece se ni postavljati ako je i stari i novi account null
+        if(this.account != null) view.setAccountData(this.account);
     }
 }
 
