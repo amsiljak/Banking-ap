@@ -244,5 +244,6 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     @Override
     public void doSomething() {
         listFragment.uploadToServis();
+        budgetFragment.uploadToServis();
     }
 }

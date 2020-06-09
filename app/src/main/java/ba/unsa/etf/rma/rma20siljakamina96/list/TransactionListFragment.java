@@ -27,6 +27,8 @@ import java.util.Calendar;
 
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
+import ba.unsa.etf.rma.rma20siljakamina96.account.AccountPresenter;
+import ba.unsa.etf.rma.rma20siljakamina96.account.IAccountPresenter;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
@@ -64,9 +66,16 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
     private IFinancePresenter financePresenter;
     private ITransactionDetailPresenter detailPresenter;
+//    private IAccountPresenter accountPresenter;
 
     private int pozi;
 
+//    public IAccountPresenter getAccountPresenter() {
+//        if (accountPresenter == null) {
+//            accountPresenter = new AccountPresenter(getActivity());
+//        }
+//        return accountPresenter;
+//    }
     public IFinancePresenter getTransactionPresenter() {
         if (financePresenter == null) {
             financePresenter = new FinancePresenter(this, getActivity());
@@ -168,6 +177,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
         getTransactionPresenter().getTransactions(type, "title.asc",cal);
         getDetailPresenter();
+//        getAccountPresenter();
         financePresenter.setAccount();
         setDate();
 

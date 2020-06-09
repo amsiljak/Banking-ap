@@ -10,4 +10,5 @@ public interface IAccountPresenter {
 
     void setAccountData();
 
+    void uploadToServis();
 }

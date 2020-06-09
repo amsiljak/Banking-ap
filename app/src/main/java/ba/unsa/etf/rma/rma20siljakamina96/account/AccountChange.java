@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
+
 public class AccountChange extends AsyncTask<String, Integer, Void> {
     private OnAccountChange caller;
 
@@ -69,4 +71,5 @@ public class AccountChange extends AsyncTask<String, Integer, Void> {
         body += "\"monthLimit\": \""+strings[2] + "\"}";
         return body;
     }
+
 }

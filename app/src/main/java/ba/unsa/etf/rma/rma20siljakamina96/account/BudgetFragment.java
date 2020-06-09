@@ -85,4 +85,8 @@ public class BudgetFragment extends Fragment implements IAccountView{
     public void setBudget(String budget) {
         budgetText.setText(budget);
     }
+    @Override
+    public void uploadToServis() {
+        accountPresenter.uploadToServis();
+    }
 }

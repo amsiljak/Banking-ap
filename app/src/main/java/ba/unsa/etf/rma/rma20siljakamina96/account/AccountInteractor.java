@@ -1,5 +1,9 @@
 package ba.unsa.etf.rma.rma20siljakamina96.account;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -16,12 +20,15 @@ import java.net.URL;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.FinanceModel;
+import ba.unsa.etf.rma.rma20siljakamina96.util.AccountDBOpenHelper;
 
 public class AccountInteractor extends AsyncTask<String, Integer, Void> implements IAccountInteractor {
 
     private String tmdb_api_key = "";
     private OnAccountGetDone caller;
     Account account;
+    private AccountDBOpenHelper accountDBOpenHelper;
+    SQLiteDatabase database;
 
     public AccountInteractor(OnAccountGetDone p) {
         caller = p;
@@ -95,5 +102,61 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
         caller.onAccountGetDone(account);
+    }
+    @Override
+    public void insert(double budget, double totalLimit, double monthLimit, Context context) {
+        accountDBOpenHelper = new AccountDBOpenHelper(context);
+        database = accountDBOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(accountDBOpenHelper.ACCOUNT_BUDGET,budget);
+        values.put(accountDBOpenHelper.ACCOUNT_TOTAL_LIMIT, totalLimit);
+        values.put(accountDBOpenHelper.ACCOUNT_MONTH_LIMIT,monthLimit);
+
+        database.insert(accountDBOpenHelper.ACCOUNT_TABLE, null, values);
+
+        database.close();
+    }
+
+
+    @Override
+    public Account getAccountFromDB(Context context) {
+//        ContentResolver cr = context.getApplicationContext().getContentResolver();
+//        String[] kolone = null;
+//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id
+//        );
+
+        accountDBOpenHelper = new AccountDBOpenHelper(context);
+        database = accountDBOpenHelper.getWritableDatabase();
+
+        String query =  "SELECT *"  + " FROM "
+                    + AccountDBOpenHelper.ACCOUNT_TABLE;
+
+        Cursor cursor = database.rawQuery(query,null);
+        Account accountFromDB = null;
+        if(cursor.moveToFirst()) {
+            do{
+                int budgetPos = cursor.getColumnIndexOrThrow(AccountDBOpenHelper.ACCOUNT_BUDGET);
+                int totalPos = cursor.getColumnIndexOrThrow(AccountDBOpenHelper.ACCOUNT_TOTAL_LIMIT);
+                int monthPos = cursor.getColumnIndexOrThrow(AccountDBOpenHelper.ACCOUNT_MONTH_LIMIT);
+
+                accountFromDB = new Account(cursor.getDouble(budgetPos),cursor.getDouble(totalPos),cursor.getDouble(monthPos));
+
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return accountFromDB;
+    }
+
+    @Override
+    public void deleteFromDB(Context context) {
+        accountDBOpenHelper = new AccountDBOpenHelper(context);
+        database = accountDBOpenHelper.getWritableDatabase();
+
+        String where = null;
+        String whereArgs [] = null;
+
+        database.delete(accountDBOpenHelper.ACCOUNT_TABLE, where, whereArgs);
+        database.close();
     }
 }
