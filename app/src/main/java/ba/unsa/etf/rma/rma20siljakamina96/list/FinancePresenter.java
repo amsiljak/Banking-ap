@@ -54,7 +54,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void getTransactions(String type, String sort, Calendar cal){
-
         this.typeOfSort = sort;
         this.typeOfTransaction = type;
         this.cal = cal;
@@ -69,6 +68,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
             lista =filterTransactionsByType(lista);
             lista = filterTransactionsByDate(lista);
             view.setTransactions(lista);
+            view.notifyTransactionListDataSetChanged();
         }
         //pokupi sve transakcije i onda ih starim metodama filtrira
         new TransactionListInteractor((TransactionListInteractor.OnTransactionGetDone)
@@ -83,8 +83,6 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     public Account getAccount(){
         return account;
     }
-
-
 
     @Override
     public ArrayList<Transaction> sortTransactions(ArrayList<Transaction> transakcije) {
@@ -152,20 +150,17 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
     }
 
     @Override
-    public void onTransactionDeleted() {
+    public void onTransactionDeleted(Integer id) {
         getTransactions(typeOfTransaction,typeOfSort,cal);
     }
-
-
 
     @Override
     public void undoAction(Transaction transaction) {
         transactionListInteractor.deleteFromDB(transaction.getId(),context.getApplicationContext());
+        TransactionListInteractor.addToListOfTransactions(transaction);
     }
 
     @Override
-    public void onTransactionModified(int id) {
-
-    }
+    public void onTransactionModified(int id) { }
 }
 

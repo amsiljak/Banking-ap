@@ -39,6 +39,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_ID;
+import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID;
 
 public class TransactionListInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
 
@@ -65,6 +66,9 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                 break;
             }
         }
+    }
+    public static void addToListOfTransactions(Transaction t) {
+        transactions.add(t);
     }
 
     public String convertStreamToString(InputStream is) {
@@ -270,7 +274,8 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         ArrayList<Transaction> transactions= new ArrayList<>();
 //        ContentResolver cr = context.getApplicationContext().getContentResolver();
 //        String[] kolone = null;
-//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id);
+//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id
+//        );
 
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
@@ -281,7 +286,9 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                 int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
                 //ako je transakcija dodana offline pa nema id sa servera onda cu joj za id
                 //postaviti internal id da bi se mogla kasnije pronaci po njemu
-                if((Integer)cursor.getInt(idPos) == null) idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID);
+                if(cursor.getInt(idPos) == 0) {
+                    idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID);
+                }
                 int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
                 int datePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DATE);
                 int intervalPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERVAL);
@@ -316,12 +323,14 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
 
     //kad se transakciji iz baze zeli modifikovati atribut
     @Override
-    public void updateDB(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
+    public void updateDB(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context, boolean hasRealID) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        String where = TRANSACTION_ID + "=" + String.valueOf(id);
+        String where;
+        if(hasRealID) where = TRANSACTION_ID + "=" + String.valueOf(id);
+        else where = TRANSACTION_INTERNAL_ID + "=" + String.valueOf(id);
         String whereArgs [] = null;
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
         values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
@@ -330,7 +339,6 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
-        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "modify");
 
         database.update(transactionDBOpenHelper.TRANSACTION_TABLE, values, where, whereArgs);
         database.close();

@@ -356,7 +356,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             detailPresenter.add(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                     typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                     intervalEditText.getText().toString(), endDateEditText.getText().toString());
-            offlineText.setText("Offline dodavanje");
+
 
             onTransactionAddOrDelete.onTransactionAddedOrDeleted();
         }
@@ -427,6 +427,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                 onTransactionModify.onTransactionModified();
                 financePresenter.undoAction(transaction);
 
+
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                 } else {
@@ -448,11 +449,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                                 detailPresenter.delete(dateEditText.getText().toString(), amountEditText.getText().toString(),titleEditText.getText().toString(),
                                         typeEditText.getText().toString().toUpperCase(), descriptionEditText.getText().toString(),
                                         intervalEditText.getText().toString(), endDateEditText.getText().toString());
-//                                financePresenter.addToDeletedTransactions(transaction);
-                                if(!connected) {
-                                    offlineText.setText("Offline brisanje");
-                                    deleteButton.setText("Undo");
-                                }
 
                                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                                     onTransactionAddOrDelete.onTransactionAddedOrDeleted();

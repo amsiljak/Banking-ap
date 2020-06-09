@@ -75,7 +75,15 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
                 if(t.getId() == this.transaction.getId()) {
                     //ako transakcija postoji u bazi treba da je update a ne doda
-                    transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext());
+                    transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext(), true);
+                    existsInDB = true;
+                    break;
+                }
+            }
+            for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+                if(t.getId() == this.transaction.getId()) {
+                    //ako transakcija postoji u bazi treba da je update a ne doda
+                    transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext(), false);
                     existsInDB = true;
                     break;
                 }
@@ -275,16 +283,11 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void onTransactionModified(int id) {
-//        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
-//            if(this.transaction.getId() == t.getId()) {
-//                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext());
-//                break;
-//            }
-//        }
         for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
             if(id == t.getId()) {
                 transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext());
             }
+
         }
     }
     @Override
@@ -299,23 +302,19 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
     }
     @Override
-    public void onTransactionDeleted() {
+    public void onTransactionDeleted(Integer id) {
         for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
-            if(this.transaction.getId() == t.getId()) {
+            if(id == t.getId()) {
                 transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext());
             }
         }
     }
 
     @Override
-    public void onAccountChanged() {
-
-    }
+    public void onAccountChanged() {}
 
     @Override
     public void onAccountGetDone(Account account) {
         this.account = account;
     }
-
-
 }

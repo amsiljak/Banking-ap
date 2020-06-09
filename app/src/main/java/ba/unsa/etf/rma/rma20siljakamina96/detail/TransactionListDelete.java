@@ -19,6 +19,7 @@ import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TR
 
 public class TransactionListDelete extends AsyncTask<String, Integer, Void> implements ITransactionListDelete{
     private OnTransactionDeleteDone caller;
+    private Integer id;
 
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
@@ -38,6 +39,7 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
             }catch (MalformedURLException e){
                 e.printStackTrace();
             }
+            id = Integer.valueOf(strings[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoInput(true);
             urlConnection.setRequestProperty(
@@ -53,12 +55,12 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
         return null;
     }
     public interface OnTransactionDeleteDone{
-        public void onTransactionDeleted();
+        public void onTransactionDeleted(Integer id);
     }
     @Override
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
-        caller.onTransactionDeleted();
+        caller.onTransactionDeleted(id);
     }
     @Override
     public void delete(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
@@ -76,7 +78,6 @@ public class TransactionListDelete extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "delete");
 
         database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
-
         database.close();
     }
 
