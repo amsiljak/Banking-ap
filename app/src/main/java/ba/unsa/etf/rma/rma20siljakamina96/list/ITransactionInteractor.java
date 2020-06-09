@@ -16,6 +16,10 @@ public interface ITransactionInteractor {
 
     ArrayList<Transaction> getAddedTransactions(Context context);
 
+    void updateDB(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context);
+
+    void deleteFromDB(int id, Context context);
+
 //    ArrayList<Transaction> getDatabaseTransactions();
 
 //    ArrayList<Transaction> getTransactions();

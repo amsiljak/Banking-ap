@@ -125,7 +125,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
             transaction = getDetailPresenter().getTransaction();
 
             deleteButton.setOnClickListener(deleteClickListener);
-//            if(transaction.isDeleted()) deleteButton.setText("undo");
 
             titleEditText.setText(transaction.getTitle());
             amountEditText.setText(String.valueOf(transaction.getAmount()));
@@ -425,7 +424,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
         @Override
         public void onClick(View v) {
             if(deleteButton.getText().toString().equals("Undo")) {
-//                transaction.setDeleted(false);
                 onTransactionModify.onTransactionModified();
                 financePresenter.undoAction(transaction);
 
@@ -457,8 +455,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionD
                                 }
 
                                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                                    if(!connected) onTransactionModify.onTransactionModified();
-                                    else onTransactionAddOrDelete.onTransactionAddedOrDeleted();
+                                    onTransactionAddOrDelete.onTransactionAddedOrDeleted();
                                 } else {
                                     onTransactionModify.onTransactionModified();
                                     onAddButtonClick.onAddButtonClicked(detailPresenter.getAccount());

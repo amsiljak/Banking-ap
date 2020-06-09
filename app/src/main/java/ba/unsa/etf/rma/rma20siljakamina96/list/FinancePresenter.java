@@ -12,15 +12,13 @@ import java.util.Date;
 import ba.unsa.etf.rma.rma20siljakamina96.account.AccountInteractor;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Account;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
-import ba.unsa.etf.rma.rma20siljakamina96.detail.ITransactionDetailView;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListChange;
 import ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionListDelete;
-import ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
 
 public class FinancePresenter implements IFinancePresenter, TransactionListInteractor.OnTransactionGetDone,
-        AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone, TransactionListChange.OnTransactionPostDone {
+        AccountInteractor.OnAccountGetDone, TransactionListDelete.OnTransactionDeleteDone, TransactionListChange.OnTransactionModifyDone {
     private Context context;
     private IFinanceView view;
     private Account account;
@@ -162,11 +160,11 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
     @Override
     public void undoAction(Transaction transaction) {
-//        TransactionListInteractor.undo(transaction.getId());
+        transactionListInteractor.deleteFromDB(transaction.getId(),context.getApplicationContext());
     }
 
     @Override
-    public void onTransactionPosted() {
+    public void onTransactionModified(int id) {
 
     }
 }

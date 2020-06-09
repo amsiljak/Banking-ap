@@ -19,30 +19,27 @@ import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresenter.transactionDetailResultReceiver;
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactionTypes;
-import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_ID;
 
-public class TransactionListChange extends AsyncTask<String, Integer, Void> implements ITransactionListChange{
-    final public static int STATUS_RUNNING=0;
-    final public static int STATUS_FINISHED=1;
-    final public static int STATUS_ERROR=2;
-    private int id;
-    private TransactionDBOpenHelper transactionDBOpenHelper;
-    SQLiteDatabase database;
-    private OnTransactionModifyDone caller;
-
-    public TransactionListChange(OnTransactionModifyDone p) {
+public class TransactionListPost extends AsyncTask<String, Integer, Void> implements ITransactionListPost {
+    public TransactionListPost(OnTransactionPostDone p) {
         caller = p;
     }
-    public TransactionListChange() {}
+    public TransactionListPost() {}
+    private Integer internalId = null;
+    private OnTransactionPostDone caller;
+    private TransactionDBOpenHelper transactionDBOpenHelper;
+    SQLiteDatabase database;
 
+    public interface OnTransactionPostDone{
+        public void onTransactionPosted(Integer id);
+    }
     @Override
     protected Void doInBackground(String... strings) {
         String body = getParametersInJSON(strings);
         try {
             URL url = null;
             String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
-            url1+= "/"+strings[7];
-            id = Integer.valueOf(strings[7]);
+            if(strings[7] != null) internalId = Integer.valueOf(strings[7]);
             try {
                 url = new URL(url1);
             }catch (MalformedURLException e){
@@ -67,11 +64,11 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
                 }
             }
         } catch (ClassCastException e) {
-            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         } catch (MalformedURLException e) {
-            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         } catch (IOException e) {
-            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
         }
         return null;
     }
@@ -105,23 +102,16 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         body += ", \"TransactionTypeId\": "+typeId+"}";
         return body;
     }
-
-    public interface OnTransactionModifyDone {
-        public void onTransactionModified(int id);
-    }
     @Override
     protected void onPostExecute(Void aVoid){
         super.onPostExecute(aVoid);
-        caller.onTransactionModified(id);
+        caller.onTransactionPosted(internalId);
     }
-
-
     @Override
-    public void update(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context) {
+    public void save(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Context context) {
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(TRANSACTION_ID, id);
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
         values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
         values.put(transactionDBOpenHelper.TRANSACTION_INTERVAL,transactionInterval);
@@ -129,8 +119,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         values.put(transactionDBOpenHelper.TRANSACTION_DESCRIPTION,itemDescription);
         values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
-        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "modify");
-
+        values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "add");
         database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
 
         database.close();
