@@ -29,10 +29,12 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
     private OnTransactionModifyDone caller;
+    private String key = "a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10";
 
     public TransactionListChange(OnTransactionModifyDone p) {
         caller = p;
     }
+
     public TransactionListChange() {}
 
     @Override
@@ -40,7 +42,7 @@ public class TransactionListChange extends AsyncTask<String, Integer, Void> impl
         String body = getParametersInJSON(strings);
         try {
             URL url = null;
-            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
+            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/"+key + "/transactions";
             url1+= "/"+strings[7];
             id = Integer.valueOf(strings[7]);
             try {

@@ -5,4 +5,6 @@ public interface IAccountView {
     void setBudget(String budget);
 
     void uploadToServis();
+
+    void setOfflineText(String text);
 }

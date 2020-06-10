@@ -18,10 +18,14 @@ import androidx.fragment.app.Fragment;
 import ba.unsa.etf.rma.rma20siljakamina96.OnSwipeTouchListener;
 import ba.unsa.etf.rma.rma20siljakamina96.R;
 
+import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastReceiver.connected;
+
 public class BudgetFragment extends Fragment implements IAccountView{
     private EditText budgetText;
     private EditText totalLimitText;
     private EditText monthLimitText;
+
+    private TextView offlineText;
 
     private Button saveButton;
 
@@ -46,9 +50,12 @@ public class BudgetFragment extends Fragment implements IAccountView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_budget, container, false);
+
         budgetText = (EditText) fragmentView.findViewById(R.id.budgetView);
         totalLimitText = (EditText) fragmentView.findViewById(R.id.totalLimitView);
         monthLimitText = (EditText) fragmentView.findViewById(R.id.monthLimitView);
+
+        offlineText = (TextView) fragmentView.findViewById(R.id.offlineText);
 
         saveButton = (Button)fragmentView.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(saveClickListener);
@@ -68,6 +75,11 @@ public class BudgetFragment extends Fragment implements IAccountView{
             });
         }
         getAccountPresenter().setAccountData();
+
+        if(connected) accountPresenter.uploadToServis();
+
+        if(accountPresenter.accountChanged()) offlineText.setText("Offline izmjena");
+
         return fragmentView;
     }
     private AdapterView.OnClickListener saveClickListener = new AdapterView.OnClickListener() {
@@ -76,17 +88,24 @@ public class BudgetFragment extends Fragment implements IAccountView{
             accountPresenter.modifyAccount(Double.parseDouble(budgetText.getText().toString()), Double.parseDouble(totalLimitText.getText().toString()), Double.parseDouble(monthLimitText.getText().toString()));
         }
     };
+
     @Override
     public void setLimits(double totalLimit, double monthLimit) {
         totalLimitText.setText(String.valueOf(totalLimit));
         monthLimitText.setText(String.valueOf(monthLimit));
     }
+
     @Override
     public void setBudget(String budget) {
         budgetText.setText(budget);
     }
+
     @Override
     public void uploadToServis() {
         accountPresenter.uploadToServis();
+    }
+    @Override
+    public void setOfflineText(String text) {
+        offlineText.setText(text);
     }
 }

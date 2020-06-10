@@ -21,14 +21,17 @@ import static ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresent
 import static ba.unsa.etf.rma.rma20siljakamina96.list.TransactionListInteractor.transactionTypes;
 
 public class TransactionListPost extends AsyncTask<String, Integer, Void> implements ITransactionListPost {
-    public TransactionListPost(OnTransactionPostDone p) {
-        caller = p;
-    }
-    public TransactionListPost() {}
     private int internalId = -1;
+    private String key = "a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10";
     private OnTransactionPostDone caller;
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
+
+    public TransactionListPost(OnTransactionPostDone p) {
+        caller = p;
+    }
+
+    public TransactionListPost() {}
 
     public interface OnTransactionPostDone{
         public void onTransactionPosted(int id);
@@ -38,7 +41,7 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
         String body = getParametersInJSON(strings);
         try {
             URL url = null;
-            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions";
+            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/"+key+"/transactions";
             if(strings[7] != null) internalId = Integer.valueOf(strings[7]);
             try {
                 url = new URL(url1);
@@ -74,11 +77,8 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
     }
 
     private String getParametersInJSON(String... strings) {
-        SimpleDateFormat DATE_FORMAT_SET= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        SimpleDateFormat DATE_FORMAT_GET= new SimpleDateFormat("dd-MM-yyyy");
+
         String body = "{";
-//        "{"name": "Upendra", "job": "Programmer"}"
-//        ”date”, ”title”, ”amount”, ”endDate”, ”itemDescription”, ”transactionInterval”, ”typeId”
         body += "\"date\": \""+strings[0]+"\", ";
         body += "\"title\": \""+strings[1]+"\", ";
         body += "\"amount\": "+strings[2];

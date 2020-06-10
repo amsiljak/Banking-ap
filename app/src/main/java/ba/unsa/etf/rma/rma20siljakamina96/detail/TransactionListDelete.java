@@ -20,20 +20,21 @@ import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TR
 public class TransactionListDelete extends AsyncTask<String, Integer, Void> implements ITransactionListDelete{
     private OnTransactionDeleteDone caller;
     private int id = -1;
-
+    private String key = "a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10";
     private TransactionDBOpenHelper transactionDBOpenHelper;
     SQLiteDatabase database;
 
     public TransactionListDelete(OnTransactionDeleteDone p) {
         caller = p;
     }
+
     public TransactionListDelete() {}
 
     @Override
     protected Void doInBackground(String... strings) {
         try {
             URL url = null;
-            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10/transactions/"+strings[0];
+            String url1 = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/"+key+"/transactions/"+strings[0];
             try {
                 url = new URL(url1);
             }catch (MalformedURLException e){

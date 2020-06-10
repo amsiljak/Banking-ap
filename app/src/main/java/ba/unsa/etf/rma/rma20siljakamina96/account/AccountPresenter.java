@@ -15,13 +15,12 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
     private  ITransactionInteractor transactionInteractor;
     private IAccountView view;
     private static Account account;
-    private boolean changed;
+
 
     public AccountPresenter(Context context, IAccountView view) {
         this.context = context;
         this.view = view;
         accountInteractor = new AccountInteractor();
-        changed = false;
     }
 
     @Override
@@ -34,16 +33,13 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
         if(!connected) {
             accountInteractor.deleteFromDB(context.getApplicationContext());
             accountInteractor.insert(budget,totalLimit,monthLimit, context.getApplicationContext());
-            account.setBudget(budget);
-            account.setTotalLimit(totalLimit);
-            account.setMonthLimit(monthLimit);
+            view.setOfflineText("Offline izmjena");
+//            account.setBudget(budget);
+//            account.setTotalLimit(totalLimit);
+//            account.setMonthLimit(monthLimit);
         }
         else new AccountChange((AccountChange.OnAccountChange)
                 this).execute(String.valueOf(budget),String.valueOf(totalLimit),String.valueOf(monthLimit));
-        account.setBudget(budget);
-        account.setTotalLimit(totalLimit);
-        account.setMonthLimit(monthLimit);
-        changed = true;
     }
 
     @Override
@@ -54,12 +50,13 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
             view.setLimits(this.account.getTotalLimit(),this.account.getMonthLimit());
             view.setBudget(String.valueOf(account.getBudget()));
         }
+        //ako nije connected i nije dobijen account sa servera ne treba nista prikazati
     }
 
     @Override
     public void uploadToServis() {
-        if(changed) {
-            Account account = accountInteractor.getAccountFromDB(context.getApplicationContext());
+        Account account = accountInteractor.getAccountFromDB(context.getApplicationContext());
+        if(account != null) {
             new AccountChange((AccountChange.OnAccountChange)
                     this).execute(String.valueOf(account.getBudget()), String.valueOf(account.getTotalLimit()), String.valueOf(account.getMonthLimit()));
         }
@@ -74,7 +71,18 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
 
     @Override
     public void onAccountChanged() {
-        view.setLimits(account.getTotalLimit(),account.getMonthLimit());
-        view.setBudget(String.valueOf(account.getBudget()));
+        if(accountChanged()) {
+            accountInteractor.deleteFromDB(context.getApplicationContext());
+            view.setOfflineText("");
+        }
+//        view.setLimits(account.getTotalLimit(),account.getMonthLimit());
+//        view.setBudget(String.valueOf(account.getBudget()));
+    }
+
+    @Override
+    public boolean accountChanged() {
+        Account account = accountInteractor.getAccountFromDB(context.getApplicationContext());
+        if(account != null) return true;
+        else return false;
     }
 }

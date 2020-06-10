@@ -11,4 +11,6 @@ public interface IAccountPresenter {
     void setAccountData();
 
     void uploadToServis();
+
+    boolean accountChanged();
 }
