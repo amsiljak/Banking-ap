@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 
 import ba.unsa.etf.rma.rma20siljakamina96.account.BudgetFragment;

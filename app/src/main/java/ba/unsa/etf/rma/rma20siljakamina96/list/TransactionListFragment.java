@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,16 +176,14 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         onItemClick = (OnItemClick) getActivity();
         onAddButtonClick = (OnAddButtonClick) getActivity();
 
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        connected = (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+
         getTransactionPresenter().getTransactions(type, "title.asc",cal);
         getDetailPresenter();
 //        getAccountPresenter();
         financePresenter.setAccount();
         setDate();
-
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        connected = (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
-
-        if(connected) detailPresenter.uploadToServis();
 
         return fragmentView;
     }
@@ -267,6 +266,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
+        if(connected) detailPresenter.uploadToServis();
         transactionListAdapter.clear();
         transactionListAdapter.setTransactions(transactions);
     }
@@ -314,6 +314,12 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     @Override
     public void uploadToServis() {
         detailPresenter.uploadToServis();
-        financePresenter.getTransactions(type,sort,cal);
+        Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    financePresenter.getTransactions(type,sort,cal);
+                }
+            }, 3000);
+
     }
 }

@@ -1,10 +1,18 @@
 package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.util.Log;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +32,7 @@ import static ba.unsa.etf.rma.rma20siljakamina96.util.ConnectivityBroadcastRecei
 
 public class TransactionDetailPresenter implements ITransactionDetailPresenter, TransactionListChange.OnTransactionModifyDone,
         TransactionListDelete.OnTransactionDeleteDone, AccountChange.OnAccountChange, AccountInteractor.OnAccountGetDone,
-        TransactionListPost.OnTransactionPostDone,TransactionDetailResultReceiver.Receiver{
+        TransactionListPost.OnTransactionPostDone,TransactionDetailResultReceiver.Receiver, TransactionListInteractor.OnTransactionsGetDone{
     private Transaction transaction;
     private static Account account;
     private Context context;
@@ -36,6 +44,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     private ITransactionListPost transactionListPostInteractor;
     public static TransactionDetailResultReceiver transactionDetailResultReceiver;
     private static ArrayList<Transaction> addedThenModifiedTransactions;
+    public static boolean isConnectedToServer = false;
 
     public TransactionDetailPresenter(Context context) {
 //        this.view = view;
@@ -179,6 +188,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
         return iznosi;
     }
+
     @Override
     public double getTotalPayments() {
         double totalPayments = 0;
@@ -187,6 +197,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
         return totalPayments;
     }
+
     @Override
     public boolean isOverLimit(double amount, String date) {
         //trazi zbir postrosnji u određenom mjesecu i vraca true ako je proslo mjesecni limit
@@ -206,6 +217,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         new AccountInteractor((AccountInteractor.OnAccountGetDone)
                 this).execute("account");
     }
+
     @Override
     public void updateBudget(String action, String amount, String type) {
         if(account != null) {
@@ -265,8 +277,55 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
         return null;
     }
+
     @Override
     public void uploadToServis() {
+        new TransactionListInteractor((TransactionListInteractor.OnTransactionsGetDone)
+                this).execute(null,null,null,null);
+    }
+
+    @Override
+    public void onTransactionModified(int id) {
+        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
+            if(id == t.getId()) {
+                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
+            }
+        }
+    }
+
+    @Override
+    public void onTransactionPosted(int id) {
+        //ako nije null tj ako je pstovana transakcija iz baze na server a ne direktno na server
+        if(id != -1) {
+            for (Transaction t : transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+                if (id == t.getId()) {
+                    transactionListInteractor.deleteFromDB(t.getId(), context.getApplicationContext(),false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onTransactionDeleted(int id) {
+        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
+            if(id == t.getId()) {
+                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
+            }
+        }
+    }
+
+    @Override
+    public void onAccountChanged() {}
+
+    @Override
+    public void onAccountGetDone(Account account) {
+        this.account = account;
+    }
+
+    @Override
+    public void onTransactionsGetDone(ArrayList<Transaction> results) {
+        //dobijanje transakcija se u ovom interactoru poziva samo kada treba izvrsiti upload na servis
+        //sto se, u slucaju kad je transakcija bila offline, tek kada se dobiju tipovi transakcija sa servera
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
             new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
@@ -297,41 +356,5 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             updateBudget("add", String.valueOf(t.getAmount()), t.getType().toString());
         }
         addedThenModifiedTransactions = new ArrayList<>();
-    }
-
-    @Override
-    public void onTransactionModified(int id) {
-        for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
-            if(id == t.getId()) {
-                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
-            }
-        }
-    }
-    @Override
-    public void onTransactionPosted(int id) {
-        //ako nije null tj ako je pstovana transakcija iz baze na server a ne direktno na server
-        if(id != -1) {
-            for (Transaction t : transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
-                if (id == t.getId()) {
-                    transactionListInteractor.deleteFromDB(t.getId(), context.getApplicationContext(),false);
-                }
-            }
-        }
-    }
-    @Override
-    public void onTransactionDeleted(int id) {
-        for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
-            if(id == t.getId()) {
-                transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
-            }
-        }
-    }
-
-    @Override
-    public void onAccountChanged() {}
-
-    @Override
-    public void onAccountGetDone(Account account) {
-        this.account = account;
     }
 }

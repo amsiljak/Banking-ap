@@ -1,6 +1,8 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -159,6 +161,7 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
 
         view.setTransactions(results);
         view.notifyTransactionListDataSetChanged();
+
     }
 
     @Override
@@ -166,6 +169,14 @@ public class FinancePresenter implements IFinancePresenter, TransactionListInter
         if(account != null) this.account = account;
         //nece se ni postavljati ako je i stari i novi account null
         if(this.account != null) view.setAccountData(this.account);
+    }
+    @Override
+    public boolean isOnline(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in airplane mode it will be null
+        return (netInfo != null && netInfo.isConnected());
     }
 }
 

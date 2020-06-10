@@ -29,6 +29,7 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
+import static ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresenter.isConnectedToServer;
 import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_ID;
 import static ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID;
 
@@ -194,7 +195,8 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         return null;
     }
 
-    protected Void AddTypes(String... params)
+    @Override
+    public Void AddTypes(String... params)
     {
         transactionTypes = new HashMap<>();
         try {
@@ -220,7 +222,9 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
                     transactionTypes.put(id, name.replaceAll("\\s","").toUpperCase());
                 }
             }
+            isConnectedToServer = true;
         } catch (Exception e) {
+            isConnectedToServer = false;
             e.printStackTrace();
         }
 //        catch (IOException e) {

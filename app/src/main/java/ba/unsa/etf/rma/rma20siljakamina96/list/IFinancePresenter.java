@@ -1,5 +1,7 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -21,6 +23,8 @@ public interface IFinancePresenter {
 
 
     void undoAction(Transaction transaction);
+
+    boolean isOnline(Context context);
 
 
     //    void setTransactions();

@@ -10,6 +10,8 @@ import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
 
 public interface ITransactionInteractor {
+    Void AddTypes(String... params);
+
     ArrayList<Transaction> getDeletedTransactions(Context context);
 
     ArrayList<Transaction> getModifiedTransactions(Context context);

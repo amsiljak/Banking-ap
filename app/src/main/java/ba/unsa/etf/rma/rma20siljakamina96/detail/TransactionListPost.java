@@ -67,11 +67,11 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
                 }
             }
         } catch (ClassCastException e) {
-//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+            e.printStackTrace();
         } catch (MalformedURLException e) {
-//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+            e.printStackTrace();
         } catch (IOException e) {
-//            transactionDetailResultReceiver.send(STATUS_ERROR, null);
+            e.printStackTrace();
         }
         return null;
     }
