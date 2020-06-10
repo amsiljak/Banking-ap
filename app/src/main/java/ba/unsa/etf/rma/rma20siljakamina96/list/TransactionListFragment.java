@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -315,12 +316,15 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     @Override
     public void uploadToServis() {
         detailPresenter.uploadToServis();
+        transactionListAdapter.clear();
+        Toast toast = Toast.makeText(getActivity(), "Loading", Toast.LENGTH_SHORT);
         Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     financePresenter.getTransactions(type,sort,cal);
+                    financePresenter.setAccount();
                 }
-            }, 5000);
+            }, 10000);
 
     }
 }

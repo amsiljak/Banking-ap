@@ -220,7 +220,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void updateBudget(String action, String amount, String type) {
-        if(account != null) {
+        if(account != null && transaction != null) {
             double amountValue = Double.parseDouble(amount);
             double budget = account.getBudget();
             if (action.equals("delete")) {
@@ -302,7 +302,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
                     transactionListInteractor.deleteFromDB(t.getId(), context.getApplicationContext(),false);
                 }
             }
-            addedThenModifiedTransactions = new ArrayList<>();
         }
     }
 
@@ -357,6 +356,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(),transactionInt, t.getType().toString(), String.valueOf(t.getId()));
             updateBudget("add", String.valueOf(t.getAmount()), t.getType().toString());
         }
-
+        addedThenModifiedTransactions = new ArrayList<>();
     }
 }
