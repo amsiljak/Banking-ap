@@ -317,7 +317,8 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
     public void uploadToServis() {
         detailPresenter.uploadToServis();
         transactionListAdapter.clear();
-        Toast toast = Toast.makeText(getActivity(), "Loading", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_LONG);
+        toast.show();
         Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
