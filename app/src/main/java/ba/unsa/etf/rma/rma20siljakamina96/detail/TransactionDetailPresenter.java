@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     private ITransactionInteractor transactionListInteractor;
     private ITransactionListPost transactionListPostInteractor;
     public static TransactionDetailResultReceiver transactionDetailResultReceiver;
+    private static ArrayList<Transaction> addedThenModifiedTransactions;
 
     public TransactionDetailPresenter(Context context) {
 //        this.view = view;
@@ -45,6 +47,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         transactionListChangeInteractor = new TransactionListChange();
         transactionListInteractor = new TransactionListInteractor();
         transactionListPostInteractor = new TransactionListPost();
+        if(addedThenModifiedTransactions == null) addedThenModifiedTransactions = new ArrayList<>();
     }
     private String formatDate(String date) {
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -87,6 +90,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
                     //ako transakcija postoji u bazi treba da je update a ne doda
                     transactionListInteractor.updateDB(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, Integer.valueOf(id), context.getApplicationContext(), false);
                     existsInDB = true;
+                    addedThenModifiedTransactions.add(t);
                     break;
                 }
             }
@@ -96,7 +100,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
 
         }
-        else new TransactionListChange((TransactionListChange.OnTransactionModifyDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
+        else {
+            new TransactionListChange((TransactionListChange.OnTransactionModifyDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, id);
+            updateBudget("update", amount, type);
+        }
     }
 
     @Override
@@ -118,6 +125,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             TransactionListInteractor.removeFromListOfTransactions(this.transaction.getId());
         } else {
             new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(transaction.getId().toString());
+            updateBudget("delete", amount, type);
         }
     }
 
@@ -135,7 +143,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             if(itemDescription.equals("")) itemDescription = null;
             transactionListPostInteractor.save(date, Double.parseDouble(amount), title, type, itemDescription, transactionInt, endDate, context.getApplicationContext());
         }
-        else new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
+        else {
+            new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(date, title, amount, endDate, itemDescription, transactionInterval, type, null);
+            updateBudget("add", amount, type);
+        }
     }
 
     @Override
@@ -197,33 +208,30 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     }
     @Override
     public void updateBudget(String action, String amount, String type) {
-        double amountValue = Double.parseDouble(amount);
-        double budget = account.getBudget();
-
-
-        if (action.equals("delete")) {
-            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
-                    || type.equals("REGULARPAYMENT")) budget += amountValue;
-            else budget -= amountValue;
-        }
-        else if(action.equals("add")) {
-            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
-                    || type.equals("REGULARPAYMENT")) budget -= amountValue;
-            else budget += amountValue;
-        }
-        else {
-            double oldAmount = transaction.getAmount();
-            double difference = amountValue - oldAmount;
-            if(type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
-                    || type.equals("REGULARPAYMENT")) {
-                budget -= difference;
+        if(account != null) {
+            double amountValue = Double.parseDouble(amount);
+            double budget = account.getBudget();
+            if (action.equals("delete")) {
+                if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                        || type.equals("REGULARPAYMENT")) budget += amountValue;
+                else budget -= amountValue;
+            } else if (action.equals("add")) {
+                if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                        || type.equals("REGULARPAYMENT")) budget -= amountValue;
+                else budget += amountValue;
+            } else {
+                double oldAmount = transaction.getAmount();
+                double difference = amountValue - oldAmount;
+                if (type.equals("PURCHASE") || type.equals("INDIVIDUALPAYMENT")
+                        || type.equals("REGULARPAYMENT")) {
+                    budget -= difference;
+                } else {
+                    budget += amountValue;
+                }
             }
-            else {
-                budget += amountValue;
-            }
+            if (connected) new AccountChange((AccountChange.OnAccountChange)
+                    this).execute(String.valueOf(budget), String.valueOf(account.getTotalLimit()), String.valueOf(account.getMonthLimit()));
         }
-        if(connected) new AccountChange((AccountChange.OnAccountChange)
-                this).execute(String.valueOf(budget),String.valueOf(account.getTotalLimit()),String.valueOf(account.getMonthLimit()));
     }
 
     @Override
@@ -243,6 +251,9 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         }
         for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
             if(t.getId().equals(transaction.getId())) {
+                for(Transaction tr: addedThenModifiedTransactions) {
+                    if(tr.getId() == transaction.getId()) return "modify";
+                }
                 return "add";
             }
         }
@@ -259,6 +270,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
         SimpleDateFormat DATE_FORMAT_SET = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
             new TransactionListDelete((TransactionListDelete.OnTransactionDeleteDone) this).execute(t.getId().toString());
+            updateBudget("delete", String.valueOf(t.getAmount()), t.getType().toString());
         }
         for(Transaction t: transactionListInteractor.getModifiedTransactions(context.getApplicationContext())) {
             String endDateString = "";
@@ -270,6 +282,7 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             if(t.getTransactionInterval() == null) transactionInt = "";
             else transactionInt = String.valueOf(t.getTransactionInterval());
             new TransactionListChange((TransactionListChange.OnTransactionModifyDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(), transactionInt, t.getType().toString(), String.valueOf(t.getId()));
+            updateBudget("update", String.valueOf(t.getAmount()), t.getType().toString());
         }
         for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
             String endDateString = "";
@@ -281,7 +294,9 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             if(t.getTransactionInterval() == null) transactionInt = "";
             else transactionInt = String.valueOf(t.getTransactionInterval());
             new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(),transactionInt, t.getType().toString(), String.valueOf(t.getId()));
+            updateBudget("add", String.valueOf(t.getAmount()), t.getType().toString());
         }
+        addedThenModifiedTransactions = new ArrayList<>();
     }
 
     @Override
@@ -290,7 +305,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             if(id == t.getId()) {
                 transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
             }
-
         }
     }
     @Override
@@ -308,9 +322,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
     public void onTransactionDeleted(int id) {
         for(Transaction t: transactionListInteractor.getDeletedTransactions(context.getApplicationContext())) {
             if(id == t.getId()) {
-
-
-
                 transactionListInteractor.deleteFromDB(t.getId(),context.getApplicationContext(),true);
             }
         }
