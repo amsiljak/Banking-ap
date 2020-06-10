@@ -1,8 +1,10 @@
 package ba.unsa.etf.rma.rma20siljakamina96.detail;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
@@ -109,8 +111,10 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
     }
     @Override
     public void save(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Context context) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        Uri transactionsURI = Uri.parse("content://rma.provider.transactions/elements");
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
+//        database = transactionDBOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
         values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
@@ -120,8 +124,8 @@ public class TransactionListPost extends AsyncTask<String, Integer, Void> implem
         values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
         values.put(transactionDBOpenHelper.TRANSACTION_CHANGE, "add");
-        database.insert(transactionDBOpenHelper.TRANSACTION_TABLE, null, values);
+        cr.insert(transactionsURI, values);
 
-        database.close();
+//        database.close();
     }
 }

@@ -1,9 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96.account;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -120,18 +123,20 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
 
     @Override
     public Account getAccountFromDB(Context context) {
-//        ContentResolver cr = context.getApplicationContext().getContentResolver();
-//        String[] kolone = null;
-//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id
-//        );
-
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        String[] kolone = null;
+        Uri adresa = Uri.parse("content://rma.provider.movies/transactions");
+        String where = null;
+        String whereArgs[] = null;
+        String order = null;
+        Cursor cursor = cr.query(adresa,kolone,where,whereArgs,order);
         accountDBOpenHelper = new AccountDBOpenHelper(context);
-        database = accountDBOpenHelper.getWritableDatabase();
+//        database = accountDBOpenHelper.getWritableDatabase();
 
-        String query =  "SELECT *"  + " FROM "
-                    + AccountDBOpenHelper.ACCOUNT_TABLE;
+//        String query =  "SELECT *"  + " FROM "
+//                    + AccountDBOpenHelper.ACCOUNT_TABLE;
 
-        Cursor cursor = database.rawQuery(query,null);
+//        Cursor cursor = database.rawQuery(query,null);
         Account accountFromDB = null;
         if(cursor.moveToFirst()) {
             do{
@@ -144,7 +149,7 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
             }while (cursor.moveToNext());
         }
         cursor.close();
-        database.close();
+//        database.close();
         return accountFromDB;
     }
 

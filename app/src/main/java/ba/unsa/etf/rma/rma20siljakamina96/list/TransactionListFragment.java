@@ -179,6 +179,8 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         connected = (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
 
+        if(connected) getDetailPresenter().uploadToServis();
+
         getTransactionPresenter().getTransactions(type, "title.asc",cal);
         getDetailPresenter();
 //        getAccountPresenter();
@@ -266,7 +268,6 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
 
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
-        if(connected) detailPresenter.uploadToServis();
         transactionListAdapter.clear();
         transactionListAdapter.setTransactions(transactions);
     }
@@ -319,7 +320,7 @@ public class TransactionListFragment extends Fragment implements IFinanceView {
                 public void run() {
                     financePresenter.getTransactions(type,sort,cal);
                 }
-            }, 3000);
+            }, 5000);
 
     }
 }

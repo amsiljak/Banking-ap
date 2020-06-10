@@ -1,9 +1,12 @@
 package ba.unsa.etf.rma.rma20siljakamina96.list;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -27,6 +30,7 @@ import java.util.Map;
 
 import ba.unsa.etf.rma.rma20siljakamina96.data.Transaction;
 import ba.unsa.etf.rma.rma20siljakamina96.data.Type;
+import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionContentProvider;
 import ba.unsa.etf.rma.rma20siljakamina96.util.TransactionDBOpenHelper;
 
 import static ba.unsa.etf.rma.rma20siljakamina96.detail.TransactionDetailPresenter.isConnectedToServer;
@@ -246,8 +250,7 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     }
 
     private String getQuery(String change) {
-        String query = "SELECT *"  + " FROM "
-                + TransactionDBOpenHelper.TRANSACTION_TABLE + " WHERE " + TransactionDBOpenHelper.TRANSACTION_CHANGE + " = '"+change+"'";
+        String query = TransactionDBOpenHelper.TRANSACTION_CHANGE + " = '"+change+"'";
 
         return query;
     }
@@ -268,15 +271,15 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
     private ArrayList<Transaction> getTransactions(String change, Context context) {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         ArrayList<Transaction> transactions= new ArrayList<>();
-//        ContentResolver cr = context.getApplicationContext().getContentResolver();
-//        String[] kolone = null;
-//        Uri adresa = ContentUris.withAppendedId(Uri.parse(""),id
-//        );
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        String[] kolone = null;
+        Uri adresa = Uri.parse("content://rma.provider.transactions/elements");
+        String where = getQuery(change);
+        String whereArgs[] = null;
+        String order = null;
+        Cursor cursor = cr.query(adresa,kolone,where,whereArgs,order);
 
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
-        String query = getQuery(change);
-        Cursor cursor = database.rawQuery(query,null);
         if(cursor.moveToFirst()) {
             do{
                 int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
@@ -313,20 +316,27 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
             }while (cursor.moveToNext());
         }
         cursor.close();
-        database.close();
+//        database.close();
         return transactions;
     }
 
     //kad se transakciji iz baze zeli modifikovati atribut
     @Override
     public void updateDB(String date, Double amount, String title, String type, String itemDescription, Integer transactionInterval, String endDate, Integer id, Context context, boolean hasRealID) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
 
+//        database = transactionDBOpenHelper.getWritableDatabase();
+        Uri adresa;
         ContentValues values = new ContentValues();
-        String where;
-        if(hasRealID) where = TRANSACTION_ID + "=" + String.valueOf(id);
-        else where = TRANSACTION_INTERNAL_ID + "=" + String.valueOf(id);
+        String where = null;
+//        if(hasRealID) where = TRANSACTION_ID + "=" + String.valueOf(id);
+        if(!hasRealID) {
+            //stavljam bilo koji id jer je nebitno, nece se koristiti
+            adresa = ContentUris.withAppendedId(Uri.parse("content://rma.provider.transactions/elements"),2);
+            where = String.valueOf(id);
+        }
+        else adresa = ContentUris.withAppendedId(Uri.parse("content://rma.provider.transactions/elements"),id);
         String whereArgs [] = null;
         values.put(transactionDBOpenHelper.TRANSACTION_TITLE,title);
         values.put(transactionDBOpenHelper.TRANSACTION_DATE, date);
@@ -336,20 +346,23 @@ public class TransactionListInteractor extends AsyncTask<String, Integer, Void> 
         values.put(transactionDBOpenHelper.TRANSACTION_TYPE, type);
         values.put(transactionDBOpenHelper.TRANSACTION_ENDDATE, endDate);
 
-        database.update(transactionDBOpenHelper.TRANSACTION_TABLE, values, where, whereArgs);
-        database.close();
+        cr.update(adresa, values,where,whereArgs);
+//        database.update(transactionDBOpenHelper.TRANSACTION_TABLE, values, where, whereArgs);
+//        database.close();
     }
     @Override
     public void deleteFromDB(int id, Context context,boolean hasRealID) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
+//        database = transactionDBOpenHelper.getWritableDatabase();
+        Uri adresa = Uri.parse("content://rma.provider.transactions/elements");
 
         String where;
         if(hasRealID) where = TRANSACTION_ID + "=" + id;
         else  where = TRANSACTION_INTERNAL_ID + "=" + id;
         String whereArgs [] = null;
 
-        database.delete(transactionDBOpenHelper.TRANSACTION_TABLE, where, whereArgs);
-        database.close();
+        cr.delete(adresa, where, whereArgs);
+//        database.close();
     }
 }

@@ -295,13 +295,14 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
 
     @Override
     public void onTransactionPosted(int id) {
-        //ako nije null tj ako je pstovana transakcija iz baze na server a ne direktno na server
+        //ako nije null tj ako je postovana transakcija iz baze na server a ne direktno na server
         if(id != -1) {
             for (Transaction t : transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
                 if (id == t.getId()) {
                     transactionListInteractor.deleteFromDB(t.getId(), context.getApplicationContext(),false);
                 }
             }
+            addedThenModifiedTransactions = new ArrayList<>();
         }
     }
 
@@ -343,7 +344,8 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             new TransactionListChange((TransactionListChange.OnTransactionModifyDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(), transactionInt, t.getType().toString(), String.valueOf(t.getId()));
             updateBudget("update", String.valueOf(t.getAmount()), t.getType().toString());
         }
-        for(Transaction t: transactionListInteractor.getAddedTransactions(context.getApplicationContext())) {
+        ArrayList<Transaction> addedTransactions = transactionListInteractor.getAddedTransactions(context.getApplicationContext());
+        for(Transaction t: addedTransactions) {
             String endDateString = "";
             if(t.getEndDate() != null) {
                 endDateString = DATE_FORMAT_SET.format(t.getEndDate());
@@ -355,6 +357,6 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter, 
             new TransactionListPost((TransactionListPost.OnTransactionPostDone) this).execute(DATE_FORMAT_SET.format(t.getDate()), t.getTitle(), String.valueOf(t.getAmount()), endDateString, t.getItemDescription(),transactionInt, t.getType().toString(), String.valueOf(t.getId()));
             updateBudget("add", String.valueOf(t.getAmount()), t.getType().toString());
         }
-        addedThenModifiedTransactions = new ArrayList<>();
+
     }
 }
