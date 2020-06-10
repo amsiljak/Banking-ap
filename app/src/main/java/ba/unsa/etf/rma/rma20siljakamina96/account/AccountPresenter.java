@@ -37,9 +37,9 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
             accountInteractor.deleteFromDB(context.getApplicationContext());
             accountInteractor.insert(budget,totalLimit,monthLimit, context.getApplicationContext());
             view.setOfflineText("Offline izmjena");
-//            account.setBudget(budget);
-//            account.setTotalLimit(totalLimit);
-//            account.setMonthLimit(monthLimit);
+            account.setBudget(budget);
+            account.setTotalLimit(totalLimit);
+            account.setMonthLimit(monthLimit);
         }
         else new AccountChange((AccountChange.OnAccountChange)
                 this).execute(String.valueOf(budget),String.valueOf(totalLimit),String.valueOf(monthLimit));
@@ -49,26 +49,19 @@ public class AccountPresenter implements IAccountPresenter, AccountInteractor.On
     public void setAccountData() {
         if(connected) new AccountInteractor((AccountInteractor.OnAccountGetDone)
                 this).execute("account");
-        else if(!connected && this.account != null) {
-            view.setLimits(this.account.getTotalLimit(),this.account.getMonthLimit());
-            view.setBudget(String.valueOf(account.getBudget()));
+        if(!connected) {
+            Account account = accountInteractor.getAccountFromDB(context.getApplicationContext());
+            if(account != null) {
+                this.account = account;
+                view.setLimits(this.account.getTotalLimit(),this.account.getMonthLimit());
+                view.setBudget(String.valueOf(account.getBudget()));
+            }
         }
         //ako nije connected i nije dobijen account sa servera ne treba nista prikazati
     }
 
     @Override
     public void uploadToServis() {
-//        String key ="a8dfa9fe-fe66-4026-9fb0-1c6abcdd0f10";
-//        boolean isConnected = false;
-//        while(!isConnected) {
-//            try{
-//                URL myUrl = new URL("http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/account/"+key+"/transactions");
-//                URLConnection connection = myUrl.openConnection();
-//                connection.connect();
-//                isConnected = true;
-//            } catch (Exception e) {
-//            }
-//        }
         Account account = accountInteractor.getAccountFromDB(context.getApplicationContext());
         if(account != null) {
             new AccountChange((AccountChange.OnAccountChange)

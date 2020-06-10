@@ -102,7 +102,9 @@ public class BudgetFragment extends Fragment implements IAccountView{
 
     @Override
     public void uploadToServis() {
+
         accountPresenter.uploadToServis();
+        accountPresenter.setAccountData();
     }
     @Override
     public void setOfflineText(String text) {

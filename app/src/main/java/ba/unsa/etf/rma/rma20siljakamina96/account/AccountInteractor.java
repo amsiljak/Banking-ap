@@ -108,16 +108,18 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
     }
     @Override
     public void insert(double budget, double totalLimit, double monthLimit, Context context) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
         accountDBOpenHelper = new AccountDBOpenHelper(context);
-        database = accountDBOpenHelper.getWritableDatabase();
+//        database = accountDBOpenHelper.getWritableDatabase();
+        Uri adresa = Uri.parse("content://rma.provider.account/elements");
         ContentValues values = new ContentValues();
         values.put(accountDBOpenHelper.ACCOUNT_BUDGET,budget);
         values.put(accountDBOpenHelper.ACCOUNT_TOTAL_LIMIT, totalLimit);
         values.put(accountDBOpenHelper.ACCOUNT_MONTH_LIMIT,monthLimit);
 
-        database.insert(accountDBOpenHelper.ACCOUNT_TABLE, null, values);
+        cr.insert(adresa, values);
 
-        database.close();
+//        database.close();
     }
 
 
@@ -125,7 +127,7 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
     public Account getAccountFromDB(Context context) {
         ContentResolver cr = context.getApplicationContext().getContentResolver();
         String[] kolone = null;
-        Uri adresa = Uri.parse("content://rma.provider.movies/transactions");
+        Uri adresa = Uri.parse("content://rma.provider.account/elements");
         String where = null;
         String whereArgs[] = null;
         String order = null;
@@ -155,13 +157,15 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
 
     @Override
     public void deleteFromDB(Context context) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        Uri adresa = Uri.parse("content://rma.provider.account/elements");
         accountDBOpenHelper = new AccountDBOpenHelper(context);
-        database = accountDBOpenHelper.getWritableDatabase();
+//        database = accountDBOpenHelper.getWritableDatabase();
 
         String where = null;
         String whereArgs [] = null;
 
-        database.delete(accountDBOpenHelper.ACCOUNT_TABLE, where, whereArgs);
-        database.close();
+        cr.delete(adresa, where, whereArgs);
+//        database.close();
     }
 }

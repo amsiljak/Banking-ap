@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,10 +47,10 @@ public class AccountContentProvider extends ContentProvider {
         switch (uM.match(uri)){
             case ONEROW:
                 String idRow = uri.getPathSegments().get(1);
-                squery.appendWhere(TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID+"="+idRow);
+                squery.appendWhere(AccountDBOpenHelper.ACCOUNT_INTERNAL_ID+"="+idRow);
             default:break;
         }
-        squery.setTables(TransactionDBOpenHelper.TRANSACTION_TABLE);
+        squery.setTables(AccountDBOpenHelper.ACCOUNT_TABLE);
         Cursor cursor = squery.query(database,projection,selection,selectionArgs,groupby,having,sortOrder);
         return cursor;
     }
@@ -76,13 +77,32 @@ public class AccountContentProvider extends ContentProvider {
         }catch (SQLiteException e){
             database=accountDBOpenHelper.getReadableDatabase();
         }
-        long id = database.insert(TransactionDBOpenHelper.TRANSACTION_TABLE, null, values);
+        long id = database.insert(AccountDBOpenHelper.ACCOUNT_TABLE, null, values);
         return uri.buildUpon().appendPath(String.valueOf(id)).build();
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db;
+        try{
+            db = accountDBOpenHelper.getWritableDatabase();
+        }catch (SQLiteException e){
+            db = accountDBOpenHelper.getReadableDatabase();
+        }
+        String groupBy = null;
+        String having = null;
+        int ret = 0;
+        switch (uM.match(uri)){
+            case ONEROW:
+                String idRow = uri.getPathSegments().get(1);
+                String where = AccountDBOpenHelper.ACCOUNT_INTERNAL_ID + "=" + idRow;
+                ret = db.delete(AccountDBOpenHelper.ACCOUNT_TABLE, where, selectionArgs);
+                break;
+            case ALLROWS:
+                ret = db.delete(AccountDBOpenHelper.ACCOUNT_TABLE, selection, selectionArgs);
+                break;
+        }
+        return ret;
     }
 
     @Override
