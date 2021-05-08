@@ -12,10 +12,11 @@ If the application is being used in landscape mode, a fragment for editing a cho
 
 This application was made for the purpose of lerning on Mobile Application Development course on my faculty, and can no perform any opperations as the API that was created for this purpose is no longer available.  
 
-![](prototype.jpg) 
-![](Inkedlist_LI.jpg) 
-![](Inkedgraph_LI.jpg) 
-![](sorting.jpg) 
+<p float="left">
+  <img src="prototype.jpg" alt="prototype" width="250"/> 
+  <img src="Inkedlist_LI.jpg" alt="Inkedlist_LI" width="200"/> 
+  <img src="Inkedgraph_LI.jpg" alt="Inkedgraph_LI" width="200"/> 
+</p>
 
 
 ### Built using
@@ -26,3 +27,4 @@ This application was made for the purpose of lerning on Mobile Application Devel
 [java]: https://www.java.com/en/
 [SQLite]: https://www.sqlite.org/index.html
 [MPAndroidChart]: https://github.com/PhilJay/MPAndroidChart
+ 
