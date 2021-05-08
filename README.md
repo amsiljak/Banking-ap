@@ -15,7 +15,7 @@ This application was made for the purpose of lerning on Mobile Application Devel
 ![](prototype.jpg) 
 ![](Inkedlist_LI.jpg) 
 ![](Inkedgraph_LI.jpg) 
-![](prototype.jpg) 
+![](sorting.jpg) 
 
 
 ### Built using
