@@ -26,12 +26,15 @@ This application was made for the purpose of lerning on Mobile Application Devel
 
 ### Built using
 [<img align="left" alt="Java" width="50px" src="https://logoeps.com/wp-content/uploads/2013/03/java-eps-vector-logo.png" />][java]
+[<img align="left" alt="JavaFx" width="100px" src="https://upload.wikimedia.org/wikipedia/en/c/cc/JavaFX_Logo.png" />][javafx]
 [<img align="left" alt="SQLite" width="60px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/SQLite370.svg/1200px-SQLite370.svg.png" />][SQLite]
-[<img align="left" alt="MPAndroidChart" width="200px" src="https://camo.githubusercontent.com/9ee52cd684d0ae62106ce74c7aae5fc9cec43a123c76ef307b5b8a0c24e89eed/68747470733a2f2f7261772e6769746875622e636f6d2f5068696c4a61792f4d5043686172742f6d61737465722f64657369676e2f666561747572655f677261706869635f736d616c6c65722e706e67" />][MPAndroidChart]
+[<img align="left" alt="JasperReports" width="60px" src="https://miro.medium.com/max/424/1*278ccGR72lK73_1l0BuKUw.png" />][jasperreports]
+
 
 [java]: https://www.java.com/en/
 [SQLite]: https://www.sqlite.org/index.html
-[MPAndroidChart]: https://github.com/PhilJay/MPAndroidChart 
+[javafx]: https://openjfx.io/
+[jasperreports]: https://community.jaspersoft.com/
 
 
 
